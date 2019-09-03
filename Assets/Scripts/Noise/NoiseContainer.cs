@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.Serialization;
 using UnityEngine;
-using System.Collections;
 
 [Serializable]
 public class NoiseContainer {
-    private INoise inst;
+    public NoiseContainer() {
+        UpdateInst();
+    }
+    
+    public INoise inst;
 
-    public NoiseOperatorType type;
+    public NoiseOperatorType type = NoiseOperatorType.Generative;
 
     #region GenerativeTypes
-    public GenerativeNoiseType genType;
+    public GenerativeNoiseType genType = GenerativeNoiseType.Random;
 
     [Min(1)]
     public int mapWidth = 100, mapHeight = 100;
@@ -26,8 +30,7 @@ public class NoiseContainer {
 
     [Range(0, 1)]
     public float persistance, lacunarity;
-
-    [NonSerialized]
+    
     public NoiseContainer[] polyOperands;
     #endregion
 

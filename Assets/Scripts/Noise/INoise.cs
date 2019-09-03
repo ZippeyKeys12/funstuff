@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public abstract class INoise {
     [Range(1, 1000)]
     public int w = 100, h = 100;

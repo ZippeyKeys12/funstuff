@@ -7,11 +7,16 @@ public class AverageFilter : INoise {
     public float scale;
     public NoiseContainer[] operands;
 
-    protected override float GeneratePoint(float x, float y) {
+
+    public override void GenerateNoise() {
         foreach (var op in operands) {
             op.GenerateNoise();
         }
 
+        base.GenerateNoise();
+    }
+
+    protected override float GeneratePoint(float x, float y) {
         var sum = 0f;
 
         for (var i = 0; i < operands.Length; i++) {

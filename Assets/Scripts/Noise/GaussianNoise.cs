@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
-public class RandomNoise : INoise {
+public class GaussianNoise : INoise {
     private System.Random rnd;
 
     public override void GenerateNoise() {
@@ -17,3 +19,4 @@ public class RandomNoise : INoise {
         return actualNoise[Mathf.RoundToInt(x), Mathf.RoundToInt(y)];
     }
 }
+
