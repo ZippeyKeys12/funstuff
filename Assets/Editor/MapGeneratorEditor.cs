@@ -11,9 +11,9 @@ public class MapGeneratorEditor : Editor {
         #region Drawing
         DrawDefaultInspector();
 
-        //if (mapGen.noiseGenerator == NoiseType.InverseDistance || mapGen.noiseGenerator == NoiseType.BellShaped) {
-        //    mapGen.nb = EditorGUILayout.IntSlider("# of Points", mapGen.nb, 0, 200);
-        //}
+        if (mapGen.drawMode == MapDrawMode.Mesh) {
+            mapGen.meshHeightMult = EditorGUILayout.Slider("Mesh Height", mapGen.meshHeightMult, 1, 200);
+        }
 
         if (GUILayout.Button("Generate Map")) {
             mapGen.GenerateMap();
@@ -23,7 +23,6 @@ public class MapGeneratorEditor : Editor {
         if (EditorGUI.EndChangeCheck()) {
             if (mapGen.autoUpdate) {
                 mapGen.GenerateMap();
-                mapGen.noiseType.UpdateInst();
             }
         }
     }

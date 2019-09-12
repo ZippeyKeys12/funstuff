@@ -1,162 +1,134 @@
-﻿using System;
-using System.Collections;
-using System.Runtime.Serialization;
-using UnityEngine;
+﻿//using System;
+//using System.Runtime.Serialization;
+//using UnityEngine;
 
-[Serializable]
-public class NoiseContainer {
-    public NoiseContainer() {
-        UpdateInst();
-    }
-    
-    public INoise inst;
+//[Serializable]
+//public class NoiseContainer
+//{
+//    public NoiseContainer()
+//    {
+//        UpdateInst();
+//    }
 
-    public NoiseOperatorType type = NoiseOperatorType.Generative;
+//    public INoiseModule inst;
 
-    #region GenerativeTypes
-    public GenerativeNoiseType genType = GenerativeNoiseType.Random;
+//    public bool isChild;
 
-    [Min(1)]
-    public int mapWidth = 100, mapHeight = 100;
+//    public NoiseOperatorType type = NoiseOperatorType.Generative;
 
-    public int seed;
+//    #region GenerativeTypes
+//    public GenerativeNoiseType genType = GenerativeNoiseType.Value;
 
-    [Range(0, 200)]
-    public int nb;
-    #endregion
+//    [Range(0, 1000000)]
+//    public int seed;
 
-    #region PolyTypes
-    public PolyNoiseType polyType;
+//    [Range(1, 200)]
+//    public int nb = 1;
 
-    [Range(0, 1)]
-    public float persistance, lacunarity;
-    
-    public NoiseContainer[] polyOperands;
-    #endregion
+//    [Range(1, 100)]
+//    public int influence = 30;
+
+//    [Range(1, 10)]
+//    public int steps = 1;
+
+//    [Range(.1f, 5)]
+//    public float influenceDecay = .5f;
+
+//    [Range(1, 20)]
+//    public float verticalShrink = 3;
+
+//    [Range(.1f, 2)]
+//    public float multiplier = .5f;
+
+//    [Range(.5f, 2)]
+//    public float exponent = 1.1f;
+
+//    #endregion
+
+//    #region PolyTypes
+//    public PolyNoiseType polyType;
+
+//    [Range(.1f, 1)]
+//    public float persistance = .5f, lacunarity = .5f, frequencyMultiplier = .5f;
 
 
-    [OnSerializing]
-    private void OnSerializing(StreamingContext ctx) {
+//    public NoiseContainer[] polyOperands;
+//    #endregion
 
-    }
 
-    [OnDeserialized]
-    private void OnDeserialized(object obj) {
+//    //[OnSerializing]
+//    //private void OnSerializing(StreamingContext ctx)
+//    //{
 
-    }
+//    //}
 
-    public void UpdateInst() {
-        switch (type) {
-            case NoiseOperatorType.Generative:
-                switch (genType) {
-                    case GenerativeNoiseType.Random:
-                        inst = new RandomNoise() {
-                            w = mapWidth,
-                            h = mapHeight,
-                            seed = seed
-                        };
-                        break;
-                    case GenerativeNoiseType.Value:
-                        inst = new ValueNoise() {
-                            w = mapWidth,
-                            h = mapHeight,
-                            seed = seed
-                        };
-                        break;
-                    case GenerativeNoiseType.InverseDistance:
-                        inst = new InvDistNoise() {
-                            w = mapWidth,
-                            h = mapHeight,
-                            seed = seed,
-                            nb = nb
-                        };
-                        break;
-                    case GenerativeNoiseType.Perlin:
-                        inst = new PerlinNoise() {
-                            w = mapWidth,
-                            h = mapHeight,
-                            seed = seed
-                        };
-                        break;
-                }
-                break;
-            case NoiseOperatorType.Unary:
-                break;
-            case NoiseOperatorType.Binary:
-                break;
-            case NoiseOperatorType.Poly:
-                foreach (var op in polyOperands) {
-                    //op.SetCommon(mapWidth, mapHeight, seed);
-                    op.UpdateInst();
-                }
+//    //[OnDeserialized]
+//    //private void OnDeserialized(object obj)
+//    //{
 
-                switch (polyType) {
-                    case PolyNoiseType.Average:
-                        inst = new AverageFilter() {
-                            w = mapWidth,
-                            h = mapWidth,
-                            seed = seed,
-                            operands = polyOperands
-                        };
-                        break;
-                    case PolyNoiseType.Octave:
-                        inst = new OctaveFilter {
-                            w = mapWidth,
-                            h = mapHeight,
-                            seed = seed,
-                            lacunarity = lacunarity,
-                            persistance = persistance,
-                            operands = polyOperands
-                        };
-                        break;
-                }
-                break;
-        }
-    }
+//    //}
 
-    public void SetCommon(int w, int h, int seed) {
-        mapWidth = w;
-        mapHeight = h;
-        this.seed = seed;
+//    public void UpdateInst()
+//    {
+//        switch (type)
+//        {
+//            case NoiseOperatorType.Generative:
+//                switch (genType)
+//                {
+//                    case GenerativeNoiseType.Value:
+//                        inst = new ValueNoise(seed);
+//                        break;
+//                    case GenerativeNoiseType.Perlin:
+//                        inst = new PerlinNoise(seed);
+//                        break;
+//                }
+//                break;
+//            case NoiseOperatorType.Unary:
+//                break;
+//            case NoiseOperatorType.Binary:
+//                break;
+//            case NoiseOperatorType.Poly:
+//                foreach (var op in polyOperands)
+//                {
+//                    op.isChild = true;
+//                    op.UpdateInst();
+//                }
 
-        switch (type) {
-            case NoiseOperatorType.Poly:
-                foreach (var op in polyOperands) {
-                    op.SetCommon(w, h, seed);
-                }
-                break;
-        }
-    }
+//                switch (polyType)
+//                {
+//                    case PolyNoiseType.Average:
+//                        inst = new AverageFilter(polyOperands);
+//                        break;
+//                    case PolyNoiseType.Octave:
+//                        inst = new OctaveFilter(persistance, lacunarity, polyOperands);
+//                break;
+//        }
+//        break;
+//    }
+//}
 
-    public void GenerateNoise() {
-        inst.GenerateNoise();
-    }
+//public float Get(float x, float y, float frequency)
+//{
+//    return inst.Get(x, y, frequency);
+//}
+//}
 
-    public float[,] GetNoise(float scale) {
-        return inst.GetNoise(scale);
-    }
+//public enum NoiseOperatorType
+//{
+//    Generative,
+//    Unary,
+//    Binary,
+//    Poly
+//}
 
-    public float AtXY(float x, float y) {
-        return inst.AtXY(x, y);
-    }
-}
+//public enum GenerativeNoiseType
+//{
+//    Value,
+//    Perlin
+//}
 
-public enum NoiseOperatorType {
-    Generative,
-    Unary,
-    Binary,
-    Poly
-}
-
-public enum GenerativeNoiseType {
-    Random,
-    Value,
-    InverseDistance,
-    BellShaped,
-    Perlin
-}
-
-public enum PolyNoiseType {
-    Average,
-    Octave
-}
+//public enum PolyNoiseType
+//{
+//    Average,
+//    Octave
+//}
