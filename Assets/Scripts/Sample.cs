@@ -1,394 +1,225 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public interface Sample<T>
-{
-    Sample<T> Zero { get; }
-    Sample<T> One { get; }
-    Sample<T> MinValue { get; }
-    Sample<T> MaxValue { get; }
+public abstract class Sample<T> {
+    public float Value { get; }
+    public T Gradient { get; }
 
-    float Value { get; }
-    T Gradient { get; }
+    protected Sample(float value, T gradient) {
+        Value = value;
+        Gradient = gradient;
+    }
+
+    public abstract Sample<T> Of(float a);
+
+    public abstract Sample<T> Apply(Func<Sample<float>, Sample<float>> f);
+
+    public abstract Sample<T> Neg();
+    public static Sample<T> operator -(Sample<T> a) => a.Neg();
+
+
+    public abstract Sample<T> Add(float o);
+    public static Sample<T> operator +(Sample<T> a, float b) => a.Add(b);
+    public static Sample<T> operator +(float b, Sample<T> a) => a.Add(b);
+
+    public abstract Sample<T> Add(Sample<T> o);
+    public static Sample<T> operator +(Sample<T> a, Sample<T> b) => a.Add(b);
+
+
+    public abstract Sample<T> Sub(float o);
+    public static Sample<T> operator -(Sample<T> a, float b) => a.Sub(b);
+    public static Sample<T> operator -(float b, Sample<T> a) => -a.Add(b);
+
+    public abstract Sample<T> Sub(Sample<T> o);
+    public static Sample<T> operator -(Sample<T> a, Sample<T> b) => a.Sub(b);
+
+
+    public abstract Sample<T> Mul(float o);
+    public static Sample<T> operator *(Sample<T> a, float b) => a.Mul(b);
+    public static Sample<T> operator *(float b, Sample<T> a) => a.Mul(b);
+
+    public abstract Sample<T> Mul(Sample<T> o);
+    public static Sample<T> operator *(Sample<T> a, Sample<T> b) => a.Mul(b);
+
+
+    public static Sample<T> operator /(Sample<T> a, float b) => a.Mul(1 / b);
+
+    public abstract Sample<T> Div(Sample<T> o);
+    public static Sample<T> operator /(Sample<T> a, Sample<T> b) => a.Div(b);
+
+
+    public static bool operator >(Sample<T> a, float b) => a.Value > b;
+    public static bool operator >(float b, Sample<T> a) => b > a.Value;
+    public static bool operator >(Sample<T> a, Sample<T> b) => a.Value > b.Value;
+
+
+    public static bool operator <(Sample<T> a, float b) => a.Value < b;
+    public static bool operator <(float b, Sample<T> a) => b < a.Value;
+    public static bool operator <(Sample<T> a, Sample<T> b) => a.Value < b.Value;
+
+
+    public bool Equals(Sample<T> o)
+        => Mathf.Approximately(Value, o.Value);
 }
 
-public struct Sample1D : Sample<float>
-{
-    public static readonly Sample1D zero = Constant(0);
-    public static readonly Sample1D one = Constant(1);
-    public static readonly Sample1D MinValue = Constant(float.MinValue);
-    public static readonly Sample1D MaxValue = Constant(float.MaxValue);
+public class Sample1D : Sample<float> {
+    public static readonly Sample<float> Zero = new Sample1D(0);
+    public static readonly Sample<float> One = new Sample1D(1);
+    public static readonly Sample<float> MinValue = new Sample1D(float.MinValue);
+    public static readonly Sample<float> MaxValue = new Sample1D(float.MaxValue);
 
-    private readonly float value;
-    private readonly float derivative;
-
-    public float Value => value;
-
-    public float Gradient => derivative;
-
-    Sample<float> Sample<float>.Zero => zero;
-
-    Sample<float> Sample<float>.One => one;
-
-    Sample<float> Sample<float>.MinValue => MinValue;
-
-    Sample<float> Sample<float>.MaxValue => MaxValue;
+    public Sample1D(float value)
+        : base(value, 0) { }
 
     public Sample1D(float value, float derivative)
-    {
-        this.value = value;
-        this.derivative = derivative;
+        : base(value, derivative) { }
+
+    public static explicit operator Sample1D(float a) {
+        return new Sample1D(a);
     }
 
-    public static Sample1D Constant(float a)
-    {
-        return new Sample1D(a, 0);
+    public override Sample<float> Of(float a) {
+        return new Sample1D(a);
     }
 
-    public static implicit operator Sample1D(float f)
-    {
-        return Constant(f);
-    }
+    public override Sample<float> Apply(Func<Sample<float>, Sample<float>> f)
+        => f(this);
 
-    public static Sample1D operator -(Sample1D a)
-    {
-        return new Sample1D(-a.value, -a.derivative);
-    }
+    public override Sample<float> Neg()
+        => new Sample1D(-Value, -Gradient);
 
-    public static Sample1D operator +(Sample1D a, Sample1D b)
-    {
-        return new Sample1D(a.value + b.value, a.derivative + b.derivative);
-    }
 
-    public static Sample1D operator -(Sample1D a, Sample1D b)
-    {
-        return new Sample1D(a.value - b.value, a.derivative - b.derivative);
-    }
+    public override Sample<float> Add(float o)
+        => new Sample1D(Value + o, Gradient);
 
-    public static Sample1D operator *(Sample1D a, Sample1D b)
-    {
-        return new Sample1D(a.value * b.value, b.value * a.derivative + a.value * b.derivative);
-    }
+    public override Sample<float> Add(Sample<float> o)
+        => new Sample1D(Value + o.Value, Gradient + o.Gradient);
 
-    public static Sample1D operator *(Sample1D a, float b)
-    {
-        return new Sample1D(a.value * b, a.derivative * b);
-    }
 
-    public static Sample1D operator *(float b, Sample1D a)
-    {
-        return a * b;
-    }
+    public override Sample<float> Sub(float o)
+        => new Sample1D(Value - o, Gradient);
 
-    public static Sample1D operator /(Sample1D a, Sample1D b)
-    {
-        return new Sample1D(a.value * b.value, (b.value * a.derivative - a.value * b.derivative) / Mathf.Pow(b.value, 2));
-    }
+    public override Sample<float> Sub(Sample<float> o)
+        => new Sample1D(Value - o.Value, Gradient - o.Gradient);
 
-    public static Sample1D operator /(Sample1D a, float b)
-    {
-        return new Sample1D(a.value / b, a.derivative / b);
-    }
 
-    public static Sample1D operator /(float b, Sample1D a)
-    {
-        return new Sample1D(b / a.value, -b * a.derivative / Mathf.Pow(a.value, 2));
-    }
+    public override Sample<float> Mul(float o)
+        => new Sample1D(Value * o, o * Gradient);
 
-    public static bool operator <(Sample1D a, Sample1D b)
-    {
-        return a.value < b.value;
-    }
+    public override Sample<float> Mul(Sample<float> o)
+        => new Sample1D(Value * o.Value, o.Value * Gradient + Value * o.Gradient);
 
-    public static bool operator <(Sample1D a, float b)
-    {
-        return a.value < b;
-    }
-
-    public static bool operator <(float b, Sample1D a)
-    {
-        return b < a.value;
-    }
-
-    public static bool operator >(Sample1D a, Sample1D b)
-    {
-        return a.value > b.value;
-    }
-
-    public static bool operator >(Sample1D a, float b)
-    {
-        return a.value > b;
-    }
-
-    public static bool operator >(float b, Sample1D a)
-    {
-        return b > a.value;
-    }
+    public override Sample<float> Div(Sample<float> o)
+        => new Sample1D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }
 
-public struct Sample2D : Sample<Vector2>
-{
-    public static readonly Sample2D zero = Constant(0);
-    public static readonly Sample2D one = Constant(1);
-    public static readonly Sample2D MinValue = Constant(float.MinValue);
-    public static readonly Sample2D MaxValue = Constant(float.MaxValue);
+public class Sample2D : Sample<Vector2> {
+    public static readonly Sample<Vector2> Zero = new Sample2D(0);
+    public static readonly Sample<Vector2> One = new Sample2D(1);
+    public static readonly Sample<Vector2> MinValue = new Sample2D(float.MinValue);
+    public static readonly Sample<Vector2> MaxValue = new Sample2D(float.MaxValue);
 
-    private readonly float value;
-    private readonly Vector2 gradient;
+    public Sample2D(float value)
+        : base(value, Vector2.zero) { }
 
-    public float Value => value;
+    public Sample2D(float value, Vector2 derivative)
+        : base(value, derivative) { }
 
-    public Vector2 Gradient => gradient;
+    public static explicit operator Sample2D(float a)
+        => new Sample2D(a);
 
-    Sample<Vector2> Sample<Vector2>.Zero => zero;
+    public override Sample<Vector2> Of(float a)
+        => new Sample2D(a);
 
-    Sample<Vector2> Sample<Vector2>.One => one;
+    public override Sample<Vector2> Apply(Func<Sample<float>, Sample<float>> f) {
+        var rx = f(new Sample1D(Value, Gradient.x));
+        var ry = f(new Sample1D(Value, Gradient.y));
 
-    Sample<Vector2> Sample<Vector2>.MinValue => MinValue;
-
-    Sample<Vector2> Sample<Vector2>.MaxValue => MaxValue;
-
-    public Sample2D(float value, Vector2 gradient)
-    {
-        this.value = value;
-        this.gradient = gradient;
+        return new Sample2D(rx.Value, new Vector2(rx.Gradient, ry.Gradient));
     }
 
-    public static Sample2D Constant(float a)
-    {
-        return new Sample2D(a, Vector2.zero);
-    }
+    public override Sample<Vector2> Neg()
+        => new Sample2D(-Value, -Gradient);
 
-    public static implicit operator Sample2D(float f)
-    {
-        return Constant(f);
-    }
 
-    public static Sample2D operator -(Sample2D a)
-    {
-        return new Sample2D(-a.value, -a.gradient);
-    }
+    public override Sample<Vector2> Add(float o)
+        => new Sample2D(Value + o, Gradient);
 
-    public static Sample2D operator +(Sample2D a, Sample2D b)
-    {
-        return new Sample2D(a.value + b.value, a.gradient + b.gradient);
-    }
+    public override Sample<Vector2> Add(Sample<Vector2> o)
+        => new Sample2D(Value + o.Value, Gradient + o.Gradient);
 
-    public static Sample2D operator +(Sample2D a, float b)
-    {
-        return new Sample2D(a.value + b, a.gradient);
-    }
 
-    public static Sample2D operator +(float b, Sample2D a)
-    {
-        return a + b;
-    }
+    public override Sample<Vector2> Sub(float o)
+        => new Sample2D(Value - o, Gradient);
 
-    public static Sample2D operator -(Sample2D a, Sample2D b)
-    {
-        return new Sample2D(a.value - b.value, a.gradient - b.gradient);
-    }
+    public override Sample<Vector2> Sub(Sample<Vector2> o)
+        => new Sample2D(Value - o.Value, Gradient - o.Gradient);
 
-    public static Sample2D operator -(Sample2D a, float b)
-    {
-        return new Sample2D(a.value - b, a.gradient);
-    }
 
-    public static Sample2D operator -(float b, Sample2D a)
-    {
-        return b + -a;
-    }
+    public override Sample<Vector2> Mul(float o)
+        => new Sample2D(Value * o, o * Gradient);
 
-    public static Sample2D operator *(Sample2D a, Sample2D b)
-    {
-        return new Sample2D(a.value * b.value, b.value * a.gradient + a.value * b.gradient);
-    }
+    public override Sample<Vector2> Mul(Sample<Vector2> o)
+        => new Sample2D(Value * o.Value, o.Value * Gradient + Value * o.Gradient);
 
-    public static Sample2D operator *(Sample2D a, float b)
-    {
-        return new Sample2D(a.value * b, a.gradient * b);
-    }
 
-    public static Sample2D operator *(float b, Sample2D a)
-    {
-        return a * b;
-    }
-
-    public static Sample2D operator /(Sample2D a, Sample2D b)
-    {
-        return new Sample2D(a.value * b.value, (b.value * a.gradient - a.value * b.gradient) / Mathf.Pow(b.value, 2));
-    }
-
-    public static Sample2D operator /(Sample2D a, float b)
-    {
-        return new Sample2D(a.value / b, a.gradient / b);
-    }
-
-    public static Sample2D operator /(float b, Sample2D a)
-    {
-        return new Sample2D(b / a.value, -b * a.gradient / Mathf.Pow(a.value, 2));
-    }
-
-    public static bool operator <(Sample2D a, Sample2D b)
-    {
-        return a.value < b.value;
-    }
-
-    public static bool operator <(Sample2D a, float b)
-    {
-        return a.value < b;
-    }
-
-    public static bool operator <(float b, Sample2D a)
-    {
-        return b < a.value;
-    }
-
-    public static bool operator >(Sample2D a, Sample2D b)
-    {
-        return a.value > b.value;
-    }
-
-    public static bool operator >(Sample2D a, float b)
-    {
-        return a.value > b;
-    }
-
-    public static bool operator >(float b, Sample2D a)
-    {
-        return b > a.value;
-    }
+    public override Sample<Vector2> Div(Sample<Vector2> o)
+        => new Sample2D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }
 
-public struct Sample3D : Sample<Vector3>
-{
-    public static readonly Sample3D zero = Constant(0);
-    public static readonly Sample3D one = Constant(1);
-    public static readonly Sample3D MinValue = Constant(float.MinValue);
-    public static readonly Sample3D MaxValue = Constant(float.MaxValue);
+public class Sample3D : Sample<Vector3> {
+    public static readonly Sample<Vector3> Zero = new Sample3D(0);
+    public static readonly Sample<Vector3> One = new Sample3D(1);
+    public static readonly Sample<Vector3> MinValue = new Sample3D(float.MinValue);
+    public static readonly Sample<Vector3> MaxValue = new Sample3D(float.MaxValue);
 
-    private readonly float value;
-    private readonly Vector3 gradient;
+    public Sample3D(float value)
+        : base(value, Vector3.zero) { }
 
-    public float Value => value;
+    public Sample3D(float value, Vector3 derivative)
+        : base(value, derivative) { }
 
-    public Vector3 Gradient => gradient;
-
-    Sample<Vector3> Sample<Vector3>.Zero => zero;
-
-    Sample<Vector3> Sample<Vector3>.One => one;
-
-    Sample<Vector3> Sample<Vector3>.MinValue => MinValue;
-
-    Sample<Vector3> Sample<Vector3>.MaxValue => MaxValue;
-
-    public Sample3D(float value, Vector3 gradient)
-    {
-        this.value = value;
-        this.gradient = gradient;
+    public static explicit operator Sample3D(float a) {
+        return new Sample3D(a);
     }
 
-    public static Sample3D Constant(float a)
-    {
-        return new Sample3D(a, Vector3.zero);
+    public override Sample<Vector3> Of(float a) {
+        return new Sample3D(a);
     }
 
-    public static implicit operator Sample3D(float f)
-    {
-        return Constant(f);
+    public override Sample<Vector3> Apply(Func<Sample<float>, Sample<float>> f) {
+        var rx = f(new Sample1D(Value, Gradient.x));
+        var ry = f(new Sample1D(Value, Gradient.y));
+        var rz = f(new Sample1D(Value, Gradient.z));
+
+        return new Sample3D(rx.Value, new Vector3(rx.Gradient, ry.Gradient, rz.Gradient));
     }
 
-    public static Sample3D operator -(Sample3D a)
-    {
-        return new Sample3D(-a.value, -a.gradient);
-    }
+    public override Sample<Vector3> Neg()
+        => new Sample3D(-Value, -Gradient);
 
-    public static Sample3D operator +(Sample3D a, Sample3D b)
-    {
-        return new Sample3D(a.value + b.value, a.gradient + b.gradient);
-    }
 
-    public static Sample3D operator +(Sample3D a, float b)
-    {
-        return new Sample3D(a.value + b, a.gradient);
-    }
+    public override Sample<Vector3> Add(float o)
+        => new Sample3D(Value + o, Gradient);
 
-    public static Sample3D operator +(float b, Sample3D a)
-    {
-        return a + b;
-    }
+    public override Sample<Vector3> Add(Sample<Vector3> o)
+        => new Sample3D(Value + o.Value, Gradient + o.Gradient);
 
-    public static Sample3D operator -(Sample3D a, Sample3D b)
-    {
-        return new Sample3D(a.value - b.value, a.gradient - b.gradient);
-    }
 
-    public static Sample3D operator -(Sample3D a, float b)
-    {
-        return new Sample3D(a.value - b, a.gradient);
-    }
+    public override Sample<Vector3> Sub(float o)
+        => new Sample3D(Value - o, Gradient);
 
-    public static Sample3D operator -(float b, Sample3D a)
-    {
-        return b + -a;
-    }
+    public override Sample<Vector3> Sub(Sample<Vector3> o)
+        => new Sample3D(Value - o.Value, Gradient - o.Gradient);
 
-    public static Sample3D operator *(Sample3D a, Sample3D b)
-    {
-        return new Sample3D(a.value * b.value, b.value * a.gradient + a.value * b.gradient);
-    }
 
-    public static Sample3D operator *(Sample3D a, float b)
-    {
-        return new Sample3D(a.value * b, a.gradient * b);
-    }
+    public override Sample<Vector3> Mul(float o)
+        => new Sample3D(Value * o, o * Gradient);
 
-    public static Sample3D operator *(float b, Sample3D a)
-    {
-        return a * b;
-    }
+    public override Sample<Vector3> Mul(Sample<Vector3> o)
+        => new Sample3D(Value * o.Value, o.Value * Gradient + Value * o.Gradient);
 
-    public static Sample3D operator /(Sample3D a, Sample3D b)
-    {
-        return new Sample3D(a.value * b.value, (b.value * a.gradient - a.value * b.gradient) / Mathf.Pow(b.value, 2));
-    }
 
-    public static Sample3D operator /(Sample3D a, float b)
-    {
-        return new Sample3D(a.value / b, a.gradient / b);
-    }
-
-    public static Sample3D operator /(float b, Sample3D a)
-    {
-        return new Sample3D(b / a.value, -b * a.gradient / Mathf.Pow(a.value, 2));
-    }
-
-    public static bool operator <(Sample3D a, Sample3D b)
-    {
-        return a.value < b.value;
-    }
-
-    public static bool operator <(Sample3D a, float b)
-    {
-        return a.value < b;
-    }
-
-    public static bool operator <(float b, Sample3D a)
-    {
-        return b < a.value;
-    }
-
-    public static bool operator >(Sample3D a, Sample3D b)
-    {
-        return a.value > b.value;
-    }
-
-    public static bool operator >(Sample3D a, float b)
-    {
-        return a.value > b;
-    }
-
-    public static bool operator >(float b, Sample3D a)
-    {
-        return b > a.value;
-    }
+    public override Sample<Vector3> Div(Sample<Vector3> o)
+        => new Sample3D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }

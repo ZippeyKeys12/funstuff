@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace ZNoise
+namespace Noise
 {
     [Serializable]
     public class RidgedNoise : Map

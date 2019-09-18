@@ -1,136 +1,171 @@
 ﻿using UnityEngine;
 
-namespace ZNoise
-{
-    public static class Maths
-    {
-        public static Sample1D Pow(Sample1D a, Sample1D b)
-        {
+namespace Noise {
+    public static class Maths {
+        public static Sample<T> Lerp<T>(Sample<T> a, Sample<T> b, Sample<T> t) {
+            return a + (b - a) * Clamp01(t);
+        }
+
+        public static Sample<T> Lerp<T>(Sample<T> a, Sample<T> b, float t) {
+            return a + (b - a) * Mathf.Clamp01(t);
+        }
+
+        public static Sample<T> Clamp01<T>(Sample<T> value) {
+            if(value < 0)
+                return value.Of(0);
+            else if(value > 1)
+                return value.Of(1);
+            else
+                return value;
+        }
+
+        public static Sample<float> Pow(Sample<float> a, Sample<float> b) {
             return new Sample1D(Mathf.Pow(a.Value, b.Value),
                 Mathf.Pow(a.Value, b.Value - 1) * (b.Value * a.Gradient + a.Value * Mathf.Log10(a.Value) * b.Gradient));
         }
 
-        public static Sample2D Pow(Sample2D a, Sample2D b)
-        {
+        public static Sample<float> Pow(float a, Sample<float> b) {
+            return new Sample1D(Mathf.Pow(a, b.Value), Mathf.Log(a) * Mathf.Pow(a, b.Value) * b.Gradient);
+        }
+
+        public static Sample<float> Pow(Sample<float> a, float b) {
+            return new Sample1D(Mathf.Pow(a.Value, b), Mathf.Pow(a.Value, b - 1) * (b * a.Gradient));
+        }
+
+        public static Sample<Vector2> Pow(Sample<Vector2> a, Sample<Vector2> b) {
             return new Sample2D(Mathf.Pow(a.Value, b.Value),
                 Mathf.Pow(a.Value, b.Value - 1) * (b.Value * a.Gradient + a.Value * Mathf.Log10(a.Value) * b.Gradient));
         }
 
-        public static Sample3D Pow(Sample3D a, Sample3D b)
-        {
+        public static Sample<Vector2> Pow(Sample<Vector2> a, float b) {
+            return new Sample2D(Mathf.Pow(a.Value, b), Mathf.Pow(a.Value, b - 1) * (b * a.Gradient));
+        }
+
+        public static Sample<Vector3> Pow(Sample<Vector3> a, Sample<Vector3> b) {
             return new Sample3D(Mathf.Pow(a.Value, b.Value),
                 Mathf.Pow(a.Value, b.Value - 1) * (b.Value * a.Gradient + a.Value * Mathf.Log10(a.Value) * b.Gradient));
         }
 
-        public static Sample3D Sqrt(Sample3D a)
-        {
+        public static Sample<Vector3> Pow(Sample<Vector3> a, float b) {
+            return new Sample3D(Mathf.Pow(a.Value, b), Mathf.Pow(a.Value, b - 1) * (b * a.Gradient));
+        }
+
+        public static Sample<float> Exp(Sample<float> a) {
+            return new Sample1D(Mathf.Exp(a.Value), Mathf.Exp(a.Value) * a.Gradient);
+        }
+
+        public static Sample<Vector2> Exp(Sample<Vector2> a) {
+            return new Sample2D(Mathf.Exp(a.Value), Mathf.Exp(a.Value) * a.Gradient);
+        }
+
+        public static Sample<Vector3> Exp(Sample<Vector3> a) {
+            return new Sample3D(Mathf.Exp(a.Value), Mathf.Exp(a.Value) * a.Gradient);
+        }
+
+        public static Sample<float> Sqrt(Sample<float> a) {
+            return new Sample1D(Mathf.Sqrt(a.Value), a.Gradient / (2 * Mathf.Sqrt(a.Value)));
+        }
+
+        public static Sample<Vector2> Sqrt(Sample<Vector2> a) {
+            return new Sample2D(Mathf.Sqrt(a.Value), a.Gradient / (2 * Mathf.Sqrt(a.Value)));
+        }
+
+        public static Sample<Vector3> Sqrt(Sample<Vector3> a) {
             return new Sample3D(Mathf.Sqrt(a.Value), a.Gradient / (2 * Mathf.Sqrt(a.Value)));
         }
 
-        public static Sample1D Sin(Sample1D a)
-        {
+        public static Sample<float> Sin(Sample<float> a) {
             return new Sample1D(Mathf.Sin(a.Value), a.Gradient * Mathf.Cos(a.Value));
         }
 
-        public static Sample2D Sin(Sample2D a)
-        {
+        public static Sample<Vector2> Sin(Sample<Vector2> a) {
             return new Sample2D(Mathf.Sin(a.Value), a.Gradient * Mathf.Cos(a.Value));
         }
 
-        public static Sample3D Sin(Sample3D a)
-        {
+        public static Sample<Vector3> Sin(Sample<Vector3> a) {
             return new Sample3D(Mathf.Sin(a.Value), a.Gradient * Mathf.Cos(a.Value));
         }
 
-        public static Sample1D Cos(Sample1D a)
-        {
+        public static Sample<float> Cos(Sample<float> a) {
             return new Sample1D(Mathf.Cos(a.Value), -a.Gradient * Mathf.Sin(a.Value));
         }
 
-        public static Sample2D Cos(Sample2D a)
-        {
+        public static Sample<Vector2> Cos(Sample<Vector2> a) {
             return new Sample2D(Mathf.Cos(a.Value), -a.Gradient * Mathf.Sin(a.Value));
         }
 
-        public static Sample3D Cos(Sample3D a)
-        {
+        public static Sample<Vector3> Cos(Sample<Vector3> a) {
             return new Sample3D(Mathf.Cos(a.Value), -a.Gradient * Mathf.Sin(a.Value));
         }
 
-        public static Sample1D Tan(Sample1D a)
-        {
+        public static Sample<float> Tan(Sample<float> a) {
             return new Sample1D(Mathf.Tan(a.Value), a.Gradient * Mathf.Pow(1 / Mathf.Cos(a.Value), 2));
         }
 
-        public static Sample2D Tan(Sample2D a)
-        {
+        public static Sample<Vector2> Tan(Sample<Vector2> a) {
             return new Sample2D(Mathf.Tan(a.Value), a.Gradient * Mathf.Pow(1 / Mathf.Cos(a.Value), 2));
         }
 
-        public static Sample3D Tan(Sample3D a)
-        {
+        public static Sample<Vector3> Tan(Sample<Vector3> a) {
             return new Sample3D(Mathf.Tan(a.Value), a.Gradient * Mathf.Pow(1 / Mathf.Cos(a.Value), 2));
         }
 
-        public static Sample1D Log(Sample1D a)
-        {
+        public static Sample<float> Log(Sample<float> a) {
             return new Sample1D(Mathf.Log(a.Value), a.Gradient / a.Value);
         }
 
-        public static Sample1D Log(Sample1D a, Sample1D b)
-        {
+        public static Sample<float> Log10(Sample<float> a) {
+            return new Sample1D(Mathf.Log10(a.Value), a.Gradient / (Mathf.Log(10) * a.Value));
+        }
+
+        public static Sample<float> Log(Sample<float> a, Sample<float> b) {
             return new Sample1D(Mathf.Log(a.Value, b.Value),
                 (a.Gradient * Mathf.Log(b.Value) / a.Value - b.Gradient * Mathf.Log(a.Value) / b.Value)
                 / Mathf.Pow(Mathf.Log(b.Value), 2));
         }
 
-        public static Sample2D Log(Sample2D a)
-        {
+        public static Sample<float> Log(Sample<float> a, float b) {
+            return new Sample1D(Mathf.Log(a.Value, b),
+                (a.Gradient * Mathf.Log(b) / a.Value) / Mathf.Pow(Mathf.Log(b), 2));
+        }
+
+        public static Sample<Vector2> Log(Sample<Vector2> a) {
             return new Sample2D(Mathf.Log(a.Value), a.Gradient / a.Value);
         }
 
-        public static Sample2D Log(Sample2D a, Sample2D b)
-        {
+        public static Sample<Vector2> Log(Sample<Vector2> a, Sample<Vector2> b) {
             return new Sample2D(Mathf.Log(a.Value, b.Value),
                 (a.Gradient * Mathf.Log(b.Value) / a.Value - b.Gradient * Mathf.Log(a.Value) / b.Value)
                 / Mathf.Pow(Mathf.Log(b.Value), 2));
         }
 
-        public static Sample3D Log(Sample3D a)
-        {
+        public static Sample<Vector3> Log(Sample<Vector3> a) {
             return new Sample3D(Mathf.Log(a.Value), a.Gradient / a.Value);
         }
 
-        public static Sample3D Log(Sample3D a, Sample3D b)
-        {
+        public static Sample<Vector3> Log(Sample<Vector3> a, Sample<Vector3> b) {
             return new Sample3D(Mathf.Log(a.Value, b.Value),
                 (a.Gradient * Mathf.Log(b.Value) / a.Value - b.Gradient * Mathf.Log(a.Value) / b.Value)
                 / Mathf.Pow(Mathf.Log(b.Value), 2));
         }
 
-        public static Sample1D Abs(Sample1D a)
-        {
+        public static Sample<float> Abs(Sample<float> a) {
             return new Sample1D(Mathf.Abs(a.Value), a.Value * a.Gradient / Mathf.Abs(a.Value));
         }
 
-        public static Sample2D Abs(Sample2D a)
-        {
+        public static Sample<Vector2> Abs(Sample<Vector2> a) {
             return new Sample2D(Mathf.Abs(a.Value), a.Value * a.Gradient / Mathf.Abs(a.Value));
         }
 
-        public static Sample3D Abs(Sample3D a)
-        {
+        public static Sample<Vector3> Abs(Sample<Vector3> a) {
             return new Sample3D(Mathf.Abs(a.Value), a.Value * a.Gradient / Mathf.Abs(a.Value));
         }
 
-        public static Sample1D Max(params Sample1D[] samples)
-        {
+        public static Sample<T> Max<T>(params Sample<T>[] samples) {
             var max = samples[0];
 
-            for (var i = 1; i < samples.Length; i++)
-            {
-                if (max < samples[i])
-                {
+            for(var i = 1; i < samples.Length; i++) {
+                if(max < samples[i]) {
                     max = samples[i];
                 }
             }
@@ -138,74 +173,11 @@ namespace ZNoise
             return max;
         }
 
-        public static Sample2D Max(params Sample2D[] samples)
-        {
-            var max = samples[0];
-
-            for (var i = 1; i < samples.Length; i++)
-            {
-                if (max < samples[i])
-                {
-                    max = samples[i];
-                }
-            }
-
-            return max;
-        }
-
-        public static Sample3D Max(params Sample3D[] samples)
-        {
-            var max = samples[0];
-
-            for (var i = 1; i < samples.Length; i++)
-            {
-                if (max < samples[i])
-                {
-                    max = samples[i];
-                }
-            }
-
-            return max;
-        }
-
-        public static Sample1D Min(params Sample1D[] samples)
-        {
+        public static Sample<T> Min<T>(params Sample<T>[] samples) {
             var min = samples[0];
 
-            for (var i = 1; i < samples.Length; i++)
-            {
-                if (samples[i] < min)
-                {
-                    min = samples[i];
-                }
-            }
-
-            return min;
-        }
-
-        public static Sample2D Min(params Sample2D[] samples)
-        {
-            var min = samples[0];
-
-            for (var i = 1; i < samples.Length; i++)
-            {
-                if (samples[i] < min)
-                {
-                    min = samples[i];
-                }
-            }
-
-            return min;
-        }
-
-        public static Sample3D Min(params Sample3D[] samples)
-        {
-            var min = samples[0];
-
-            for (var i = 1; i < samples.Length; i++)
-            {
-                if (samples[i] < min)
-                {
+            for(var i = 1; i < samples.Length; i++) {
+                if(samples[i] < min) {
                     min = samples[i];
                 }
             }

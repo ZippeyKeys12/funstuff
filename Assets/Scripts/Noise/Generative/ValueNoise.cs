@@ -5,21 +5,17 @@ using Random = System.Random;
 using TweenType = Interp.TweenType;
 using TweenTypes = Interp.TweenTypes;
 
-namespace ZNoise
-{
+namespace Noise {
     [Serializable]
-    public class ValueNoise : Generator
-    {
+    public class ValueNoise : Generator {
         protected const int hashMask = 255;
         protected readonly int[] hash;
         protected readonly TweenType interp;
 
         public ValueNoise(int seed)
-            : this(seed, TweenTypes.SmootherStep)
-        { }
+            : this(seed, TweenTypes.SmootherStep) { }
 
-        public ValueNoise(int seed, TweenType interp)
-        {
+        public ValueNoise(int seed, TweenType interp) {
             var rnd = new Random(seed);
             var temp = Enumerable.Range(0, hashMask + 1).OrderBy(x => rnd.Next());
             hash = temp.Concat(temp).ToArray();
@@ -28,8 +24,9 @@ namespace ZNoise
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample1D Get(float x, float frequency)
-        {
+        public override Sample<float> Get(float x, float frequency) {
+            x *= frequency;
+
             int i0 = Mathf.FloorToInt(x);
             float t = x - i0;
             i0 &= hashMask;
@@ -38,14 +35,20 @@ namespace ZNoise
             int h0 = hash[i0];
             int h1 = hash[i1];
 
-            t = interp(t);
-            return Mathf.Lerp(h0, h1, t) * (2f / hashMask) - 1;
+            var t0 = interp((Sample1D)t);
+
+            float a = h0;
+            float b = h1 - h0;
+
+            return new Sample1D(a + b * t0.Value, b * t0.Gradient) * 2f / hashMask - 1;
         }
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample2D Get(float x, float y, float frequency)
-        {
+        public override Sample<Vector2> Get(float x, float y, float frequency) {
+            x *= frequency;
+            y *= frequency;
+
             int ix0 = Mathf.FloorToInt(x);
             int iy0 = Mathf.FloorToInt(y);
             float tx = x - ix0;
@@ -62,19 +65,29 @@ namespace ZNoise
             int h01 = hash[h0 + iy1];
             int h11 = hash[h1 + iy1];
 
-            tx = interp(tx);
-            ty = interp(ty);
-            return Mathf.Lerp(
-                Mathf.Lerp(h00, h10, tx),
-                Mathf.Lerp(h01, h11, tx),
-                ty) * (2f / hashMask) - 1;
+            var tx0 = interp((Sample1D)tx);
+            var ty0 = interp((Sample1D)ty);
+
+            tx = tx0.Value;
+            ty = ty0.Value;
+
+            float a = h00;
+            float b = h10 - h00;
+            float c = h01 - h00;
+            float d = h11 - h01 - h10 + h00;
+
+            return new Sample2D(a + b * tx + (c + d * tx) * ty,
+                new Vector2((b + d * ty) * tx0.Gradient, (c + d * tx) * ty0.Gradient)) * 2f / hashMask - 1;
         }
 
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample3D Get(float x, float y, float z, float frequency)
-        {
+        public override Sample<Vector3> Get(float x, float y, float z, float frequency) {
+            x *= frequency;
+            y *= frequency;
+            z *= frequency;
+
             int ix0 = Mathf.FloorToInt(x);
             int iy0 = Mathf.FloorToInt(y);
             int iz0 = Mathf.FloorToInt(z);
@@ -103,13 +116,27 @@ namespace ZNoise
             int h011 = hash[h01 + iz1];
             int h111 = hash[h11 + iz1];
 
-            tx = interp(tx);
-            ty = interp(ty);
-            tz = interp(tz);
-            return Mathf.Lerp(
-                Mathf.Lerp(Mathf.Lerp(h000, h100, tx), Mathf.Lerp(h010, h110, tx), ty),
-                Mathf.Lerp(Mathf.Lerp(h001, h101, tx), Mathf.Lerp(h011, h111, tx), ty),
-                tz) * (2f / hashMask) - 1;
+            var tx0 = interp((Sample1D)tx);
+            var ty0 = interp((Sample1D)ty);
+            var tz0 = interp((Sample1D)tz);
+
+            tx = tx0.Value;
+            ty = ty0.Value;
+            tz = tz0.Value;
+
+            float a = h000;
+            float b = h100 - h000;
+            float c = h010 - h000;
+            float d = h001 - h000;
+            float e = h110 - h010 - h100 + h000;
+            float f = h101 - h001 - h100 + h000;
+            float g = h011 - h001 - h010 + h000;
+            float h = h111 - h011 - h101 + h001 - h110 + h010 + h100 - h000;
+
+            return new Sample3D(a + b * tx + (c + e * tx) * ty + (d + f * tx + (g + h * tx) * ty) * tz,
+                new Vector3((b + e * ty + (f + h * ty) * tz) * tx0.Gradient,
+                    (c + e * tx + (g + h * tx) * tz) * ty0.Gradient,
+                    (d + f * tx + (g + h * tx) * ty) * tz0.Gradient)) * 2f / hashMask - 1;
 
         }
     }

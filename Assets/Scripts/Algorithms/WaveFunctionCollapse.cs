@@ -1,7 +1,7 @@
 ﻿using System;
-public class NewClass
+public class IActuator
 {
-    public NewClass()
+    public IActuator()
     {
     }
 }
