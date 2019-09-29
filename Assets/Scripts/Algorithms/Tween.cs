@@ -12,7 +12,7 @@ public static class Interp {
             x => new Sample1D(x.Value, x.Gradient);
 
         public static TweenType Polynomial(float n)
-            => x => Maths.Pow(x, n);
+            => x => Maths.Pow(Maths.Clamp01(x), n);
 
         public static TweenType NSmoothStep(int N)
             => x => {

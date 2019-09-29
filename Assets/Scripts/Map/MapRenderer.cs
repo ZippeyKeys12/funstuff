@@ -75,7 +75,10 @@ public class MapRenderer : MonoBehaviour {
     public void DrawTerrain(float[,] map, float terrainHeight, int resolution) {
         var terrainData = GenerateTerrain(map, terrainHeight, resolution);
 
-        GetComponent<Terrain>().terrainData = terrainData;
+        var terrain = GetComponent<Terrain>();
+        terrain.terrainData = terrainData;
+        //terrain.materialTemplate = GenerateTerrainMaterial();
+
         GetComponent<TerrainCollider>().terrainData = terrainData;
     }
 
@@ -83,12 +86,17 @@ public class MapRenderer : MonoBehaviour {
         int w = map.GetLength(0),
             h = map.GetLength(1);
 
-        var terrainData = new TerrainData();
+        var terrainData = new TerrainData {
+            size = new Vector3(h, terrainHeight, w),
+            heightmapResolution = resolution
+        };
 
-        terrainData.size = new Vector3(h, terrainHeight, w);
-        terrainData.heightmapResolution = resolution;
         terrainData.SetHeights(0, 0, map);
 
         return terrainData;
+    }
+
+    public Material GenerateTerrainMaterial(float[,] map, float terrainHeight, int resolution) {
+        return null;
     }
 }

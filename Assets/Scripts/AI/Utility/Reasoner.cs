@@ -2,9 +2,14 @@
 
 namespace AI.Utility {
     public class UtilityReasoner : IReasoner {
+        protected readonly string name;
         protected readonly List<ICurve> curves;
 
-        public UtilityReasoner(List<ICurve> curves) {
+        public string Name
+            => name;
+
+        public UtilityReasoner(string name, List<ICurve> curves) {
+            this.name = name;
             this.curves = curves;
         }
 
@@ -24,7 +29,7 @@ namespace AI.Utility {
         public void RemoveAt(int index)
             => curves.RemoveAt(index);
 
-        public (AIState, float) Query(AIContext context) {
+        public (AIState, float) Reason(AIContext context) {
             var index = 0;
             var max = curves[0].Evaluate(context);
 
