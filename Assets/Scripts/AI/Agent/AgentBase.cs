@@ -1,18 +1,24 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Entities;
 
 namespace AI
 {
     public class AgentBase : Behaviour
     {
+        public Entity reference;
+        public AIContext context;
+        public (AIState state, float confidence)[] ideas;
+        public AIState[] actions;
+
         protected List<ISensor> sensors = new List<ISensor>();
         protected List<IReasoner> reasoners = new List<IReasoner>();
         protected List<IEvaluator> evaluators = new List<IEvaluator>();
         protected List<IActuator> actuators = new List<IActuator>();
 
-        private bool think = true;
-        public bool Think { get => think; }
+        private bool shouldThink = true;
+        public bool ShouldThink { get => shouldThink; }
 
         public void AddSensor<T>(T sensor)
             where T : struct, ISensor
@@ -83,10 +89,6 @@ namespace AI
         {
             return actuators.ToArray();
         }
-
-        public AIContext context;
-        public (AIState state, float confidence)[] ideas;
-        public AIState[] actions;
 
         // public AgentBase(ISensor[] sensors, IReasoner[] reasoners, IEvaluator[] evaluators, IActuator[] actuators)
         // {

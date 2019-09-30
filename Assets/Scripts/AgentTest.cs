@@ -10,15 +10,18 @@ public class AgentTest : MonoBehaviour
     {
         var entityManager = World.Active.EntityManager;
 
-        var testEntity = entityManager.CreateEntity();
+        for (var i = 0; i < 50; i++)
+        {
+            var testEntity = entityManager.CreateEntity();
 
-        var agent = new AgentBase();
-        agent.AddSensor(new TestSensor());
-        agent.AddReasoner(new TestReasoner());
-        agent.AddEvaluator(new TestEvaluator());
-        agent.AddActuator(new TestActuator());
+            var agent = new AgentBase();
+            agent.AddSensor(new TestSensor());
+            agent.AddReasoner(new TestReasoner());
+            agent.AddEvaluator(new TestEvaluator());
+            agent.AddActuator(new TestActuator());
 
-        entityManager.AddComponentObject(testEntity, agent);
+            entityManager.AddComponentObject(testEntity, agent);
+        }
     }
 
     public struct TestSensor : ISensor
