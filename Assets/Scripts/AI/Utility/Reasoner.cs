@@ -1,20 +1,25 @@
 ﻿using System.Collections.Generic;
 
-namespace AI.Utility {
-    public class UtilityReasoner : IReasoner {
+namespace AI.Reasoners.Utility
+{
+    public class UtilityReasoner : IReasoner
+    {
         protected readonly string name;
         protected readonly List<ICurve> curves;
 
         public string Name
             => name;
 
-        public UtilityReasoner(string name, List<ICurve> curves) {
+        public UtilityReasoner(string name, List<ICurve> curves)
+        {
             this.name = name;
             this.curves = curves;
         }
 
-        public bool AddCurve(ICurve curve) {
-            if(curves.Contains(curve)) {
+        public bool AddCurve(ICurve curve)
+        {
+            if (curves.Contains(curve))
+            {
                 return false;
             }
 
@@ -29,13 +34,16 @@ namespace AI.Utility {
         public void RemoveAt(int index)
             => curves.RemoveAt(index);
 
-        public (AIState, float) Reason(AIContext context) {
+        public (AIState, float) Reason(AIContext context)
+        {
             var index = 0;
             var max = curves[0].Evaluate(context);
 
-            for(var i = 1; i < curves.Count; i++) {
+            for (var i = 1; i < curves.Count; i++)
+            {
                 var val = curves[i].Evaluate(context);
-                if(val > max) {
+                if (val > max)
+                {
                     index = i;
                     max = val;
                 }

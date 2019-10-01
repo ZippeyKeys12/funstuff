@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 
-namespace AI.Needs {
-    public enum NeedsRung {
+namespace AI.Reasoners.Needs
+{
+    public enum NeedsRung
+    {
         // Deficiency
         Physiological,
         Safety,
@@ -16,7 +18,8 @@ namespace AI.Needs {
         Transcendence
     }
 
-    public class Need {
+    public class Need
+    {
         public static readonly NeedsRung[] Rungs
             = Enum.GetValues(typeof(NeedsRung)).Cast<NeedsRung>().ToArray();
 
@@ -33,7 +36,8 @@ namespace AI.Needs {
         public float Strength
             => strength;
 
-        public Need(NeedsRung rung, AIState state, float strength) {
+        public Need(NeedsRung rung, AIState state, float strength)
+        {
             this.rung = rung;
             this.state = state;
             this.strength = strength;

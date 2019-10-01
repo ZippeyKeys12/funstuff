@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using Structure;
 
-namespace AI
+namespace AI.Reasoners
 {
-    public class HFSM<T> : FSM<AIContext, T, IReasoner>, IReasoner
+    public class FSM<T> : FSM<AIContext, T, AIState>, IReasoner
         where T : Enum, IEquatable<T>
     {
         public string Name { get; }
 
-        public HFSM(string name, T defState, IDictionary<T, AIState> states)
-            : base((defState, new Constant("NULL", AIState.NULL, 0)))
+        public FSM(string name, T defState, IDictionary<T, AIState> states)
+            : base((defState, AIState.NULL))
         {
             Name = name;
         }
 
         public (AIState state, float confidence) Reason(AIContext context)
-            => Evaluate(context).Reason(context);
+            => (Evaluate(context), .5f);
     }
 }

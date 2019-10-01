@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AI.Needs
+namespace AI.Reasoners.Needs
 {
     public class MaslowHeirarchy : IReasoner
     {

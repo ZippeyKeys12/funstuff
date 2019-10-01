@@ -1,4 +1,4 @@
-namespace AI
+namespace AI.Reasoners
 {
     public class Constant : IReasoner
     {

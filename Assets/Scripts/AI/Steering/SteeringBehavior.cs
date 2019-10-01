@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.Entities;
 using UnityEngine;
 
-namespace AI.Steering
+namespace AI.Actuators.Steering
 {
     public class SteeringBehavior : IActuator
     {
@@ -73,6 +73,8 @@ namespace AI.Steering
 
                 AddVector(idealVec, falloff);
             }
+
+            // TODO: Affect agent
         }
 
         protected void SetupBasis(int resXY, int resYZ, int resXZ)

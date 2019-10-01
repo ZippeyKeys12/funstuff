@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace AI.Steering {
-    public class SteeringState : AIState {
+namespace AI.Actuators.Steering
+{
+    public class SteeringState : AIState
+    {
         protected readonly int falloff, resXY, resYZ, resXZ;
         protected readonly float maxSpeed, slowingRadius, stoppingRadius;
         protected readonly Vector3 pos;
@@ -44,7 +46,8 @@ namespace AI.Steering {
         public SteeringState(SteeringAction action, Vector3 pos, (Vector3 pos, Vector3 vel)[] targets,
             float maxSpeed, int resXY, int resYZ, int resXZ,
             float slowingRadius = 0, float stoppingRadius = 0, int falloff = 0)
-            : base(Enum.GetName(typeof(SteeringAction), action)) {
+            : base(Enum.GetName(typeof(SteeringAction), action))
+        {
             this.pos = pos;
             this.action = action;
             this.targets = targets;
@@ -60,7 +63,8 @@ namespace AI.Steering {
         }
     }
 
-    public enum SteeringAction {
+    public enum SteeringAction
+    {
         Seek,
         Flee,
         Pursue,

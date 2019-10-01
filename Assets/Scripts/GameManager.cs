@@ -2,9 +2,14 @@
 using Unity.Collections;
 using Unity.Entities;
 
+using Player;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    EntityManager manager;
+    HumanoidPlayer player;
 
     void Awake()
     {
@@ -16,15 +21,18 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        manager = World.Active.EntityManager;
+        player = FindObjectOfType<HumanoidPlayer>();
     }
 
     public static Entity CreateEntity(params ComponentType[] types)
     {
-        return World.Active.EntityManager.CreateEntity(types);
+        return Instance.manager.CreateEntity(types);
     }
 
     public static NativeArray<Entity> GetAllEntities(params ComponentType[] types)
     {
-        return World.Active.EntityManager.GetAllEntities();
+        return Instance.manager.GetAllEntities();
     }
 }
