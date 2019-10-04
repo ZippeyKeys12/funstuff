@@ -24,19 +24,19 @@ namespace AI.Reasoners.Needs
             = Enum.GetValues(typeof(NeedsRung)).Cast<NeedsRung>().ToArray();
 
         protected readonly NeedsRung rung;
-        protected readonly AIState state;
+        protected readonly IAction state;
         protected readonly float strength;
 
         public NeedsRung Rung
             => rung;
 
-        public AIState State
+        public IAction State
             => state;
 
         public float Strength
             => strength;
 
-        public Need(NeedsRung rung, AIState state, float strength)
+        public Need(NeedsRung rung, IAction state, float strength)
         {
             this.rung = rung;
             this.state = state;

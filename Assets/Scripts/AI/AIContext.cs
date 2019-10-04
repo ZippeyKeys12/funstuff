@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace AI
@@ -11,7 +12,7 @@ namespace AI
         public Entity Owner { get; }
 
         public AIContext(Entity owner)
-            : this(owner, new Dictionary<string, object>()) { }
+            : this(owner, new Dictionary<string, object>() { ["owner"] = owner }) { }
 
         public AIContext(Entity owner, Dictionary<string, object> pairs)
         {

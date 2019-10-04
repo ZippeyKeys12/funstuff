@@ -5,10 +5,12 @@ using Random = System.Random;
 using TweenType = Interp.TweenType;
 using TweenTypes = Interp.TweenTypes;
 
-namespace Noise {
+namespace Noise
+{
     // Implementation based on Ken Perlin's (https://mrl.nyu.edu/~perlin/noise/)
     [Serializable]
-    public class PerlinNoise : Generator {
+    public class PerlinNoise : Generator
+    {
         protected const int hashMask = 255;
         protected readonly int[] perm;
         protected readonly TweenType interp;
@@ -16,14 +18,16 @@ namespace Noise {
         public PerlinNoise(int seed)
             : this(seed, TweenTypes.SmootherStep) { }
 
-        public PerlinNoise(int seed, TweenType interp) {
+        public PerlinNoise(int seed, TweenType interp)
+        {
             var rnd = new Random(seed);
             var temp = Enumerable.Range(0, hashMask + 1).OrderBy(x => rnd.Next());
             perm = temp.Concat(temp).ToArray();
             this.interp = interp;
         }
 
-        public override Sample<float> Get(float x, float frequency) {
+        public override Sample<float> Get(float x, float frequency)
+        {
             x *= frequency;
 
             var X = Mathf.FloorToInt(x) & hashMask;
@@ -33,7 +37,8 @@ namespace Noise {
             return new Sample1D(Mathf.Lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u) * 2);
         }
 
-        public override Sample<Vector2> Get(float x, float y, float frequency) {
+        public override Sample<Vector2> Get(float x, float y, float frequency)
+        {
             x *= frequency;
             y *= frequency;
 
@@ -53,7 +58,8 @@ namespace Noise {
                                 Mathf.Lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v));
         }
 
-        public override Sample<Vector3> Get(float x, float y, float z, float frequency) {
+        public override Sample<Vector3> Get(float x, float y, float z, float frequency)
+        {
             var X = Mathf.FloorToInt(x) & hashMask;
             var Y = Mathf.FloorToInt(y) & hashMask;
             var Z = Mathf.FloorToInt(z) & hashMask;
@@ -75,15 +81,18 @@ namespace Noise {
                                            Mathf.Lerp(Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w));
         }
 
-        static float Grad(int hash, float x) {
+        static float Grad(int hash, float x)
+        {
             return (hash & 1) == 0 ? x : -x;
         }
 
-        static float Grad(int hash, float x, float y) {
+        static float Grad(int hash, float x, float y)
+        {
             return ((hash & 1) == 0 ? x : -x) + ((hash & 2) == 0 ? y : -y);
         }
 
-        static float Grad(int hash, float x, float y, float z) {
+        static float Grad(int hash, float x, float y, float z)
+        {
             var h = hash & 15;
             var u = h < 8 ? x : y;
             var v = h < 4 ? y : (h == 12 || h == 14 ? x : z);

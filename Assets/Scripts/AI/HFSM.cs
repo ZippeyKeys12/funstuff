@@ -9,11 +9,11 @@ namespace AI.Reasoners
     {
         public string Name { get; }
 
-        public HFSM(string name, T defState, IDictionary<T, AIState> states)
-            : base((defState, new Constant("NULL", AIState.NULL, 0)))
+        public HFSM(string name, T defState, IDictionary<T, IAction> states)
+            : base((defState, new Constant("NULL", ActionUtil.NULL, 0)))
             => Name = name;
 
-        public (AIState state, float confidence) Reason(AIContext context)
+        public (IAction state, float confidence) Reason(AIContext context)
             => Evaluate(context).Reason(context);
     }
 }

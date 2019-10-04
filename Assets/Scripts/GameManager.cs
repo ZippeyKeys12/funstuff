@@ -21,7 +21,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
+    void Start()
+    {
         manager = World.Active.EntityManager;
         player = FindObjectOfType<HumanoidPlayer>();
     }

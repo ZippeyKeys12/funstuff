@@ -37,7 +37,7 @@ namespace AI.Reasoners.Needs
         public void Remove(Need need)
             => needs[(int)need.Rung].Remove(need);
 
-        public (AIState, float) Reason(AIContext context)
+        public (IAction, float) Reason(AIContext context)
         {
             foreach (var rung in needs)
             {
@@ -47,7 +47,7 @@ namespace AI.Reasoners.Needs
                 }
             }
 
-            return (AIState.NULL, 0);
+            return (ActionUtil.NULL, 0);
         }
     }
 }

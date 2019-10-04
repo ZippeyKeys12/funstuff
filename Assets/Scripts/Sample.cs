@@ -1,11 +1,22 @@
 ﻿using System;
 using UnityEngine;
+using Unity.Jobs;
 
-public abstract class Sample<T> {
+public interface GeneratorSample<T, R> : IJobParallelFor
+    where T : unmanaged
+{
+    T Dimension { get; set; }
+    float Frequency { get; set; }
+
+    R Get(T x, float frequency);
+}
+public abstract class Sample<T>
+{
     public float Value { get; }
     public T Gradient { get; }
 
-    protected Sample(float value, T gradient) {
+    protected Sample(float value, T gradient)
+    {
         Value = value;
         Gradient = gradient;
     }
@@ -62,7 +73,8 @@ public abstract class Sample<T> {
         => Mathf.Approximately(Value, o.Value);
 }
 
-public class Sample1D : Sample<float> {
+public class Sample1D : Sample<float>
+{
     public static readonly Sample<float> Zero = new Sample1D(0);
     public static readonly Sample<float> One = new Sample1D(1);
     public static readonly Sample<float> MinValue = new Sample1D(float.MinValue);
@@ -74,11 +86,13 @@ public class Sample1D : Sample<float> {
     public Sample1D(float value, float derivative)
         : base(value, derivative) { }
 
-    public static explicit operator Sample1D(float a) {
+    public static explicit operator Sample1D(float a)
+    {
         return new Sample1D(a);
     }
 
-    public override Sample<float> Of(float a) {
+    public override Sample<float> Of(float a)
+    {
         return new Sample1D(a);
     }
 
@@ -113,7 +127,8 @@ public class Sample1D : Sample<float> {
         => new Sample1D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }
 
-public class Sample2D : Sample<Vector2> {
+public class Sample2D : Sample<Vector2>
+{
     public static readonly Sample<Vector2> Zero = new Sample2D(0);
     public static readonly Sample<Vector2> One = new Sample2D(1);
     public static readonly Sample<Vector2> MinValue = new Sample2D(float.MinValue);
@@ -131,7 +146,8 @@ public class Sample2D : Sample<Vector2> {
     public override Sample<Vector2> Of(float a)
         => new Sample2D(a);
 
-    public override Sample<Vector2> Apply(Func<Sample<float>, Sample<float>> f) {
+    public override Sample<Vector2> Apply(Func<Sample<float>, Sample<float>> f)
+    {
         var rx = f(new Sample1D(Value, Gradient.x));
         var ry = f(new Sample1D(Value, Gradient.y));
 
@@ -167,7 +183,8 @@ public class Sample2D : Sample<Vector2> {
         => new Sample2D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }
 
-public class Sample3D : Sample<Vector3> {
+public class Sample3D : Sample<Vector3>
+{
     public static readonly Sample<Vector3> Zero = new Sample3D(0);
     public static readonly Sample<Vector3> One = new Sample3D(1);
     public static readonly Sample<Vector3> MinValue = new Sample3D(float.MinValue);
@@ -179,15 +196,18 @@ public class Sample3D : Sample<Vector3> {
     public Sample3D(float value, Vector3 derivative)
         : base(value, derivative) { }
 
-    public static explicit operator Sample3D(float a) {
+    public static explicit operator Sample3D(float a)
+    {
         return new Sample3D(a);
     }
 
-    public override Sample<Vector3> Of(float a) {
+    public override Sample<Vector3> Of(float a)
+    {
         return new Sample3D(a);
     }
 
-    public override Sample<Vector3> Apply(Func<Sample<float>, Sample<float>> f) {
+    public override Sample<Vector3> Apply(Func<Sample<float>, Sample<float>> f)
+    {
         var rx = f(new Sample1D(Value, Gradient.x));
         var ry = f(new Sample1D(Value, Gradient.y));
         var rz = f(new Sample1D(Value, Gradient.z));

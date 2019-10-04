@@ -2,20 +2,20 @@ namespace AI.Reasoners
 {
     public class Constant : IReasoner
     {
-        protected readonly (AIState, float) constant;
+        protected readonly (IAction, float) constant;
 
         public string Name { get; }
 
-        public Constant(string name, AIState state, float confidence)
+        public Constant(string name, IAction state, float confidence)
             : this(name, (state, confidence)) { }
 
-        public Constant(string name, (AIState, float) constant)
+        public Constant(string name, (IAction, float) constant)
         {
             Name = name;
             this.constant = constant;
         }
 
-        public (AIState state, float confidence) Reason(AIContext context)
+        public (IAction state, float confidence) Reason(AIContext context)
             => this.constant;
     }
 }

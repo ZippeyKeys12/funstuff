@@ -5,25 +5,25 @@ namespace AI.Reasoners.Utility
 {
     public interface ICurve
     {
-        AIState State();
+        IAction State();
         float Evaluate(AIContext context);
     }
 
     public class Axis : ICurve
     {
-        protected readonly AIState state;
+        protected readonly IAction state;
         protected readonly Func<AIContext, float> func;
 
         public Axis(Func<AIContext, float> func)
             : this(null, func) { }
 
-        public Axis(AIState state, Func<AIContext, float> func)
+        public Axis(IAction state, Func<AIContext, float> func)
         {
             this.state = state;
             this.func = func;
         }
 
-        public AIState State()
+        public IAction State()
             => state;
 
         public float Evaluate(AIContext context)
@@ -32,13 +32,13 @@ namespace AI.Reasoners.Utility
 
     public class MultiAxis : ICurve
     {
-        protected readonly AIState state;
+        protected readonly IAction state;
         protected readonly List<Axis> axes;
 
-        public MultiAxis(AIState state)
+        public MultiAxis(IAction state)
             : this(state, new List<Axis>()) { }
 
-        public MultiAxis(AIState state, List<Axis> axes)
+        public MultiAxis(IAction state, List<Axis> axes)
         {
             this.state = state;
             this.axes = axes;
@@ -56,7 +56,7 @@ namespace AI.Reasoners.Utility
             return true;
         }
 
-        public AIState State()
+        public IAction State()
             => state;
 
         public float Evaluate(AIContext context)

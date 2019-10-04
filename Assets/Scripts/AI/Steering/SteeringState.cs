@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace AI.Actuators.Steering
 {
-    public class SteeringState : AIState
+    public class SteeringState : IAction
     {
         protected readonly int falloff, resXY, resYZ, resXZ;
         protected readonly float maxSpeed, slowingRadius, stoppingRadius;
@@ -40,13 +40,12 @@ namespace AI.Actuators.Steering
         public (Vector3 pos, Vector3 vel)[] Targets
             => targets.ToArray();
 
-        public SteeringAction Action
+        public SteeringAction IAction
             => action;
 
         public SteeringState(SteeringAction action, Vector3 pos, (Vector3 pos, Vector3 vel)[] targets,
             float maxSpeed, int resXY, int resYZ, int resXZ,
             float slowingRadius = 0, float stoppingRadius = 0, int falloff = 0)
-            : base(Enum.GetName(typeof(SteeringAction), action))
         {
             this.pos = pos;
             this.action = action;

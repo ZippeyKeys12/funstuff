@@ -9,8 +9,8 @@ namespace AI
     {
         public Entity reference;
         public AIContext context;
-        public (AIState state, float confidence)[] ideas;
-        public AIState[] actions;
+        public (IAction state, float confidence)[] ideas;
+        public IAction[] actions;
 
         protected List<ISensor> sensors = new List<ISensor>();
         protected List<IReasoner> reasoners = new List<IReasoner>();
@@ -89,52 +89,5 @@ namespace AI
         {
             return actuators.ToArray();
         }
-
-        // public AgentBase(ISensor[] sensors, IReasoner[] reasoners, IEvaluator[] evaluators, IActuator[] actuators)
-        // {
-        //     context = new AIContext(this);
-
-        //     // this.sensors = sensors;
-        //     // this.reasoners = reasoners;
-        //     // this.evaluators = evaluators;
-        //     // this.actuators = actuators;
-        // }
-
-        // public void Sense()
-        // {
-        //     foreach (var sensor in sensors)
-        //     {
-        //         context += sensor.Sense(this);
-        //     }
-        // }
-
-        // public void Reason()
-        // {
-        //     var tempIdeas = new List<(AIState, float)>();
-        //     foreach (var reasoner in reasoners)
-        //     {
-        //         tempIdeas.Add(reasoner.Reason(context));
-        //     }
-
-        //     ideas = tempIdeas.ToArray();
-        // }
-
-        // public void Evaluate()
-        // {
-        //     foreach (var evaluator in evaluators)
-        //     {
-        //         ideas = evaluator.Evaluate(ideas);
-        //     }
-
-        //     actions = ideas.Select(x => x.state).ToArray();
-        // }
-
-        // public void Act()
-        // {
-        //     foreach (var actuator in actuators)
-        //     {
-        //         actuator.Act(actions);
-        //     }
-        // }
     }
 }

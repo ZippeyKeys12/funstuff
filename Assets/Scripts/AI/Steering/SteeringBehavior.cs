@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Unity.Entities;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace AI.Actuators.Steering
     {
         protected float[] contextMap;
         protected Vector3[] basis;
+
         public string Name { get; }
 
         public SteeringBehavior(string name)
@@ -17,14 +19,14 @@ namespace AI.Actuators.Steering
             Name = name;
         }
 
-        public void Act(Entity entity, AIState[] states)
+        public void Act(Entity entity, IAction[] states)
         {
             float getSpeed(int x)
                 => 1 / Mathf.Pow(2, x);
 
             foreach (var state in states.OfType<SteeringState>())
             {
-                var action = state.Action;
+                var action = state.IAction;
                 var falloff = state.Falloff;
                 var pos = state.Pos;
 
@@ -77,6 +79,7 @@ namespace AI.Actuators.Steering
             // TODO: Affect agent
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void SetupBasis(int resXY, int resYZ, int resXZ)
         {
             if (resXY == 0 && resYZ == 0 && resXZ == 0)
@@ -96,17 +99,24 @@ namespace AI.Actuators.Steering
 
             if (resYZ != 0)
             {
-                for (var i = 0f; i < 2 * Mathf.PI; i += Mathf.PI / (2 * resXY))
+                for (var i = 0f; i < 2 * Mathf.PI; i += Mathf.PI / (2 * resYZ))
                 {
-                    tempBasis.Add(new Vector3(0, Mathf.Sin(i), Mathf.Cos(i)));
+                    if (resXY == 0 || (i != Mathf.PI / 2 && i != 3 * Mathf.PI / 2))
+                    {
+                        tempBasis.Add(new Vector3(0, Mathf.Sin(i), Mathf.Cos(i)));
+                    }
                 }
             }
 
             if (resXZ != 0)
             {
-                for (var i = 0f; i < 2 * Mathf.PI; i += Mathf.PI / (2 * resXY))
+                for (var i = 0f; i < 2 * Mathf.PI; i += Mathf.PI / (2 * resXZ))
                 {
-                    tempBasis.Add(new Vector3(Mathf.Sin(i), 0, Mathf.Cos(i)));
+                    if ((resXY == 0 || (i != Mathf.PI / 2 && i != 3 * Mathf.PI / 2))
+                     && (resYZ == 0 || (i != 0 && i != Mathf.PI)))
+                    {
+                        tempBasis.Add(new Vector3(Mathf.Sin(i), 0, Mathf.Cos(i)));
+                    }
                 }
             }
 
@@ -114,6 +124,7 @@ namespace AI.Actuators.Steering
             contextMap = new float[basis.Length];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void AddVector(Vector3 finalVec, int falloff)
         {
             var closestDir = basis.Select((x, index) => (index, value: Vector3.Dot(finalVec, x)))
@@ -132,18 +143,23 @@ namespace AI.Actuators.Steering
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Seek(Vector3 agentPos, Vector3 target, float maxSpeed)
             => maxSpeed * (target - agentPos).normalized;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Flee(Vector3 agentPos, Vector3 target, float maxSpeed)
             => -Seek(agentPos, target, maxSpeed);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Pursue(Vector3 agentPos, Vector3 target, Vector3 vel, float maxSpeed)
             => Seek(agentPos, target + vel, maxSpeed);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Evade(Vector3 agentPos, Vector3 target, Vector3 vel, float maxSpeed)
             => -Pursue(agentPos, target, vel, maxSpeed);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Arrive(Vector3 agentPos, Vector3 target, float maxSpeed, float slowingRadius, float stoppingRadius = 0)
         {
             var diff = target - agentPos;

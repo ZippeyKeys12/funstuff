@@ -15,12 +15,38 @@ public class AgentTest : MonoBehaviour
             var testEntity = entityManager.CreateEntity();
 
             var agent = new AgentBase();
-            agent.AddSensor(new TestSensor());
-            agent.AddReasoner(new TestReasoner());
-            agent.AddEvaluator(new TestEvaluator());
-            agent.AddActuator(new TestActuator());
+
+            for (var j = 0; j < 50; j++)
+            {
+                agent.AddSensor(new TestSensor());
+            }
+
+            for (var j = 0; j < 50; j++)
+            {
+                agent.AddReasoner(new TestReasoner());
+            }
+
+            for (var j = 0; j < 50; j++)
+            {
+                agent.AddEvaluator(new TestEvaluator());
+            }
+
+            for (var j = 0; j < 50; j++)
+            {
+                agent.AddActuator(new TestActuator());
+            }
 
             entityManager.AddComponentObject(testEntity, agent);
+        }
+    }
+
+    public struct TestAction : IAction
+    {
+        public string Name { get; }
+
+        public TestAction(string name)
+        {
+            Name = name;
         }
     }
 
@@ -38,8 +64,8 @@ public class AgentTest : MonoBehaviour
         public string Name
             => "testR";
 
-        public (AIState, float) Reason(AIContext context)
-            => (new AIState(context.Get<string>("testK")), 1);
+        public (IAction, float) Reason(AIContext context)
+            => (new TestAction(context.Get<string>("testK")), 1);
     }
 
     public struct TestEvaluator : IEvaluator
@@ -47,7 +73,7 @@ public class AgentTest : MonoBehaviour
         public string Name
             => "testE";
 
-        public (AIState state, float confidence)[] Evaluate((AIState state, float confidence)[] ideas)
+        public (IAction state, float confidence)[] Evaluate((IAction state, float confidence)[] ideas)
             => ideas.ToArray();
     }
 
@@ -56,11 +82,11 @@ public class AgentTest : MonoBehaviour
         public string Name
             => "testA";
 
-        public void Act(Entity entity, AIState[] states)
+        public void Act(Entity entity, IAction[] states)
         {
-            if (states.Select(x => x.Name == "testK").Any())
+            if (states.Select(x => ((TestAction)x).Name == "testK").Any())
             {
-                Debug.Log("testS");
+                // Debug.Log("testS");
             }
         }
     }

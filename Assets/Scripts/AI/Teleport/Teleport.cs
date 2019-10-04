@@ -9,7 +9,7 @@ namespace AI.Actuators.Teleport
     {
         public string Name { get; }
 
-        public void Act(Entity entity, AIState[] states)
+        public void Act(Entity entity, IAction[] states)
         {
             var state = states.OfType<TeleportState>().Last();
 

@@ -9,16 +9,16 @@ namespace AI
 
     public interface IReasoner : INamed
     {
-        (AIState state, float confidence) Reason(AIContext context);
+        (IAction state, float confidence) Reason(AIContext context);
     }
 
     public interface IEvaluator : INamed
     {
-        (AIState state, float confidence)[] Evaluate((AIState state, float confidence)[] ideas);
+        (IAction state, float confidence)[] Evaluate((IAction state, float confidence)[] ideas);
     }
 
     public interface IActuator : INamed
     {
-        void Act(Entity entity, AIState[] states);
+        void Act(Entity entity, IAction[] states);
     }
 }
