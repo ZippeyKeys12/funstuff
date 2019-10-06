@@ -2,14 +2,12 @@
 
 namespace AI
 {
-    public interface ISensor : INamed
-    {
-        AIContext Sense(Entity entity);
-    }
+    public interface ISensorComponent : IComponentData
+    { }
 
     public interface IReasoner : INamed
     {
-        (IAction state, float confidence) Reason(AIContext context);
+        (IAction state, float confidence) Reason(Entity entity);
     }
 
     public interface IEvaluator : INamed

@@ -8,34 +8,16 @@ namespace AI
     public class AgentBase : Behaviour
     {
         public Entity reference;
-        public AIContext context;
+        public Entity entity;
         public (IAction state, float confidence)[] ideas;
         public IAction[] actions;
 
-        protected List<ISensor> sensors = new List<ISensor>();
         protected List<IReasoner> reasoners = new List<IReasoner>();
         protected List<IEvaluator> evaluators = new List<IEvaluator>();
         protected List<IActuator> actuators = new List<IActuator>();
 
         private bool shouldThink = true;
         public bool ShouldThink { get => shouldThink; }
-
-        public void AddSensor<T>(T sensor)
-            where T : struct, ISensor
-        {
-            sensors.Add(sensor);
-        }
-
-        public void RemoveSensor<T>()
-            where T : ISensor
-        {
-            sensors.RemoveAll((x) => typeof(T) == x.GetType());
-        }
-
-        public ISensor[] GetSensors()
-        {
-            return sensors.ToArray();
-        }
 
         public void AddReasoner<T>(T reasoner)
             where T : struct, IReasoner

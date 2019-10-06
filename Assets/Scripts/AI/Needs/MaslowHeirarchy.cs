@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Entities;
 
 namespace AI.Reasoners.Needs
 {
@@ -37,7 +38,7 @@ namespace AI.Reasoners.Needs
         public void Remove(Need need)
             => needs[(int)need.Rung].Remove(need);
 
-        public (IAction, float) Reason(AIContext context)
+        public (IAction, float) Reason(Entity entity)
         {
             foreach (var rung in needs)
             {

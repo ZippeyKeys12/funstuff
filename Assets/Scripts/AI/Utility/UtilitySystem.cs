@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Entities;
 
 namespace AI.Reasoners.Utility
 {
@@ -34,14 +35,14 @@ namespace AI.Reasoners.Utility
         public void RemoveAt(int index)
             => curves.RemoveAt(index);
 
-        public (IAction, float) Reason(AIContext context)
+        public (IAction, float) Reason(Entity entity)
         {
             var index = 0;
-            var max = curves[0].Evaluate(context);
+            var max = curves[0].Evaluate(entity);
 
             for (var i = 1; i < curves.Count; i++)
             {
-                var val = curves[i].Evaluate(context);
+                var val = curves[i].Evaluate(entity);
                 if (val > max)
                 {
                     index = i;

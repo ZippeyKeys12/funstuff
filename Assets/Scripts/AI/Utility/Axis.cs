@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Entities;
 
 namespace AI.Reasoners.Utility
 {
     public interface ICurve
     {
         IAction State();
-        float Evaluate(AIContext context);
+        float Evaluate(Entity context);
     }
 
     public class Axis : ICurve
     {
         protected readonly IAction state;
-        protected readonly Func<AIContext, float> func;
+        protected readonly Func<Entity, float> func;
 
-        public Axis(Func<AIContext, float> func)
+        public Axis(Func<Entity, float> func)
             : this(null, func) { }
 
-        public Axis(IAction state, Func<AIContext, float> func)
+        public Axis(IAction state, Func<Entity, float> func)
         {
             this.state = state;
             this.func = func;
@@ -26,7 +27,7 @@ namespace AI.Reasoners.Utility
         public IAction State()
             => state;
 
-        public float Evaluate(AIContext context)
+        public float Evaluate(Entity context)
             => func(context);
     }
 
@@ -59,7 +60,7 @@ namespace AI.Reasoners.Utility
         public IAction State()
             => state;
 
-        public float Evaluate(AIContext context)
+        public float Evaluate(Entity context)
         {
             var score = 1f;
             for (int i = 0; i < axes.Count; i++)

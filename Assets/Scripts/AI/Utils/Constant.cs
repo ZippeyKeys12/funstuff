@@ -1,3 +1,5 @@
+using Unity.Entities;
+
 namespace AI.Reasoners
 {
     public class Constant : IReasoner
@@ -15,7 +17,7 @@ namespace AI.Reasoners
             this.constant = constant;
         }
 
-        public (IAction state, float confidence) Reason(AIContext context)
+        public (IAction state, float confidence) Reason(Entity entity)
             => this.constant;
     }
 }
