@@ -2,7 +2,7 @@ using Unity.Collections;
 using Unity.Burst;
 using Unity.Mathematics;
 
-namespace AI.Actuators.Steering
+namespace Components.AI.Actuators.Steering
 {
     [BurstCompile]
     public struct SteeringCommand

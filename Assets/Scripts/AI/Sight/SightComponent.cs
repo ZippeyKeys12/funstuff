@@ -1,7 +1,7 @@
 using Unity.Burst;
 using Unity.Entities;
-
-namespace AI.Sensors.Sight
+using AI;
+namespace Components.AI.Sensors
 {
     [BurstCompile]
     public struct SightComponent : ISensorComponent

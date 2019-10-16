@@ -1,7 +1,7 @@
 using Unity.Burst;
 using Unity.Mathematics;
-
-namespace AI.Actuators.Teleport
+using AI;
+namespace Components.AI.Actuators
 {
     [BurstCompile]
     public struct TeleportComponent : IActuatorComponent

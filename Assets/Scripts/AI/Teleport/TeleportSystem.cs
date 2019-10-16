@@ -4,7 +4,7 @@ using Unity.Jobs;
 using Unity.Physics;
 using Unity.Transforms;
 
-namespace AI.Actuators.Teleport
+namespace Components.AI.Actuators
 {
     public class TeleportSystem : JobComponentSystem
     {

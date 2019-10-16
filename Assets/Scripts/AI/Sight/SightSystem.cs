@@ -2,8 +2,9 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Transforms;
+using AI;
 
-namespace AI.Sensors.Sight
+namespace Components.AI.Sensors
 {
     [UpdateInGroup(typeof(SensorSystemGroup))]
     public class SightSystem : JobComponentSystem

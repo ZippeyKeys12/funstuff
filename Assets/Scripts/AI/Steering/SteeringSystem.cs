@@ -8,8 +8,8 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-
-namespace AI.Actuators.Steering
+using AI;
+namespace Components.AI.Actuators.Steering
 {
     // TODO: Test
     [UpdateInGroup(typeof(ActuatorSystemGroup))]

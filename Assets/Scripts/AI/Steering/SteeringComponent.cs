@@ -3,8 +3,8 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
-
-namespace AI.Actuators.Steering
+using AI;
+namespace Components.AI.Actuators.Steering
 {
     [BurstCompile]
     public struct SteeringComponent : IActuatorComponent
