@@ -14,7 +14,6 @@ namespace AI
 
         protected List<IReasoner> reasoners = new List<IReasoner>();
         protected List<IEvaluator> evaluators = new List<IEvaluator>();
-        protected List<IActuator> actuators = new List<IActuator>();
 
         private bool shouldThink = true;
         public bool ShouldThink { get => shouldThink; }
@@ -52,24 +51,6 @@ namespace AI
         public IEvaluator[] GetEvaluators()
         {
             return evaluators.ToArray();
-        }
-
-
-        public void AddActuator<T>(T actuator)
-            where T : struct, IActuator
-        {
-            actuators.Add(actuator);
-        }
-
-        public void RemoveActuator<T>()
-            where T : IActuator
-        {
-            actuators.RemoveAll((x) => typeof(T) == x.GetType());
-        }
-
-        public IActuator[] GetActuators()
-        {
-            return actuators.ToArray();
         }
     }
 }

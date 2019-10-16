@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 
 namespace Noise
 {
     public abstract class Generator
     {
         public abstract Sample<float> Get(float x, float frequency);
-        public abstract Sample<Vector2> Get(float x, float y, float frequency);
-        public abstract Sample<Vector3> Get(float x, float y, float z, float frequency);
+        public abstract Sample<float2> Get(float x, float y, float frequency);
+        public abstract Sample<float3> Get(float x, float y, float z, float frequency);
 
         public static Generator operator -(Generator a)
         {

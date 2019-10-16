@@ -8,16 +8,16 @@
 
 //    public float influenceDecay, verticalShrink;
 
-//    private readonly Vector2[] points;
+//    private readonly float2[] points;
 
 //    public BellShapedNoise(int nb)
 //    {
 //        var rnd = new Random(seed);
 
-//        points = new Vector2[nb];
+//        points = new float2[nb];
 //        for (var i = 0; i < nb; i++)
 //        {
-//            points[i] = new Vector2((float)rnd.NextDouble(), (float)rnd.NextDouble());
+//            points[i] = new float2((float)rnd.NextDouble(), (float)rnd.NextDouble());
 //        }
 //    }
 

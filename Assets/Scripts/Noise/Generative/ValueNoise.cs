@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using Unity.Mathematics;
 using Random = System.Random;
 using TweenType = Interp.TweenType;
 using TweenTypes = Interp.TweenTypes;
 
-namespace Noise {
+namespace Noise
+{
     [Serializable]
-    public class ValueNoise : Generator {
+    public class ValueNoise : Generator
+    {
         protected const int hashMask = 255;
         protected readonly int[] hash;
         protected readonly TweenType interp;
@@ -15,7 +18,8 @@ namespace Noise {
         public ValueNoise(int seed)
             : this(seed, TweenTypes.SmootherStep) { }
 
-        public ValueNoise(int seed, TweenType interp) {
+        public ValueNoise(int seed, TweenType interp)
+        {
             var rnd = new Random(seed);
             var temp = Enumerable.Range(0, hashMask + 1).OrderBy(x => rnd.Next());
             hash = temp.Concat(temp).ToArray();
@@ -24,7 +28,8 @@ namespace Noise {
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample<float> Get(float x, float frequency) {
+        public override Sample<float> Get(float x, float frequency)
+        {
             x *= frequency;
 
             int i0 = Mathf.FloorToInt(x);
@@ -45,7 +50,8 @@ namespace Noise {
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample<Vector2> Get(float x, float y, float frequency) {
+        public override Sample<float2> Get(float x, float y, float frequency)
+        {
             x *= frequency;
             y *= frequency;
 
@@ -77,13 +83,14 @@ namespace Noise {
             float d = h11 - h01 - h10 + h00;
 
             return new Sample2D(a + b * tx + (c + d * tx) * ty,
-                new Vector2((b + d * ty) * tx0.Gradient, (c + d * tx) * ty0.Gradient)) * 2f / hashMask - 1;
+                new float2((b + d * ty) * tx0.Gradient, (c + d * tx) * ty0.Gradient)) * 2f / hashMask - 1;
         }
 
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample<Vector3> Get(float x, float y, float z, float frequency) {
+        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        {
             x *= frequency;
             y *= frequency;
             z *= frequency;
@@ -134,7 +141,7 @@ namespace Noise {
             float h = h111 - h011 - h101 + h001 - h110 + h010 + h100 - h000;
 
             return new Sample3D(a + b * tx + (c + e * tx) * ty + (d + f * tx + (g + h * tx) * ty) * tz,
-                new Vector3((b + e * ty + (f + h * ty) * tz) * tx0.Gradient,
+                new float3((b + e * ty + (f + h * ty) * tz) * tx0.Gradient,
                     (c + e * tx + (g + h * tx) * tz) * ty0.Gradient,
                     (d + f * tx + (g + h * tx) * ty) * tz0.Gradient)) * 2f / hashMask - 1;
 

@@ -15,6 +15,7 @@ namespace AI
     // [UpdateAfter(typeof(SensorSystemGroup))]
     // [UpdateAfter(typeof(AgentTest.TestSensorSystem))]
     [UpdateAfter(typeof(SensorSystemGroup))]
+    [UpdateBefore(typeof(ActuatorSystemGroup))]
     public class AISystem : ComponentSystem
     {
         protected override void OnUpdate()
@@ -49,12 +50,6 @@ namespace AI
                 foreach (var evaluator in pair.a.GetEvaluators())
                 {
                     plans = evaluator.Evaluate(plans);
-                }
-
-                var actions = plans.Select(x => x.state).ToArray();
-                foreach (var actuactor in pair.a.GetActuators())
-                {
-                    actuactor.Act(pair.e, actions);
                 }
             }
             // );

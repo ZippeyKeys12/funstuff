@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using Unity.Mathematics;
 using Random = System.Random;
 using TweenType = Interp.TweenType;
 using TweenTypes = Interp.TweenTypes;
@@ -37,7 +38,7 @@ namespace Noise
             return new Sample1D(Mathf.Lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u) * 2);
         }
 
-        public override Sample<Vector2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float x, float y, float frequency)
         {
             x *= frequency;
             y *= frequency;
@@ -58,7 +59,7 @@ namespace Noise
                                 Mathf.Lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v));
         }
 
-        public override Sample<Vector3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float x, float y, float z, float frequency)
         {
             var X = Mathf.FloorToInt(x) & hashMask;
             var Y = Mathf.FloorToInt(y) & hashMask;

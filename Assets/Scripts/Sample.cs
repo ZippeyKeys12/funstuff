@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Unity.Jobs;
+using Unity.Mathematics;
 
 public interface GeneratorSample<T, R> : IJobParallelFor
     where T : unmanaged
@@ -127,73 +128,73 @@ public class Sample1D : Sample<float>
         => new Sample1D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }
 
-public class Sample2D : Sample<Vector2>
+public class Sample2D : Sample<float2>
 {
-    public static readonly Sample<Vector2> Zero = new Sample2D(0);
-    public static readonly Sample<Vector2> One = new Sample2D(1);
-    public static readonly Sample<Vector2> MinValue = new Sample2D(float.MinValue);
-    public static readonly Sample<Vector2> MaxValue = new Sample2D(float.MaxValue);
+    public static readonly Sample<float2> Zero = new Sample2D(0);
+    public static readonly Sample<float2> One = new Sample2D(1);
+    public static readonly Sample<float2> MinValue = new Sample2D(float.MinValue);
+    public static readonly Sample<float2> MaxValue = new Sample2D(float.MaxValue);
 
     public Sample2D(float value)
-        : base(value, Vector2.zero) { }
+        : base(value, float2.zero) { }
 
-    public Sample2D(float value, Vector2 derivative)
+    public Sample2D(float value, float2 derivative)
         : base(value, derivative) { }
 
     public static explicit operator Sample2D(float a)
         => new Sample2D(a);
 
-    public override Sample<Vector2> Of(float a)
+    public override Sample<float2> Of(float a)
         => new Sample2D(a);
 
-    public override Sample<Vector2> Apply(Func<Sample<float>, Sample<float>> f)
+    public override Sample<float2> Apply(Func<Sample<float>, Sample<float>> f)
     {
         var rx = f(new Sample1D(Value, Gradient.x));
         var ry = f(new Sample1D(Value, Gradient.y));
 
-        return new Sample2D(rx.Value, new Vector2(rx.Gradient, ry.Gradient));
+        return new Sample2D(rx.Value, new float2(rx.Gradient, ry.Gradient));
     }
 
-    public override Sample<Vector2> Neg()
+    public override Sample<float2> Neg()
         => new Sample2D(-Value, -Gradient);
 
 
-    public override Sample<Vector2> Add(float o)
+    public override Sample<float2> Add(float o)
         => new Sample2D(Value + o, Gradient);
 
-    public override Sample<Vector2> Add(Sample<Vector2> o)
+    public override Sample<float2> Add(Sample<float2> o)
         => new Sample2D(Value + o.Value, Gradient + o.Gradient);
 
 
-    public override Sample<Vector2> Sub(float o)
+    public override Sample<float2> Sub(float o)
         => new Sample2D(Value - o, Gradient);
 
-    public override Sample<Vector2> Sub(Sample<Vector2> o)
+    public override Sample<float2> Sub(Sample<float2> o)
         => new Sample2D(Value - o.Value, Gradient - o.Gradient);
 
 
-    public override Sample<Vector2> Mul(float o)
+    public override Sample<float2> Mul(float o)
         => new Sample2D(Value * o, o * Gradient);
 
-    public override Sample<Vector2> Mul(Sample<Vector2> o)
+    public override Sample<float2> Mul(Sample<float2> o)
         => new Sample2D(Value * o.Value, o.Value * Gradient + Value * o.Gradient);
 
 
-    public override Sample<Vector2> Div(Sample<Vector2> o)
+    public override Sample<float2> Div(Sample<float2> o)
         => new Sample2D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }
 
-public class Sample3D : Sample<Vector3>
+public class Sample3D : Sample<float3>
 {
-    public static readonly Sample<Vector3> Zero = new Sample3D(0);
-    public static readonly Sample<Vector3> One = new Sample3D(1);
-    public static readonly Sample<Vector3> MinValue = new Sample3D(float.MinValue);
-    public static readonly Sample<Vector3> MaxValue = new Sample3D(float.MaxValue);
+    public static readonly Sample<float3> Zero = new Sample3D(0);
+    public static readonly Sample<float3> One = new Sample3D(1);
+    public static readonly Sample<float3> MinValue = new Sample3D(float.MinValue);
+    public static readonly Sample<float3> MaxValue = new Sample3D(float.MaxValue);
 
     public Sample3D(float value)
-        : base(value, Vector3.zero) { }
+        : base(value, float3.zero) { }
 
-    public Sample3D(float value, Vector3 derivative)
+    public Sample3D(float value, float3 derivative)
         : base(value, derivative) { }
 
     public static explicit operator Sample3D(float a)
@@ -201,45 +202,45 @@ public class Sample3D : Sample<Vector3>
         return new Sample3D(a);
     }
 
-    public override Sample<Vector3> Of(float a)
+    public override Sample<float3> Of(float a)
     {
         return new Sample3D(a);
     }
 
-    public override Sample<Vector3> Apply(Func<Sample<float>, Sample<float>> f)
+    public override Sample<float3> Apply(Func<Sample<float>, Sample<float>> f)
     {
         var rx = f(new Sample1D(Value, Gradient.x));
         var ry = f(new Sample1D(Value, Gradient.y));
         var rz = f(new Sample1D(Value, Gradient.z));
 
-        return new Sample3D(rx.Value, new Vector3(rx.Gradient, ry.Gradient, rz.Gradient));
+        return new Sample3D(rx.Value, new float3(rx.Gradient, ry.Gradient, rz.Gradient));
     }
 
-    public override Sample<Vector3> Neg()
+    public override Sample<float3> Neg()
         => new Sample3D(-Value, -Gradient);
 
 
-    public override Sample<Vector3> Add(float o)
+    public override Sample<float3> Add(float o)
         => new Sample3D(Value + o, Gradient);
 
-    public override Sample<Vector3> Add(Sample<Vector3> o)
+    public override Sample<float3> Add(Sample<float3> o)
         => new Sample3D(Value + o.Value, Gradient + o.Gradient);
 
 
-    public override Sample<Vector3> Sub(float o)
+    public override Sample<float3> Sub(float o)
         => new Sample3D(Value - o, Gradient);
 
-    public override Sample<Vector3> Sub(Sample<Vector3> o)
+    public override Sample<float3> Sub(Sample<float3> o)
         => new Sample3D(Value - o.Value, Gradient - o.Gradient);
 
 
-    public override Sample<Vector3> Mul(float o)
+    public override Sample<float3> Mul(float o)
         => new Sample3D(Value * o, o * Gradient);
 
-    public override Sample<Vector3> Mul(Sample<Vector3> o)
+    public override Sample<float3> Mul(Sample<float3> o)
         => new Sample3D(Value * o.Value, o.Value * Gradient + Value * o.Gradient);
 
 
-    public override Sample<Vector3> Div(Sample<Vector3> o)
+    public override Sample<float3> Div(Sample<float3> o)
         => new Sample3D(Value * o.Value, (o.Value * Gradient - Value * o.Gradient) / Mathf.Pow(o.Value, 2));
 }

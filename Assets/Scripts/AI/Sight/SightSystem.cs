@@ -9,9 +9,9 @@ namespace AI.Sensors.Sight
     public class SightSystem : JobComponentSystem
     {
         [BurstCompile]
-        struct SightJob : IJobForEach<LocalToWorld, SightComponent>
+        struct SightJob : IJobForEach<SightComponent, Translation, Rotation>
         {
-            public void Execute(ref LocalToWorld c0, ref SightComponent c1)
+            public void Execute(ref SightComponent component, ref Translation translation, ref Rotation rotation)
             {
                 throw new System.NotImplementedException();
             }

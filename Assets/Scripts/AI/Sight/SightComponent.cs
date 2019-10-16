@@ -1,15 +1,12 @@
-using Unity.Collections;
+using Unity.Burst;
 using Unity.Entities;
 
 namespace AI.Sensors.Sight
 {
+    [BurstCompile]
     public struct SightComponent : ISensorComponent
     {
-        public float SightRange { get; }
-
-        public SightComponent(float sightRange)
-        {
-            SightRange = sightRange;
-        }
+        public float sightRange;
+        public float fov;
     }
 }

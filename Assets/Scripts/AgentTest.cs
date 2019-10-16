@@ -27,11 +27,6 @@ public class AgentTest : MonoBehaviour
                 agent.AddEvaluator(new TestEvaluator());
             }
 
-            for (var j = 0; j < 50; j++)
-            {
-                agent.AddActuator(new TestActuator());
-            }
-
             entityManager.AddComponentObject(testEntity, agent);
         }
     }
@@ -56,13 +51,10 @@ public class AgentTest : MonoBehaviour
         public NativeString512 text;
     }
 
-    // [UpdateBefore(typeof(AISystem))]
-    // [UpdateInGroup(typeof(SimulationSystemGroup))]
-
     [UpdateInGroup(typeof(SensorSystemGroup))]
     public class TestSensorSystem : JobComponentSystem
     {
-        // [BurstCompile]
+        // [BurstCompile] Doesn't work with EntityBuffer
         struct TestSensorJob : IJobForEachWithEntity<TestSensorComponent>
         {
             public EntityCommandBuffer.Concurrent entityCommandBuffer;
@@ -74,6 +66,12 @@ public class AgentTest : MonoBehaviour
         }
 
         private EntityCommandBufferSystem entityCommandBufferSystem;
+        // private EntityQuery queryGroup;
+
+        // protected override void OnCreate()
+        // {
+        //     queryGroup = GetEntityQuery(ComponentType.ReadOnly<TestSensorComponent>());
+        // }
 
         protected override void OnStartRunning()
         {
@@ -121,19 +119,5 @@ public class AgentTest : MonoBehaviour
 
         public (IAction state, float confidence)[] Evaluate((IAction state, float confidence)[] ideas)
             => ideas.ToArray();
-    }
-
-    public struct TestActuator : IActuator
-    {
-        public string Name
-            => "testA";
-
-        public void Act(Entity entity, IAction[] states)
-        {
-            if (states.Where(x => x != ActionUtil.NULL).Select(x => ((TestAction)x).Name == "testK").Any())
-            {
-                print("testS");
-            }
-        }
     }
 }

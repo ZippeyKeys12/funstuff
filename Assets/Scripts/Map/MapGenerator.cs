@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using Unity.Mathematics;
 using Noise;
 using Random = System.Random;
 
-public class MapGenerator : MonoBehaviour {
+public class MapGenerator : MonoBehaviour
+{
     [Range(0, 10000)]
     public int seed;
 
@@ -31,11 +33,13 @@ public class MapGenerator : MonoBehaviour {
 
     public bool autoUpdate;
 
-    public void GenerateMap() {
+    public void GenerateMap()
+    {
         Func<int, int> getSeed = x => (int)(seed + new Random(seed * x).NextDouble());
 
         Generator gen = null;
-        switch(noiseType) {
+        switch (noiseType)
+        {
             case NoiseType.Value:
                 gen = new FBM(lacunarity, persistance, Enumerable.Range(0, octaves).Select(x => new ValueNoise(getSeed(x))).ToArray());
                 break;
@@ -51,17 +55,20 @@ public class MapGenerator : MonoBehaviour {
         }
 
         var mapDim = 129;
-        var map = new Sample<Vector2>[mapDim, mapDim];
+        var map = new Sample<float2>[mapDim, mapDim];
         var elevation = new float[mapDim, mapDim];
-        for(var x = 0; x < mapDim; x++) {
-            for(var y = 0; y < mapDim; y++) {
+        for (var x = 0; x < mapDim; x++)
+        {
+            for (var y = 0; y < mapDim; y++)
+            {
                 map[x, y] = gen.Get(x + offsetX, y + offsetY, frequency);
                 elevation[x, y] = map[x, y].Value / 2 + .5f;
             }
         }
 
         var mapRenderer = FindObjectOfType<MapRenderer>();
-        switch(drawMode) {
+        switch (drawMode)
+        {
             case MapDrawMode.Mesh:
                 mapRenderer.DrawMesh(elevation, heightMult);
                 break;
@@ -72,12 +79,14 @@ public class MapGenerator : MonoBehaviour {
     }
 }
 
-public enum MapDrawMode {
+public enum MapDrawMode
+{
     Mesh,
     Terrain
 }
 
-public enum NoiseType {
+public enum NoiseType
+{
     Value,
     Perlin,
     Billow,

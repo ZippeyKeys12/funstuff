@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using Unity.Collections;
 using Unity.Entities;
-
 using Player;
 
 public class GameManager : MonoBehaviour
