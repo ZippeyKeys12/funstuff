@@ -84,27 +84,32 @@ public class MapRenderer : MonoBehaviour
         return mesh;
     }
 
-    public void DrawTerrain(float[,] map, float terrainHeight, int resolution)
+    public void DrawTerrain(float[,] map, float terrainHeight, int resolution, int h, int w)
     {
-        var terrainData = GenerateTerrain(map, terrainHeight, resolution);
+        var terrainData = GenerateTerrain(map, terrainHeight, resolution, h, w);
 
         var terrain = GetComponent<Terrain>();
         terrain.terrainData = terrainData;
-        //terrain.materialTemplate = GenerateTerrainMaterial();
+        terrain.basemapDistance = 10000;
+        terrain.heightmapPixelError = 5;
+
+        terrain.materialTemplate = new Material(Shader.Find("Standard"));
+        terrain.materialTemplate.mainTexture = GenerateTexture(map);
+        // terrain.materialTemplate = GenerateTerrainMaterial(map, terrainHeight, resolution);
 
         GetComponent<TerrainCollider>().terrainData = terrainData;
     }
 
-    public TerrainData GenerateTerrain(float[,] map, float terrainHeight, int resolution)
+    public TerrainData GenerateTerrain(float[,] map, float terrainHeight, int resolution, int h, int w)
     {
-        int w = map.GetLength(0),
-            h = map.GetLength(1);
-
         var terrainData = new TerrainData
         {
-            size = new float3(h, terrainHeight, w),
-            heightmapResolution = resolution
+            heightmapResolution = resolution,
+            size = new float3(h, terrainHeight, w)
         };
+        terrainData.SetDetailResolution(resolution, 16);
+        terrainData.alphamapResolution = resolution;
+        terrainData.baseMapResolution = resolution;
 
         terrainData.SetHeights(0, 0, map);
 

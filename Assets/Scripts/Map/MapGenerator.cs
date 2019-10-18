@@ -10,6 +10,9 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 10000)]
     public int seed;
 
+    public int height = 100;
+    public int width = 100;
+
     public MapDrawMode drawMode;
 
     public NoiseType noiseType;
@@ -73,7 +76,7 @@ public class MapGenerator : MonoBehaviour
                 mapRenderer.DrawMesh(elevation, heightMult);
                 break;
             case MapDrawMode.Terrain:
-                mapRenderer.DrawTerrain(elevation, heightMult, mapDim);
+                mapRenderer.DrawTerrain(elevation, heightMult, mapDim, height, width);
                 break;
         }
     }
