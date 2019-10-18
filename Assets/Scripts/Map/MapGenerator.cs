@@ -10,17 +10,17 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 10000)]
     public int seed;
 
-    public int height = 100;
-    public int width = 100;
+    public int mapSize = 100;
 
-    public MapDrawMode drawMode;
+    [Range(1, 4)]
+    public int mapChunks = 1;
+
+    public float offsetX, offsetY;
 
     public NoiseType noiseType;
 
     [Range(.01f, 1f)]
     public float frequency = .5f;
-
-    public float offsetX, offsetY;
 
     [Range(1, 10)]
     public int octaves = 1;
@@ -31,8 +31,8 @@ public class MapGenerator : MonoBehaviour
     [Range(.0001f, 5)]
     public float lacunarity = 2;
 
-    [HideInInspector]
-    public float heightMult;
+    [Range(1, 200)]
+    public float terrainHeight = 1;
 
     public bool autoUpdate;
 
@@ -57,28 +57,8 @@ public class MapGenerator : MonoBehaviour
                 break;
         }
 
-        var mapDim = 129;
-        var map = new Sample<float2>[mapDim, mapDim];
-        var elevation = new float[mapDim, mapDim];
-        for (var x = 0; x < mapDim; x++)
-        {
-            for (var y = 0; y < mapDim; y++)
-            {
-                map[x, y] = gen.Get(x + offsetX, y + offsetY, frequency);
-                elevation[x, y] = map[x, y].Value / 2 + .5f;
-            }
-        }
-
-        var mapRenderer = FindObjectOfType<MapRenderer>();
-        switch (drawMode)
-        {
-            case MapDrawMode.Mesh:
-                mapRenderer.DrawMesh(elevation, heightMult);
-                break;
-            case MapDrawMode.Terrain:
-                mapRenderer.DrawTerrain(elevation, heightMult, mapDim, height, width);
-                break;
-        }
+        var mapDim = 5 + mapChunks;
+        FindObjectOfType<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(offsetX, offsetY), gen, terrainHeight, mapDim, mapSize, mapChunks, frequency);
     }
 }
 
