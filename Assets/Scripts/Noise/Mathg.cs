@@ -16,24 +16,24 @@
 
                     return min;
                 },
-                (x, y, f) =>
+                (xy, f) =>
                 {
                     var min = Sample2D.MaxValue;
 
                     foreach (var op in generators)
                     {
-                        min = Maths.Min(min, op.Get(x, y, f));
+                        min = Maths.Min(min, op.Get(xy, f));
                     }
 
                     return min;
                 },
-                (x, y, z, f) =>
+                (xyz, f) =>
                 {
                     var min = Sample3D.MaxValue;
 
                     foreach (var op in generators)
                     {
-                        min = Maths.Min(min, op.Get(x, y, z, f));
+                        min = Maths.Min(min, op.Get(xyz, f));
                     }
 
                     return min;
@@ -54,24 +54,24 @@
 
                     return max;
                 },
-                (x, y, f) =>
+                (xy, f) =>
                 {
                     var max = Sample2D.MinValue;
 
                     foreach (var op in generators)
                     {
-                        max = Maths.Max(max, op.Get(x, y, f));
+                        max = Maths.Max(max, op.Get(xy, f));
                     }
 
                     return max;
                 },
-                (x, y, z, f) =>
+                (xyz, f) =>
                 {
                     var max = Sample3D.MinValue;
 
                     foreach (var op in generators)
                     {
-                        max = Maths.Max(max, op.Get(x, y, z, f));
+                        max = Maths.Max(max, op.Get(xyz, f));
                     }
 
                     return max;
@@ -92,24 +92,24 @@
 
                     return sum / generators.Length;
                 },
-                (x, y, f) =>
+                (xy, f) =>
                 {
                     var sum = Sample2D.Zero;
 
                     foreach (var op in generators)
                     {
-                        sum += op.Get(x, y, f);
+                        sum += op.Get(xy, f);
                     }
 
                     return sum / generators.Length;
                 },
-                (x, y, z, f) =>
+                (xyz, f) =>
                 {
                     var sum = Sample3D.Zero;
 
                     foreach (var op in generators)
                     {
-                        sum += op.Get(x, y, z, f);
+                        sum += op.Get(xyz, f);
                     }
 
                     return sum / generators.Length;

@@ -19,7 +19,7 @@ namespace Noise
             spectralWeights = new float[operands.Length];
             for (int i = 0; i < operands.Length; i++)
             {
-                spectralWeights[i] = Mathf.Pow(persistance, i * spectralExponent);
+                spectralWeights[i] = math.pow(persistance, i * spectralExponent);
             }
 
             this.operands = operands;
@@ -42,7 +42,7 @@ namespace Noise
             return noiseHeight / maxNoiseHeight;
         }
 
-        public override Sample<float2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float2 xy, float frequency)
         {
             var freq = frequency;
             var noiseHeight = Sample2D.Zero;
@@ -50,7 +50,7 @@ namespace Noise
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(x, y, freq) * spectralWeights[i];
+                noiseHeight += operands[i].Get(xy, freq) * spectralWeights[i];
                 maxNoiseHeight += spectralWeights[i];
 
                 freq *= lacunarity;
@@ -59,7 +59,7 @@ namespace Noise
             return noiseHeight / maxNoiseHeight;
         }
 
-        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float3 xyz, float frequency)
         {
             var freq = frequency;
             var noiseHeight = Sample3D.Zero;
@@ -67,7 +67,7 @@ namespace Noise
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(x, y, z, freq) * spectralWeights[i];
+                noiseHeight += operands[i].Get(xyz, freq) * spectralWeights[i];
                 maxNoiseHeight += spectralWeights[i];
 
                 freq *= lacunarity;

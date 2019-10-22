@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Unity.Mathematics;
 
 public static class MathZ
 {
@@ -19,17 +20,17 @@ public static class MathZ
 
     public static float Abs(this float x)
     {
-        return Mathf.Abs(x);
+        return math.abs(x);
     }
 
     public static float Sign(this float x)
     {
-        return Mathf.Sign(x);
+        return math.sign(x);
     }
 
     public static float TransferSign(float val, float sign)
     {
-        return Sign(sign) * Mathf.Abs(sign);
+        return Sign(sign) * math.abs(sign);
     }
 
     public static int NthTriangleNum(int N)

@@ -16,11 +16,11 @@ namespace Noise
             => (Sample1D)a;
 
 
-        public override Sample<float2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float2 xy, float frequency)
             => (Sample2D)a;
 
 
-        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float3 xyz, float frequency)
             => (Sample3D)a;
 
     }

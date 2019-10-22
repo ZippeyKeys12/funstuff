@@ -7,10 +7,10 @@ namespace Noise
     public class Function : Generator
     {
         protected readonly Func<float, float, Sample<float>> func_a;
-        protected readonly Func<float, float, float, Sample<float2>> func_b;
-        protected readonly Func<float, float, float, float, Sample<float3>> func_c;
+        protected readonly Func<float2, float, Sample<float2>> func_b;
+        protected readonly Func<float3, float, Sample<float3>> func_c;
 
-        public Function(Func<float, float, Sample<float>> func_a, Func<float, float, float, Sample<float2>> func_b, Func<float, float, float, float, Sample<float3>> func_c)
+        public Function(Func<float, float, Sample<float>> func_a, Func<float2, float, Sample<float2>> func_b, Func<float3, float, Sample<float3>> func_c)
         {
             this.func_a = func_a;
             this.func_b = func_b;
@@ -22,14 +22,14 @@ namespace Noise
             return func_a(x, frequency);
         }
 
-        public override Sample<float2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float2 xy, float frequency)
         {
-            return func_b(x, y, frequency);
+            return func_b(xy, frequency);
         }
 
-        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float3 xyz, float frequency)
         {
-            return func_c(x, y, z, frequency);
+            return func_c(xyz, frequency);
         }
     }
 }

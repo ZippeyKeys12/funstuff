@@ -1,5 +1,5 @@
 ﻿using System;
-using UnityEngine;
+using Unity.Mathematics;
 
 public static class ImageUtils
 {
@@ -59,7 +59,7 @@ public static class ImageUtils
             }
 
             initial = result;
-            mult /= Mathf.Pow(2, exp);
+            mult /= math.pow(2, exp);
         }
 
         return result;

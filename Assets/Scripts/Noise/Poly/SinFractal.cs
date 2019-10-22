@@ -41,7 +41,7 @@ namespace Noise
             return Maths.Sin(x * frequency + noiseHeight);
         }
 
-        public override Sample<float2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float2 xy, float frequency)
         {
             var freq = frequency;
             var noiseHeight = Sample2D.Zero;
@@ -49,15 +49,16 @@ namespace Noise
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += Maths.Abs(operands[i].Get(x, y, freq) * spectralWeights[i]) * 2 - 1;
+                noiseHeight += Maths.Abs(operands[i].Get(xy, freq) * spectralWeights[i]) * 2 - 1;
                 maxNoiseHeight += spectralWeights[i];
 
                 freq *= lacunarity;
             }
-            return Maths.Sin(x * frequency + y * frequency + noiseHeight);
+
+            return Maths.Sin(math.dot(xy, frequency) + noiseHeight);
         }
 
-        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float3 xyz, float frequency)
         {
             var freq = frequency;
             var noiseHeight = Sample3D.Zero;
@@ -65,12 +66,12 @@ namespace Noise
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += Maths.Abs(operands[i].Get(x, y, z, freq) * spectralWeights[i]) * 2 - 1;
+                noiseHeight += Maths.Abs(operands[i].Get(xyz, freq) * spectralWeights[i]) * 2 - 1;
                 maxNoiseHeight += spectralWeights[i];
 
                 freq *= lacunarity;
             }
-            return Maths.Sin(x * frequency + y * frequency + z * frequency + noiseHeight);
+            return Maths.Sin(math.dot(xyz, frequency) + noiseHeight);
         }
     }
 }

@@ -24,14 +24,14 @@ namespace Noise
             return func_a(a.Get(x, frequency));
         }
 
-        public override Sample<float2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float2 xy, float frequency)
         {
-            return func_b(a.Get(x, y, frequency));
+            return func_b(a.Get(xy, frequency));
         }
 
-        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float3 xyz, float frequency)
         {
-            return func_c(a.Get(x, y, z, frequency));
+            return func_c(a.Get(xyz, frequency));
         }
     }
 }

@@ -35,7 +35,7 @@
 //                var y = -g.y;
 //                for (var j = 0; j < h; j++, y += 1f / h)
 //                {
-//                    actualNoise[i, j] += Mathf.Exp(-f1 * (x2 + y * y)) / f2;
+//                    actualNoise[i, j] += math.exp(-f1 * (x2 + y * y)) / f2;
 //                }
 //            }
 //        }

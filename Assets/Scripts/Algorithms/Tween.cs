@@ -26,7 +26,7 @@ public static class Interp
                 {
                     var inc = MathZ.nCr(-N - 1, n) *
                               MathZ.nCr(2 * N + 1, N - n) *
-                              Mathf.Pow(x.Value, N + n + 1);
+                              math.pow(x.Value, N + n + 1);
                     result += inc;
                     deriv += N + n * inc / x.Value;
                 }
@@ -43,7 +43,7 @@ public static class Interp
             x => (x + 1) / (1 - x);
 
         public static readonly TweenType Sinusoidal =
-            Reverse(x => Maths.Sin(Mathf.PI / 2 * x));
+            Reverse(x => Maths.Sin(math.PI / 2 * x));
 
         public static readonly TweenType Circular =
             x => -Maths.Sqrt(1 - Maths.Pow(x, 2)) + 1;
@@ -74,7 +74,7 @@ public static class Interp
                 return x => -Maths.Log10(1 - .9f * x);
             }
 
-            if (Mathf.Approximately(n, Mathf.Exp(1)))
+            if (Mathf.Approximately(n, math.exp(1)))
             {
                 return Logarithmic;
             }

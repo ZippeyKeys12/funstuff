@@ -32,7 +32,7 @@ namespace Noise
         {
             x *= frequency;
 
-            int i0 = Mathf.FloorToInt(x);
+            int i0 = math.asint(math.floor(x));
             float t = x - i0;
             i0 &= hashMask;
             int i1 = i0 + 1;
@@ -50,13 +50,16 @@ namespace Noise
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample<float2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float2 xy, float frequency)
         {
+            var x = xy.x; // TODO: Remove and replace
+            var y = xy.y;
+
             x *= frequency;
             y *= frequency;
 
-            int ix0 = Mathf.FloorToInt(x);
-            int iy0 = Mathf.FloorToInt(y);
+            int ix0 = math.asint(math.floor(x));
+            int iy0 = math.asint(math.floor(y));
             float tx = x - ix0;
             float ty = y - iy0;
             ix0 &= hashMask;
@@ -89,15 +92,19 @@ namespace Noise
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
         // Support them at: https://www.patreon.com/catlikecoding
-        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float3 xyz, float frequency)
         {
+            var x = xyz.x; // TODO: Remove and replace
+            var y = xyz.y;
+            var z = xyz.z;
+
             x *= frequency;
             y *= frequency;
             z *= frequency;
 
-            int ix0 = Mathf.FloorToInt(x);
-            int iy0 = Mathf.FloorToInt(y);
-            int iz0 = Mathf.FloorToInt(z);
+            int ix0 = math.asint(math.floor(x));
+            int iy0 = math.asint(math.floor(y));
+            int iz0 = math.asint(math.floor(z));
             float tx = x - ix0;
             float ty = y - iy0;
             float tz = z - iz0;

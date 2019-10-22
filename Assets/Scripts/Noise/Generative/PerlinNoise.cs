@@ -31,44 +31,45 @@ namespace Noise
         {
             x *= frequency;
 
-            var X = Mathf.FloorToInt(x) & hashMask;
-            x -= Mathf.Floor(x);
+            var X = math.asint(math.floor(x)) & hashMask;
+            x -= math.floor(x);
             var u = interp((Sample1D)x).Value;
 
-            return new Sample1D(Mathf.Lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u) * 2);
+            return new Sample1D(math.lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u) * 2);
         }
 
-        public override Sample<float2> Get(float x, float y, float frequency)
+        public override Sample<float2> Get(float2 xy, float frequency)
         {
-            x *= frequency;
-            y *= frequency;
+            xy *= frequency;
 
-            var X = Mathf.FloorToInt(x) & hashMask;
-            var Y = Mathf.FloorToInt(y) & hashMask;
+            var XY = math.asint(math.floor(xy)) & hashMask;
 
-            x -= Mathf.Floor(x);
-            y -= Mathf.Floor(y);
+            xy -= math.floor(xy);
 
+            var x = xy.x; // TODO: Remove and replace
+            var y = xy.y;
             float u = interp((Sample1D)x).Value,
                   v = interp((Sample1D)y).Value;
 
-            int A = (perm[X] + Y) & hashMask,
-                B = (perm[X + 1] + Y) & hashMask;
+            int A = (perm[XY.x] + XY.y) & hashMask,
+                B = (perm[XY.x + 1] + XY.y) & hashMask;
 
-            return new Sample2D(Mathf.Lerp(Mathf.Lerp(Grad(perm[A], x, y), Grad(perm[B], x - 1, y), u),
-                                Mathf.Lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v));
+            return new Sample2D(math.lerp(math.lerp(Grad(perm[A], x, y), Grad(perm[B], x - 1, y), u),
+                                math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v));
         }
 
-        public override Sample<float3> Get(float x, float y, float z, float frequency)
+        public override Sample<float3> Get(float3 xyz, float frequency)
         {
-            var X = Mathf.FloorToInt(x) & hashMask;
-            var Y = Mathf.FloorToInt(y) & hashMask;
-            var Z = Mathf.FloorToInt(z) & hashMask;
+            var XYZ = math.asint(math.floor(xyz)) & hashMask;
+            var X = XYZ.x; // TODO: Remove and replace
+            var Y = XYZ.y;
+            var Z = XYZ.z;
 
-            x -= Mathf.Floor(x);
-            y -= Mathf.Floor(y);
-            z -= Mathf.Floor(z);
+            xyz -= math.floor(xyz);
 
+            var x = xyz.x; // TODO: Remove and replace
+            var y = xyz.y;
+            var z = xyz.z;
             float u = interp((Sample1D)x).Value,
                   v = interp((Sample1D)y).Value,
                   w = interp((Sample1D)z).Value;
@@ -76,10 +77,10 @@ namespace Noise
             int A = (perm[X] + Y) & hashMask, AA = (perm[A] + Z) & hashMask, AB = (perm[A + 1] + Z) & hashMask,
                 B = (perm[X + 1] + Y) & hashMask, BA = (perm[B] + Z) & hashMask, BB = (perm[B + 1] + Z) & hashMask;
 
-            return new Sample3D(Mathf.Lerp(Mathf.Lerp(Mathf.Lerp(Grad(perm[AA], x, y, z), Grad(perm[BA], x - 1, y, z), u),
-                                           Mathf.Lerp(Grad(perm[AB], x, y - 1, z), Grad(perm[BB], x - 1, y - 1, z), u), u),
-                                Mathf.Lerp(Mathf.Lerp(Grad(perm[AA + 1], x, y, z - 1), Grad(perm[BA + 1], x - 1, y, z - 1), u),
-                                           Mathf.Lerp(Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w));
+            return new Sample3D(math.lerp(math.lerp(math.lerp(Grad(perm[AA], x, y, z), Grad(perm[BA], x - 1, y, z), u),
+                                          math.lerp(Grad(perm[AB], x, y - 1, z), Grad(perm[BB], x - 1, y - 1, z), u), u),
+                                math.lerp(math.lerp(Grad(perm[AA + 1], x, y, z - 1), Grad(perm[BA + 1], x - 1, y, z - 1), u),
+                                          math.lerp(Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w));
         }
 
         static float Grad(int hash, float x)
