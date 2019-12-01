@@ -31,7 +31,7 @@ namespace Noise
         {
             x *= frequency;
 
-            var X = math.asint(math.floor(x)) & hashMask;
+            var X = (int)math.floor(x) & hashMask;
             x -= math.floor(x);
             var u = interp((Sample1D)x).Value;
 
@@ -42,7 +42,8 @@ namespace Noise
         {
             xy *= frequency;
 
-            var XY = math.asint(math.floor(xy)) & hashMask;
+            var X = (int)math.floor(xy.x) & hashMask;
+            var Y = (int)math.floor(xy.y) & hashMask;
 
             xy -= math.floor(xy);
 
@@ -51,8 +52,8 @@ namespace Noise
             float u = interp((Sample1D)x).Value,
                   v = interp((Sample1D)y).Value;
 
-            int A = (perm[XY.x] + XY.y) & hashMask,
-                B = (perm[XY.x + 1] + XY.y) & hashMask;
+            int A = (perm[X] + Y) & hashMask,
+                B = (perm[X + 1] + Y) & hashMask;
 
             return new Sample2D(math.lerp(math.lerp(Grad(perm[A], x, y), Grad(perm[B], x - 1, y), u),
                                 math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v));
@@ -60,10 +61,9 @@ namespace Noise
 
         public override Sample<float3> Get(float3 xyz, float frequency)
         {
-            var XYZ = math.asint(math.floor(xyz)) & hashMask;
-            var X = XYZ.x; // TODO: Remove and replace
-            var Y = XYZ.y;
-            var Z = XYZ.z;
+            var X = (int)math.floor(xyz.x) & hashMask;
+            var Y = (int)math.floor(xyz.y) & hashMask;
+            var Z = (int)math.floor(xyz.z) & hashMask;
 
             xyz -= math.floor(xyz);
 

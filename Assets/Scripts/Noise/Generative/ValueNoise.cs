@@ -32,7 +32,7 @@ namespace Noise
         {
             x *= frequency;
 
-            int i0 = math.asint(math.floor(x));
+            int i0 = (int)math.floor(x);
             float t = x - i0;
             i0 &= hashMask;
             int i1 = i0 + 1;
@@ -58,8 +58,8 @@ namespace Noise
             x *= frequency;
             y *= frequency;
 
-            int ix0 = math.asint(math.floor(x));
-            int iy0 = math.asint(math.floor(y));
+            int ix0 = (int)math.floor(x);
+            int iy0 = (int)math.floor(y);
             float tx = x - ix0;
             float ty = y - iy0;
             ix0 &= hashMask;
@@ -102,9 +102,9 @@ namespace Noise
             y *= frequency;
             z *= frequency;
 
-            int ix0 = math.asint(math.floor(x));
-            int iy0 = math.asint(math.floor(y));
-            int iz0 = math.asint(math.floor(z));
+            int ix0 = (int)math.floor(x);
+            int iy0 = (int)math.floor(y);
+            int iz0 = (int)math.floor(z);
             float tx = x - ix0;
             float ty = y - iy0;
             float tz = z - iz0;
