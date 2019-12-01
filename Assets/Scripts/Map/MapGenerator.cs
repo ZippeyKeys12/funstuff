@@ -12,10 +12,13 @@ namespace Map.Generation
         [Range(0, 10000)]
         public int seed;
 
-        public int mapSize = 100, kka;
+        public int mapSize = 100;
 
         [Range(0, 4)]
         public int mapChunks;
+
+        [Range(5, 8)]
+        public int resolutionPower = 5;
 
         public float offsetX, offsetY;
 
@@ -46,7 +49,7 @@ namespace Map.Generation
             switch (noiseType)
             {
                 case NoiseType.Value:
-                    gen = new FBM(lacunarity, persistance, Enumerable.Range(0, octaves).Select(x => new ValueNoise(getSeed(x))).ToArray());
+                    gen = new FBM(lacunarity, persistance, Enumerable.Range(0, octaves).Select(x => new ValueNoise(seed)).ToArray());
                     break;
                 case NoiseType.Perlin:
                     gen = new FBM(lacunarity, persistance, Enumerable.Range(0, octaves).Select(x => new PerlinNoise(getSeed(x))).ToArray());
@@ -59,8 +62,7 @@ namespace Map.Generation
                     break;
             }
 
-            var mapDim = 5 + mapChunks;
-            FindObjectOfType<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(offsetX, offsetY), gen, terrainHeight, mapDim, mapSize, mapChunks, frequency, kka);
+            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(offsetX, offsetY), gen, terrainHeight, resolutionPower, mapSize, mapChunks, frequency);
         }
     }
 

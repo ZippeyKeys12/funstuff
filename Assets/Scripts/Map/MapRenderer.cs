@@ -33,7 +33,7 @@ namespace Map
             return texture;
         }
 
-        public void DrawTerrain(float2 pos, float2 offset, Generator gen, float terrainHeight, int resPower, int size, int chunkDim, float frequency, int kka)
+        public void DrawTerrain(float2 pos, float2 offset, Generator gen, float terrainHeight, int resPower, int size, int chunkDim, float frequency)
         {
             count = 0;
             foreach (var terrain in GetComponentsInChildren(typeof(Terrain)))
@@ -50,7 +50,7 @@ namespace Map
                     var manhattan = math.abs(centered);
                     var resolution = (int)math.pow(2, resPower /* - math.max(manhattan.x, manhattan.y) */) + 1;
 
-                    DrawSubTerrain(centered + chunkDim, centered * size + pos, centered * (resolution - kka) + offset, gen, terrainHeight, resolution, size, frequency);
+                    DrawSubTerrain(centered + chunkDim, centered * size + pos, centered * size + offset, gen, terrainHeight, resolution, size, frequency);
                 }
             }
 
@@ -69,14 +69,14 @@ namespace Map
             }
         }
 
-        protected float[,] GenerateHeightMap(int resolution, Generator gen, float2 offset, float frequency)
+        protected float[,] GenerateHeightMap(int resolution, Generator gen, float2 offset, float frequency, int size)
         {
             var map = new float[resolution, resolution];
             for (var x = 0; x < resolution; x++)
             {
                 for (var y = 0; y < resolution; y++)
                 {
-                    map[x, y] = gen.Get(new float2(x, y) + offset, frequency).Value;
+                    map[x, y] = gen.Get(size * math.unlerp(0, resolution - 1, new float2(x, y)) + offset, frequency).Value;
                 }
             }
             return map;
@@ -84,14 +84,14 @@ namespace Map
 
         protected void DrawSubTerrain(int2 index, float2 pos, float2 offset, Generator gen, float terrainHeight, int resolution, int size, float frequency)
         {
-            var map = GenerateHeightMap(resolution, gen, offset, frequency);
+            var map = GenerateHeightMap(resolution, gen, offset, frequency, size);
 
             var elevation = new float[resolution, resolution];
             for (var i = 0; i < resolution; i++)
             {
                 for (var j = 0; j < resolution; j++)
                 {
-                    elevation[i, j] = map[i, j] / 2 + .5f;
+                    elevation[i, j] = math.unlerp(-1, 1, map[i, j]);
                 }
             }
 
