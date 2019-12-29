@@ -1,89 +1,15 @@
-﻿namespace Noise
+﻿using Unity.Mathematics;
+
+namespace Noise
 {
     public static class Mathg
     {
-        public static Generator Min(params Generator[] generators)
-        {
-            return new Function(
-                (x, f) =>
-                {
-                    var min = Sample1D.MaxValue;
-
-                    foreach (var op in generators)
-                    {
-                        min = Maths.Min(min, op.Get(x, f));
-                    }
-
-                    return min;
-                },
-                (xy, f) =>
-                {
-                    var min = Sample2D.MaxValue;
-
-                    foreach (var op in generators)
-                    {
-                        min = Maths.Min(min, op.Get(xy, f));
-                    }
-
-                    return min;
-                },
-                (xyz, f) =>
-                {
-                    var min = Sample3D.MaxValue;
-
-                    foreach (var op in generators)
-                    {
-                        min = Maths.Min(min, op.Get(xyz, f));
-                    }
-
-                    return min;
-                });
-        }
-
-        public static Generator Max(params Generator[] generators)
-        {
-            return new Function(
-                (x, f) =>
-                {
-                    var max = Sample1D.MinValue;
-
-                    foreach (var op in generators)
-                    {
-                        max = Maths.Max(max, op.Get(x, f));
-                    }
-
-                    return max;
-                },
-                (xy, f) =>
-                {
-                    var max = Sample2D.MinValue;
-
-                    foreach (var op in generators)
-                    {
-                        max = Maths.Max(max, op.Get(xy, f));
-                    }
-
-                    return max;
-                },
-                (xyz, f) =>
-                {
-                    var max = Sample3D.MinValue;
-
-                    foreach (var op in generators)
-                    {
-                        max = Maths.Max(max, op.Get(xyz, f));
-                    }
-
-                    return max;
-                });
-        }
-
         public static Generator Mean(params Generator[] generators)
         {
             return new Function(
                 (x, f) =>
                 {
-                    var sum = Sample1D.Zero;
+                    var sum = Sample<float>.Zero;
 
                     foreach (var op in generators)
                     {
@@ -94,7 +20,7 @@
                 },
                 (xy, f) =>
                 {
-                    var sum = Sample2D.Zero;
+                    var sum = Sample<float2>.Zero;
 
                     foreach (var op in generators)
                     {
@@ -105,7 +31,7 @@
                 },
                 (xyz, f) =>
                 {
-                    var sum = Sample3D.Zero;
+                    var sum = Sample<float3>.Zero;
 
                     foreach (var op in generators)
                     {

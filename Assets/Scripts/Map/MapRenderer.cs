@@ -9,7 +9,7 @@ namespace Map
     public class MapRenderer : MonoBehaviour
     {
         protected GameObject[,] terrains;
-        int count;
+        protected int count;
 
         public Texture2D GenerateTexture(float[,] map)
         {

@@ -4,34 +4,30 @@ using Unity.Mathematics;
 
 namespace Noise
 {
-    public class Map : Generator
+    public abstract class Map : Generator
     {
-        protected readonly Func<Sample<float>, Sample<float>> func_a;
-        protected readonly Func<Sample<float2>, Sample<float2>> func_b;
-        protected readonly Func<Sample<float3>, Sample<float3>> func_c;
-        protected readonly Generator a;
+        protected readonly Generator gen;
 
-        public Map(Generator a, Func<Sample<float>, Sample<float>> func_a, Func<Sample<float2>, Sample<float2>> func_b, Func<Sample<float3>, Sample<float3>> func_c)
+        public Map(Generator gen)
         {
-            this.a = a;
-            this.func_a = func_a;
-            this.func_b = func_b;
-            this.func_c = func_c;
+            this.gen = gen;
         }
+
+        protected abstract Sample<T> TransformFunc<T>(Sample<T> a);
 
         public override Sample<float> Get(float x, float frequency)
         {
-            return func_a(a.Get(x, frequency));
+            return TransformFunc(gen.Get(x, frequency));
         }
 
         public override Sample<float2> Get(float2 xy, float frequency)
         {
-            return func_b(a.Get(xy, frequency));
+            return TransformFunc(gen.Get(xy, frequency));
         }
 
         public override Sample<float3> Get(float3 xyz, float frequency)
         {
-            return func_c(a.Get(xyz, frequency));
+            return TransformFunc(gen.Get(xyz, frequency));
         }
     }
 }

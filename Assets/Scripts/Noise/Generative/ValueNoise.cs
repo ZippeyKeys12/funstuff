@@ -40,12 +40,12 @@ namespace Noise
             int h0 = hash[i0];
             int h1 = hash[i1];
 
-            var t0 = interp((Sample1D)t);
+            var t0 = interp(new Sample<float>(t, 1));
 
             float a = h0;
             float b = h1 - h0;
 
-            return new Sample1D(a + b * t0.Value, b * t0.Gradient) * 2f / hashMask - 1;
+            return new Sample<float>(a + b * t0.Value, b * t0.Gradient) * 2f / hashMask - 1;
         }
 
         // Implementation thanks to Catlike Coding (https://catlikecoding.com/unity/tutorials/noise/)
@@ -74,8 +74,8 @@ namespace Noise
             int h01 = hash[h0 + iy1];
             int h11 = hash[h1 + iy1];
 
-            var tx0 = interp((Sample1D)tx);
-            var ty0 = interp((Sample1D)ty);
+            var tx0 = interp(new Sample<float>(tx, 1));
+            var ty0 = interp(new Sample<float>(ty, 1));
 
             tx = tx0.Value;
             ty = ty0.Value;
@@ -85,7 +85,7 @@ namespace Noise
             float c = h01 - h00;
             float d = h11 - h01 - h10 + h00;
 
-            return new Sample2D(a + b * tx + (c + d * tx) * ty,
+            return new Sample<float2>(a + b * tx + (c + d * tx) * ty,
                 new float2((b + d * ty) * tx0.Gradient, (c + d * tx) * ty0.Gradient)) * 2f / hashMask - 1;
         }
 
@@ -130,9 +130,9 @@ namespace Noise
             int h011 = hash[h01 + iz1];
             int h111 = hash[h11 + iz1];
 
-            var tx0 = interp((Sample1D)tx);
-            var ty0 = interp((Sample1D)ty);
-            var tz0 = interp((Sample1D)tz);
+            var tx0 = interp(new Sample<float>(tx, 1));
+            var ty0 = interp(new Sample<float>(ty, 1));
+            var tz0 = interp(new Sample<float>(tz, 1));
 
             tx = tx0.Value;
             ty = ty0.Value;
@@ -147,11 +147,10 @@ namespace Noise
             float g = h011 - h001 - h010 + h000;
             float h = h111 - h011 - h101 + h001 - h110 + h010 + h100 - h000;
 
-            return new Sample3D(a + b * tx + (c + e * tx) * ty + (d + f * tx + (g + h * tx) * ty) * tz,
+            return new Sample<float3>(a + b * tx + (c + e * tx) * ty + (d + f * tx + (g + h * tx) * ty) * tz,
                 new float3((b + e * ty + (f + h * ty) * tz) * tx0.Gradient,
                     (c + e * tx + (g + h * tx) * tz) * ty0.Gradient,
                     (d + f * tx + (g + h * tx) * ty) * tz0.Gradient)) * 2f / hashMask - 1;
-
         }
     }
 }

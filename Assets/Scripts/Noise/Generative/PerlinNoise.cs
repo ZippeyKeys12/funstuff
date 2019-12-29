@@ -33,9 +33,9 @@ namespace Noise
 
             var X = (int)math.floor(x) & hashMask;
             x -= math.floor(x);
-            var u = interp((Sample1D)x).Value;
+            var u = interp(new Sample<float>(x, 1)).Value;
 
-            return new Sample1D(math.lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u) * 2);
+            return new Sample<float>(math.lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u) * 2);
         }
 
         public override Sample<float2> Get(float2 xy, float frequency)
@@ -49,13 +49,13 @@ namespace Noise
 
             var x = xy.x; // TODO: Remove and replace
             var y = xy.y;
-            float u = interp((Sample1D)x).Value,
-                  v = interp((Sample1D)y).Value;
+            float u = interp(new Sample<float>(x, 1)).Value,
+                  v = interp(new Sample<float>(y, 1)).Value;
 
             int A = (perm[X] + Y) & hashMask,
                 B = (perm[X + 1] + Y) & hashMask;
 
-            return new Sample2D(math.lerp(math.lerp(Grad(perm[A], x, y), Grad(perm[B], x - 1, y), u),
+            return new Sample<float2>(math.lerp(math.lerp(Grad(perm[A], x, y), Grad(perm[B], x - 1, y), u),
                                 math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v));
         }
 
@@ -70,14 +70,14 @@ namespace Noise
             var x = xyz.x; // TODO: Remove and replace
             var y = xyz.y;
             var z = xyz.z;
-            float u = interp((Sample1D)x).Value,
-                  v = interp((Sample1D)y).Value,
-                  w = interp((Sample1D)z).Value;
+            float u = interp(new Sample<float>(x, 1)).Value,
+                  v = interp(new Sample<float>(y, 1)).Value,
+                  w = interp(new Sample<float>(z, 1)).Value;
 
             int A = (perm[X] + Y) & hashMask, AA = (perm[A] + Z) & hashMask, AB = (perm[A + 1] + Z) & hashMask,
                 B = (perm[X + 1] + Y) & hashMask, BA = (perm[B] + Z) & hashMask, BB = (perm[B + 1] + Z) & hashMask;
 
-            return new Sample3D(math.lerp(math.lerp(math.lerp(Grad(perm[AA], x, y, z), Grad(perm[BA], x - 1, y, z), u),
+            return new Sample<float3>(math.lerp(math.lerp(math.lerp(Grad(perm[AA], x, y, z), Grad(perm[BA], x - 1, y, z), u),
                                           math.lerp(Grad(perm[AB], x, y - 1, z), Grad(perm[BB], x - 1, y - 1, z), u), u),
                                 math.lerp(math.lerp(Grad(perm[AA + 1], x, y, z - 1), Grad(perm[BA + 1], x - 1, y, z - 1), u),
                                           math.lerp(Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w));

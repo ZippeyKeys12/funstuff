@@ -9,10 +9,10 @@ public static class Interp
     public static class TweenTypes
     {
         public static readonly TweenType Step =
-            x => new Sample1D(x < .5f ? 0 : 1);
+            x => new Sample<float>(x < .5f ? 0 : 1);
 
         public static readonly TweenType Linear =
-            x => new Sample1D(x.Value, x.Gradient);
+            x => new Sample<float>(x.Value, x.Gradient);
 
         public static TweenType Polynomial(float n)
             => x => Maths.Pow(Maths.Clamp01(x), n);
@@ -30,7 +30,7 @@ public static class Interp
                     result += inc;
                     deriv += N + n * inc / x.Value;
                 }
-                return new Sample1D(result, deriv * x.Gradient);
+                return new Sample<float>(result, deriv * x.Gradient);
             };
 
         public static readonly TweenType Exponential =
@@ -133,12 +133,12 @@ public static class Interp
     {
         if (x < 0)
         {
-            return x.Of(0);
+            return new Sample<float>(0);
         }
 
         if (x > 1)
         {
-            return x.Of(1);
+            return new Sample<float>(1);
         }
 
         return blend(start, stop)(x);
@@ -146,41 +146,41 @@ public static class Interp
 
     public static float2 Tween(float2 xy, TweenType tween)
     {
-        return new float2(Tween((Sample1D)xy.x, tween, BlendTypes.Linear).Value,
-                           Tween((Sample1D)xy.y, tween, BlendTypes.Linear).Value);
+        return new float2(Tween(new Sample<float>(xy.x, 1), tween, BlendTypes.Linear).Value,
+                          Tween(new Sample<float>(xy.y, 1), tween, BlendTypes.Linear).Value);
     }
 
     public static float2 Tween(float2 xy, TweenType tween, BlendType blend)
     {
-        return new float2(Tween((Sample1D)xy.x, tween, blend).Value,
-                           Tween((Sample1D)xy.y, tween, blend).Value);
+        return new float2(Tween(new Sample<float>(xy.x, 1), tween, blend).Value,
+                          Tween(new Sample<float>(xy.y, 1), tween, blend).Value);
     }
 
     public static float2 Tween(float2 xy, TweenType start, TweenType stop)
     {
-        return new float2(Tween((Sample1D)xy.x, start, stop, BlendTypes.Linear).Value,
-                           Tween((Sample1D)xy.y, start, stop, BlendTypes.Linear).Value);
+        return new float2(Tween(new Sample<float>(xy.x, 1), start, stop, BlendTypes.Linear).Value,
+                          Tween(new Sample<float>(xy.y, 1), start, stop, BlendTypes.Linear).Value);
     }
 
     public static float2 Tween(float2 xy, TweenType start, TweenType stop, BlendType blend)
     {
-        return new float2(Tween((Sample1D)xy.x, start, stop, blend).Value,
-                           Tween((Sample1D)xy.y, start, stop, blend).Value);
+        return new float2(Tween(new Sample<float>(xy.x, 1), start, stop, blend).Value,
+                          Tween(new Sample<float>(xy.y, 1), start, stop, blend).Value);
     }
 
     public static float2 Tween(float2 xy, TweenType startX, TweenType stopX,
-                                            TweenType startY, TweenType stopY,
-                                            BlendType blend)
+                                          TweenType startY, TweenType stopY,
+                                          BlendType blend)
     {
-        return new float2(Tween((Sample1D)xy.x, startX, stopX, blend).Value,
-                           Tween((Sample1D)xy.y, startY, stopY, blend).Value);
+        return new float2(Tween(new Sample<float>(xy.x, 1), startX, stopX, blend).Value,
+                          Tween(new Sample<float>(xy.y, 1), startY, stopY, blend).Value);
     }
 
     public static float2 Tween(float2 xy, TweenType startX, TweenType stopX, BlendType blendX,
-                                            TweenType startY, TweenType stopY, BlendType blendY)
+                                          TweenType startY, TweenType stopY, BlendType blendY)
     {
-        return new float2(Tween((Sample1D)xy.x, startX, stopX, blendX).Value,
-                           Tween((Sample1D)xy.y, startY, stopY, blendY).Value);
+        return new float2(Tween(new Sample<float>(xy.x, 1), startX, stopX, blendX).Value,
+                          Tween(new Sample<float>(xy.y, 1), startY, stopY, blendY).Value);
     }
 
     public static TweenType VerticalFlip(TweenType a)

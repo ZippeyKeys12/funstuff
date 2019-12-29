@@ -28,7 +28,7 @@ namespace Noise
         public override Sample<float> Get(float x, float frequency)
         {
             var freq = frequency;
-            var noiseHeight = Sample1D.Zero;
+            var noiseHeight = Sample<float>.Zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
@@ -45,7 +45,7 @@ namespace Noise
         public override Sample<float2> Get(float2 xy, float frequency)
         {
             var freq = frequency;
-            var noiseHeight = Sample2D.Zero;
+            var noiseHeight = Sample<float2>.Zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
@@ -62,7 +62,7 @@ namespace Noise
         public override Sample<float3> Get(float3 xyz, float frequency)
         {
             var freq = frequency;
-            var noiseHeight = Sample3D.Zero;
+            var noiseHeight = Sample<float3>.Zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)

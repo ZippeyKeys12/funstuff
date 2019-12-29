@@ -3,16 +3,16 @@ using Unity.Mathematics;
 
 namespace Noise
 {
-    public class MultiFractal : Generator
+    public class Multifractal : Generator
     {
         private readonly float lacunarity, offset;
         private readonly float[] spectralWeights;
         private readonly Generator[] operands;
 
-        public MultiFractal(float lacunarity = 2, float persistance = .5f, params Generator[] operands)
+        public Multifractal(float lacunarity = 2, float persistance = .5f, params Generator[] operands)
             : this(lacunarity, persistance, 1f, .9f, operands) { }
 
-        public MultiFractal(float lacunarity = 2, float persistance = .5f, float offset = 1f, float spectralExponent = .9f, params Generator[] operands)
+        public Multifractal(float lacunarity = 2, float persistance = .5f, float offset = 1f, float spectralExponent = .9f, params Generator[] operands)
         {
             this.lacunarity = lacunarity;
 
@@ -29,7 +29,7 @@ namespace Noise
         public override Sample<float> Get(float x, float frequency)
         {
             var freq = frequency;
-            var noiseHeight = Sample1D.One;
+            var noiseHeight = new Sample<float>(1, 1);
             var maxNoiseHeight = 1f;
 
             for (var i = 0; i < operands.Length; i++)
@@ -46,7 +46,7 @@ namespace Noise
         public override Sample<float2> Get(float2 xy, float frequency)
         {
             var freq = frequency;
-            var noiseHeight = Sample2D.One;
+            var noiseHeight = new Sample<float2>(1, new float2(1, 1));
             var maxNoiseHeight = 1f;
 
             for (var i = 0; i < operands.Length; i++)
@@ -63,7 +63,7 @@ namespace Noise
         public override Sample<float3> Get(float3 xyz, float frequency)
         {
             var freq = frequency;
-            var noiseHeight = Sample3D.One;
+            var noiseHeight = new Sample<float3>(1, new float3(1, 1, 1));
             var maxNoiseHeight = 1f;
 
             for (var i = 0; i < operands.Length; i++)
