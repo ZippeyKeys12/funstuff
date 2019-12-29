@@ -20,7 +20,7 @@ public class MapGeneratorEditor : Editor
         }
         #endregion
 
-        if (EditorGUI.EndChangeCheck())
+        else if (EditorGUI.EndChangeCheck())
         {
             if (mapGen.autoUpdate)
             {
