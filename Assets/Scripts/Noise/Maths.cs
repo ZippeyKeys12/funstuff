@@ -60,25 +60,7 @@ namespace Noise
 
         public static Sample<T> Ceil<T>(Sample<T> v)
         {
-            return CeilImpl.Call((dynamic)v);
-        }
-
-        private static partial class CeilImpl
-        {
-            public static Sample<float> Call(Sample<float> v)
-            {
-                return new Sample<float>(math.ceil(v.Value), 0);
-            }
-
-            public static Sample<float2> Call(Sample<float2> v)
-            {
-                return new Sample<float2>(math.ceil(v.Value), float2.zero);
-            }
-
-            public static Sample<float3> Call(Sample<float3> v)
-            {
-                return new Sample<float3>(math.ceil(v.Value), float3.zero);
-            }
+            return new Sample<T>(math.ceil(v.Value), Sample<T>.ZeroGradient());
         }
 
         public static Sample<T> Round<T>(Sample<T> v)
@@ -117,179 +99,73 @@ namespace Noise
                 return value;
         }
 
-        public static Sample<float> Pow(Sample<float> a, Sample<float> b)
+        public static Sample<T> Pow<T>(Sample<T> a, Sample<T> b)
         {
-            return new Sample<float>(Mathf.Pow(a.Value, b.Value),
-                Mathf.Pow(a.Value, b.Value - 1) * (b.Value * a.Gradient + a.Value * Mathf.Log10(a.Value) * b.Gradient));
+            return new Sample<T>(Mathf.Pow(a.Value, b.Value),
+                Mathf.Pow(a.Value, b.Value - 1) * (b.Value * (dynamic)a.Gradient + a.Value * Mathf.Log10(a.Value) * (dynamic)b.Gradient));
         }
 
-        public static Sample<float> Pow(float a, Sample<float> b)
+        public static Sample<T> Pow<T>(float a, Sample<T> b)
         {
-            return new Sample<float>(Mathf.Pow(a, b.Value), Mathf.Log(a) * Mathf.Pow(a, b.Value) * b.Gradient);
+            return new Sample<T>(Mathf.Pow(a, b.Value), Mathf.Log(a) * Mathf.Pow(a, b.Value) * (dynamic)b.Gradient);
         }
 
-        public static Sample<float> Pow(Sample<float> a, float b)
+        public static Sample<T> Pow<T>(Sample<T> a, float b)
         {
-            return new Sample<float>(Mathf.Pow(a.Value, b), Mathf.Pow(a.Value, b - 1) * (b * a.Gradient));
+            return new Sample<T>(Mathf.Pow(a.Value, b), Mathf.Pow(a.Value, b - 1) * (b * (dynamic)a.Gradient));
         }
 
-        public static Sample<float2> Pow(Sample<float2> a, Sample<float2> b)
+        public static Sample<T> Exp<T>(Sample<T> a)
         {
-            return new Sample<float2>(Mathf.Pow(a.Value, b.Value),
-                Mathf.Pow(a.Value, b.Value - 1) * (b.Value * a.Gradient + a.Value * Mathf.Log10(a.Value) * b.Gradient));
+            return new Sample<T>(Mathf.Exp(a.Value), Mathf.Exp(a.Value) * (dynamic)a.Gradient);
         }
 
-        public static Sample<float2> Pow(Sample<float2> a, float b)
+        public static Sample<T> Sqrt<T>(Sample<T> a)
         {
-            return new Sample<float2>(Mathf.Pow(a.Value, b), Mathf.Pow(a.Value, b - 1) * (b * a.Gradient));
+            return new Sample<T>(Mathf.Sqrt(a.Value), (dynamic)a.Gradient / (2 * Mathf.Sqrt(a.Value)));
         }
 
-        public static Sample<float3> Pow(Sample<float3> a, Sample<float3> b)
+        public static Sample<T> Sin<T>(Sample<T> a)
         {
-            return new Sample<float3>(Mathf.Pow(a.Value, b.Value),
-                Mathf.Pow(a.Value, b.Value - 1) * (b.Value * a.Gradient + a.Value * Mathf.Log10(a.Value) * b.Gradient));
+            return new Sample<T>(Mathf.Sin(a.Value), (dynamic)a.Gradient * Mathf.Cos(a.Value));
         }
 
-        public static Sample<float3> Pow(Sample<float3> a, float b)
+        public static Sample<T> Cos<T>(Sample<T> a)
         {
-            return new Sample<float3>(Mathf.Pow(a.Value, b), Mathf.Pow(a.Value, b - 1) * (b * a.Gradient));
+            return new Sample<T>(Mathf.Cos(a.Value), -(dynamic)a.Gradient * Mathf.Sin(a.Value));
         }
 
-        public static Sample<float> Exp(Sample<float> a)
+        public static Sample<T> Tan<T>(Sample<T> a)
         {
-            return new Sample<float>(Mathf.Exp(a.Value), Mathf.Exp(a.Value) * a.Gradient);
+            return new Sample<T>(Mathf.Tan(a.Value), (dynamic)a.Gradient * Mathf.Pow(1 / Mathf.Cos(a.Value), 2));
         }
 
-        public static Sample<float2> Exp(Sample<float2> a)
+        public static Sample<T> Log<T>(Sample<T> a)
         {
-            return new Sample<float2>(Mathf.Exp(a.Value), Mathf.Exp(a.Value) * a.Gradient);
+            return new Sample<T>(Mathf.Log(a.Value), (dynamic)a.Gradient / a.Value);
         }
 
-        public static Sample<float3> Exp(Sample<float3> a)
+        public static Sample<T> Log10<T>(Sample<T> a)
         {
-            return new Sample<float3>(Mathf.Exp(a.Value), Mathf.Exp(a.Value) * a.Gradient);
+            return new Sample<T>(Mathf.Log10(a.Value), (dynamic)a.Gradient / (Mathf.Log(10) * a.Value));
         }
 
-        public static Sample<float> Sqrt(Sample<float> a)
+        public static Sample<T> Log<T>(Sample<T> a, Sample<T> b)
         {
-            return new Sample<float>(Mathf.Sqrt(a.Value), a.Gradient / (2 * Mathf.Sqrt(a.Value)));
-        }
-
-        public static Sample<float2> Sqrt(Sample<float2> a)
-        {
-            return new Sample<float2>(Mathf.Sqrt(a.Value), a.Gradient / (2 * Mathf.Sqrt(a.Value)));
-        }
-
-        public static Sample<float3> Sqrt(Sample<float3> a)
-        {
-            return new Sample<float3>(Mathf.Sqrt(a.Value), a.Gradient / (2 * Mathf.Sqrt(a.Value)));
-        }
-
-        public static Sample<float> Sin(Sample<float> a)
-        {
-            return new Sample<float>(Mathf.Sin(a.Value), a.Gradient * Mathf.Cos(a.Value));
-        }
-
-        public static Sample<float2> Sin(Sample<float2> a)
-        {
-            return new Sample<float2>(Mathf.Sin(a.Value), a.Gradient * Mathf.Cos(a.Value));
-        }
-
-        public static Sample<float3> Sin(Sample<float3> a)
-        {
-            return new Sample<float3>(Mathf.Sin(a.Value), a.Gradient * Mathf.Cos(a.Value));
-        }
-
-        public static Sample<float> Cos(Sample<float> a)
-        {
-            return new Sample<float>(Mathf.Cos(a.Value), -a.Gradient * Mathf.Sin(a.Value));
-        }
-
-        public static Sample<float2> Cos(Sample<float2> a)
-        {
-            return new Sample<float2>(Mathf.Cos(a.Value), -a.Gradient * Mathf.Sin(a.Value));
-        }
-
-        public static Sample<float3> Cos(Sample<float3> a)
-        {
-            return new Sample<float3>(Mathf.Cos(a.Value), -a.Gradient * Mathf.Sin(a.Value));
-        }
-
-        public static Sample<float> Tan(Sample<float> a)
-        {
-            return new Sample<float>(Mathf.Tan(a.Value), a.Gradient * Mathf.Pow(1 / Mathf.Cos(a.Value), 2));
-        }
-
-        public static Sample<float2> Tan(Sample<float2> a)
-        {
-            return new Sample<float2>(Mathf.Tan(a.Value), a.Gradient * Mathf.Pow(1 / Mathf.Cos(a.Value), 2));
-        }
-
-        public static Sample<float3> Tan(Sample<float3> a)
-        {
-            return new Sample<float3>(Mathf.Tan(a.Value), a.Gradient * Mathf.Pow(1 / Mathf.Cos(a.Value), 2));
-        }
-
-        public static Sample<float> Log(Sample<float> a)
-        {
-            return new Sample<float>(Mathf.Log(a.Value), a.Gradient / a.Value);
-        }
-
-        public static Sample<float> Log10(Sample<float> a)
-        {
-            return new Sample<float>(Mathf.Log10(a.Value), a.Gradient / (Mathf.Log(10) * a.Value));
-        }
-
-        public static Sample<float> Log(Sample<float> a, Sample<float> b)
-        {
-            return new Sample<float>(Mathf.Log(a.Value, b.Value),
-                (a.Gradient * Mathf.Log(b.Value) / a.Value - b.Gradient * Mathf.Log(a.Value) / b.Value)
+            return new Sample<T>(Mathf.Log(a.Value, b.Value),
+                ((dynamic)a.Gradient * Mathf.Log(b.Value) / a.Value - (dynamic)b.Gradient * Mathf.Log(a.Value) / b.Value)
                 / Mathf.Pow(Mathf.Log(b.Value), 2));
         }
 
-        public static Sample<float> Log(Sample<float> a, float b)
+        public static Sample<T> Log<T>(Sample<T> a, float b)
         {
-            return new Sample<float>(Mathf.Log(a.Value, b),
-                (a.Gradient * Mathf.Log(b) / a.Value) / Mathf.Pow(Mathf.Log(b), 2));
+            return new Sample<T>(Mathf.Log(a.Value, b),
+                ((dynamic)a.Gradient * Mathf.Log(b) / a.Value) / Mathf.Pow(Mathf.Log(b), 2));
         }
 
-        public static Sample<float2> Log(Sample<float2> a)
+        public static Sample<T> Abs<T>(Sample<T> a)
         {
-            return new Sample<float2>(Mathf.Log(a.Value), a.Gradient / a.Value);
-        }
-
-        public static Sample<float2> Log(Sample<float2> a, Sample<float2> b)
-        {
-            return new Sample<float2>(Mathf.Log(a.Value, b.Value),
-                (a.Gradient * Mathf.Log(b.Value) / a.Value - b.Gradient * Mathf.Log(a.Value) / b.Value)
-                / Mathf.Pow(Mathf.Log(b.Value), 2));
-        }
-
-        public static Sample<float3> Log(Sample<float3> a)
-        {
-            return new Sample<float3>(Mathf.Log(a.Value), a.Gradient / a.Value);
-        }
-
-        public static Sample<float3> Log(Sample<float3> a, Sample<float3> b)
-        {
-            return new Sample<float3>(Mathf.Log(a.Value, b.Value),
-                (a.Gradient * Mathf.Log(b.Value) / a.Value - b.Gradient * Mathf.Log(a.Value) / b.Value)
-                / Mathf.Pow(Mathf.Log(b.Value), 2));
-        }
-
-        public static Sample<float> Abs(Sample<float> a)
-        {
-            return new Sample<float>(Mathf.Abs(a.Value), a.Value * a.Gradient / Mathf.Abs(a.Value));
-        }
-
-        public static Sample<float2> Abs(Sample<float2> a)
-        {
-            return new Sample<float2>(Mathf.Abs(a.Value), a.Value * a.Gradient / Mathf.Abs(a.Value));
-        }
-
-        public static Sample<float3> Abs(Sample<float3> a)
-        {
-            return new Sample<float3>(Mathf.Abs(a.Value), a.Value * a.Gradient / Mathf.Abs(a.Value));
+            return new Sample<T>(Mathf.Abs(a.Value), a.Value * (dynamic)a.Gradient / Mathf.Abs(a.Value));
         }
 
         public static Sample<T> Max<T>(params Sample<T>[] samples)
