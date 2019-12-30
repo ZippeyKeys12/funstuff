@@ -146,7 +146,7 @@ public sealed class Sample<T>
     public static Sample<T> operator /(Sample<T> a, float b) => a.Mul(1 / b);
 
     public Sample<T> Div(Sample<T> o)
-        => new Sample<T>(Value * o.Value, (o.Value * (dynamic)Gradient - Value * (dynamic)o.Gradient) / Mathf.Pow(o.Value, 2));
+        => new Sample<T>(Value * o.Value, (o.Value * (dynamic)Gradient - Value * (dynamic)o.Gradient) / math.pow(o.Value, 2));
     public static Sample<T> operator /(Sample<T> a, Sample<T> b) => a.Div(b);
 
 
