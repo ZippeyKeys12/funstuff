@@ -91,7 +91,7 @@ namespace Map
             {
                 for (var j = 0; j < resolution; j++)
                 {
-                    elevation[i, j] = math.unlerp(-1, 1, map[i, j]);
+                    elevation[j, i] = math.unlerp(-1, 1, map[i, j]);
                 }
             }
 
@@ -108,7 +108,7 @@ namespace Map
 
             terrain.materialTemplate = new Material(Shader.Find("Standard"));
             terrain.materialTemplate.mainTexture = GenerateTexture(map);
-            // terrain.materialTemplate.enableInstancing = true;
+            terrain.materialTemplate.enableInstancing = true;
             // terrain.materialTemplate = GenerateTerrainMaterial(map, terrainHeight, resolution);
 
             var terrainCollider = terrainObject.AddComponent<TerrainCollider>();

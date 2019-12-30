@@ -27,8 +27,15 @@ public static class Interp
                     var inc = MathZ.nCr(-N - 1, n) *
                               MathZ.nCr(2 * N + 1, N - n) *
                               math.pow(x.Value, N + n + 1);
+
                     result += inc;
-                    deriv += N + n * inc / x.Value;
+
+                    if (x.Value != 0)
+                    {
+                        inc /= x.Value;
+                    }
+
+                    deriv += (N + n + 1) * inc;
                 }
                 return new Sample<float>(result, deriv * x.Gradient);
             };

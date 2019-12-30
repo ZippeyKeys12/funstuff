@@ -126,7 +126,7 @@ namespace Map.Generation
                 gen = new Max(gen, new Constant(seaLevel));
             }
 
-            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(offsetX, offsetY) + 100, gen, terrainHeight, resolutionPower, mapSize, mapChunks, frequency);
+            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(offsetY, offsetX) + 100, gen, terrainHeight, resolutionPower, mapSize, mapChunks, frequency);
         }
     }
 

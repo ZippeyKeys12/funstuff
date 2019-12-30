@@ -42,7 +42,7 @@ public sealed class Sample<T>
         return new Sample<T>(a);
     }
 
-    private static T ZeroGradient()
+    public static T ZeroGradient()
     {
         var t = typeof(T);
 
