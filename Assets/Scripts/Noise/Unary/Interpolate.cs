@@ -13,7 +13,7 @@ namespace Noise
         private TweenType interp;
 
         public Interpolate(Generator gen)
-            : this(gen, TweenTypes.SmoothStep)
+            : this(gen, TweenTypes.SmootherStep)
         { }
 
         public Interpolate(Generator gen, TweenType interp)
@@ -45,10 +45,13 @@ namespace Noise
 
             var i = new int2(math.floor(xy));
 
-            var dx = interp(new Sample<float>(xy.x, 1) - i.x);
-            var dy = interp(new Sample<float>(xy.y, 1) - i.y);
+            var xr = new Sample<float>(xy.x, 1);
+            var yr = new Sample<float>(xy.y, 1);
 
-            var dxr = new Sample<float2>(dx.Value, new float2(dx.Gradient));
+            var dx = interp(xr - Maths.Floor(xr));
+            var dy = interp(yr - Maths.Floor(yr));
+
+            var dxr = new Sample<float2>(dx.Value, new float2(dx.Gradient, 0));
             var dyr = new Sample<float2>(dy.Value, new float2(0, dy.Gradient));
 
             return Maths.Lerp(Maths.Lerp(gen.Get(i, frequency), gen.Get(i + new float2(1, 0), frequency), dxr),

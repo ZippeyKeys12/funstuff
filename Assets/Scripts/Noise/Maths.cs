@@ -165,6 +165,11 @@ namespace Noise
 
         public static Sample<T> Abs<T>(Sample<T> a)
         {
+            if (a.Value == 0)
+            {
+                return new Sample<T>(0, (dynamic)float.NaN);
+            }
+
             return new Sample<T>(Mathf.Abs(a.Value), a.Value * (dynamic)a.Gradient / Mathf.Abs(a.Value));
         }
 

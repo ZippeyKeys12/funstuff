@@ -71,14 +71,37 @@ namespace Map
 
         protected float[,] GenerateHeightMap(int resolution, Generator gen, float2 offset, float frequency, int size)
         {
+            float max = float.MinValue;
+            float min = float.MaxValue;
             var map = new float[resolution, resolution];
             for (var x = 0; x < resolution; x++)
             {
                 for (var y = 0; y < resolution; y++)
                 {
-                    map[x, y] = gen.Get(size * math.unlerp(0, resolution - 1, new float2(x, y)) + offset, frequency).Value;
+                    var val = gen.Get(size * math.unlerp(0, resolution - 1, new float2(x, y)) - offset, frequency);
+                    map[x, y] = val.Value;
+
+                    if (val.Value > max)
+                        max = val.Value;
+                    if (val.Value < min)
+                        min = val.Value;
                 }
             }
+
+            if (max > 1)
+            {
+                for (var x = 0; x < resolution; x++)
+                {
+                    for (var y = 0; y < resolution; y++)
+                    {
+                        map[x, y] /= max;
+                    }
+                }
+            }
+
+            print(min);
+            print(max);
+
             return map;
         }
 

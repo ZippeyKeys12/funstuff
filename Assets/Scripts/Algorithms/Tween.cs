@@ -57,7 +57,7 @@ public static class Interp
 
         public static readonly TweenType SmoothStep = NSmoothStep(1);
         public static readonly TweenType SmootherStep = NSmoothStep(2);
-        public static readonly TweenType SmoothestStep = NSmoothStep(3);
+        public static readonly TweenType SmoothestStep = NSmoothStep(3); //TODO: Fix
 
         public static TweenType Power(float n)
         {
