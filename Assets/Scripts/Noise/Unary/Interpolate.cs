@@ -40,7 +40,7 @@ namespace Noise
 
             var i = math.floor(x * power) / power;
 
-            var xr = new Sample<float>(x, 1);
+            var xr = new Sample<float>(x, 1) * power;
 
             var d = interp(xr - Maths.Floor(xr * power) / power);
 
@@ -52,7 +52,7 @@ namespace Noise
             xy *= frequency;
             frequency = 1;
 
-            var i = new int2(math.floor(xy * power) / power);
+            var i = math.floor(xy * power) / power;
 
             var xr = new Sample<float>(xy.x, 1);
             var yr = new Sample<float>(xy.y, 1);
@@ -60,8 +60,8 @@ namespace Noise
             var dx = interp(xr - Maths.Floor(xr * power) / power);
             var dy = interp(yr - Maths.Floor(yr * power) / power);
 
-            var dxr = new Sample<float2>(dx.Value, new float2(dx.Gradient, 0));
-            var dyr = new Sample<float2>(dy.Value, new float2(0, dy.Gradient));
+            var dxr = new Sample<float2>(dx.Value, new float2(dx.Gradient, 0)) * power;
+            var dyr = new Sample<float2>(dy.Value, new float2(0, dy.Gradient)) * power;
 
             return Maths.Lerp(Maths.Lerp(gen.Get(i, frequency), gen.Get(i + new float2(invPow, 0), frequency), dxr),
                               Maths.Lerp(gen.Get(i + new float2(0, invPow), frequency), gen.Get(i + new float2(invPow, invPow), frequency), dxr),
@@ -73,7 +73,7 @@ namespace Noise
             xyz *= frequency;
             frequency = 1;
 
-            var i = new int3(math.floor(xyz * power) / power);
+            var i = math.floor(xyz * power) / power;
 
             var xr = new Sample<float>(xyz.x, 1);
             var yr = new Sample<float>(xyz.y, 1);
@@ -83,9 +83,9 @@ namespace Noise
             var dy = interp(yr - Maths.Floor(yr * power) / power);
             var dz = interp(zr - Maths.Floor(zr * power) / power);
 
-            var dxr = new Sample<float3>(dx.Value, new float3(dx.Gradient, 0, 0));
-            var dyr = new Sample<float3>(dy.Value, new float3(0, dy.Gradient, 0));
-            var dzr = new Sample<float3>(dz.Value, new float3(0, 0, dz.Gradient));
+            var dxr = new Sample<float3>(dx.Value, new float3(dx.Gradient, 0, 0)) * power;
+            var dyr = new Sample<float3>(dy.Value, new float3(0, dy.Gradient, 0)) * power;
+            var dzr = new Sample<float3>(dz.Value, new float3(0, 0, dz.Gradient)) * power;
 
             var j = Maths.Lerp(gen.Get(i, frequency), gen.Get(i + new float3(invPow, 0, 0), frequency), dxr);
             var k = Maths.Lerp(gen.Get(i + new float3(0, 0, invPow), frequency), gen.Get(i + new float3(invPow, 0, invPow), frequency), dxr);
