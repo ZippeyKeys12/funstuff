@@ -19,7 +19,7 @@ namespace Map.Generation
 
         public int mapChunks;
 
-        public int resolutionPower = 5;
+        public int resPower = 5;
 
         public float terrainHeight;
 
@@ -136,7 +136,7 @@ namespace Map.Generation
 
             var finalGen = seaGen;
 
-            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(-offsetY, offsetX), finalGen, terrainHeight, resolutionPower, mapSize, mapChunks, frequency);
+            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(-offsetY, offsetX), finalGen, terrainHeight, resPower, mapSize, mapChunks, frequency);
         }
 
         public enum NoiseType

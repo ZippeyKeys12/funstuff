@@ -30,7 +30,7 @@ public class MapGeneratorEditor : Editor
 
         mapGen.mapSize = EditorGUILayout.DelayedIntField("Map Size", mapGen.mapSize);
 
-        mapGen.resolutionPower = EditorGUILayout.IntSlider("Resolution Power", mapGen.resolutionPower, 5, 8);
+        mapGen.resPower = EditorGUILayout.IntSlider("Resolution Power", mapGen.resPower, 5, 8);
 
         mapGen.terrainHeight = EditorGUILayout.Slider("Terrain Height", mapGen.terrainHeight, 0, 500);
 
@@ -61,7 +61,8 @@ public class MapGeneratorEditor : Editor
 
         if (mapGen.filterType == FilterType.Interpolate)
         {
-            mapGen.interpolationPower = EditorGUILayout.Slider("Power", mapGen.interpolationPower, 0, math.ceil(math.log2(mapGen.mapSize)));
+            var resolution = math.pow(2, mapGen.resPower);
+            mapGen.interpolationPower = EditorGUILayout.Slider("Unit", mapGen.interpolationPower, 1 / resolution, resolution - 1);
         }
         #endregion
 
@@ -82,11 +83,13 @@ public class MapGeneratorEditor : Editor
         }
         #endregion
 
-
-        EditorGUILayout.Separator();
-        if (GUILayout.Button("Generate Map"))
+        if (!mapGen.autoUpdate)
         {
-            mapGen.GenerateMap();
+            EditorGUILayout.Separator();
+            if (GUILayout.Button("Generate Map"))
+            {
+                mapGen.GenerateMap();
+            }
         }
         #endregion
 
