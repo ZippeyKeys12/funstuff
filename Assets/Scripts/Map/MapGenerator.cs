@@ -11,49 +11,42 @@ namespace Map.Generation
 {
     public class MapGenerator : MonoBehaviour
     {
-        [Header("Render Settings")]
+        [Header("Generator Settings")]
+        public bool autoUpdate;
+
+        [Header("Terrain Settings")]
         public int mapSize = 100;
 
-        [Range(0, 4)]
         public int mapChunks;
 
-        [Range(5, 8)]
         public int resolutionPower = 5;
 
-        [Range(0, 500)]
         public float terrainHeight;
 
-        [Range(0, 1)]
         public float seaLevel;
 
         [Header("Noise Settings")]
-        [Range(0, 10000)]
-        public int seed;
-
-        [Range(0, 2500)]
-        public float offsetX, offsetY;
-
         public NoiseType noiseType;
 
-        [Range(.01f, 1f)]
+        public int seed;
+
+        public float offsetX, offsetY;
+
         public float frequency = .5f;
 
         [Header("Filter Settings")]
         public FilterType filterType;
 
+        public float interpolationPower;
+
         [Header("Fractal Settings")]
         public FractalType fractalType;
 
-        [Range(1, 10)]
         public int octaves = 1;
 
-        [Range(.0001f, 1f)]
         public float persistance = .5f;
 
-        [Range(.0001f, 5)]
         public float lacunarity = 2;
-
-        public bool autoUpdate;
 
         public void GenerateMap()
         {
@@ -101,7 +94,7 @@ namespace Map.Generation
                     break;
 
                 case FilterType.Interpolate:
-                    filter = x => new Interpolate(x);
+                    filter = x => new Interpolate(x, interpolationPower);
                     break;
             }
 
@@ -145,30 +138,30 @@ namespace Map.Generation
 
             GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(-offsetY, offsetX), finalGen, terrainHeight, resolutionPower, mapSize, mapChunks, frequency);
         }
-    }
 
-    public enum NoiseType
-    {
-        White,
-        Sin,
-        Value,
-        Perlin
-    }
+        public enum NoiseType
+        {
+            White,
+            Sin,
+            Value,
+            Perlin
+        }
 
-    public enum FilterType
-    {
-        None,
-        Norm,
-        Billow,
-        Ridged,
-        Interpolate
-    }
+        public enum FilterType
+        {
+            None,
+            Norm,
+            Billow,
+            Ridged,
+            Interpolate
+        }
 
-    public enum FractalType
-    {
-        None,
-        FBM,
-        Multifractal,
-        Norm
+        public enum FractalType
+        {
+            None,
+            FBM,
+            Multifractal,
+            Norm
+        }
     }
 }
