@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using Unity.Mathematics;
 using TweenType = Interp.TweenType;
 using TweenTypes = Interp.TweenTypes;
@@ -38,11 +37,11 @@ namespace Noise
             x *= frequency;
             frequency = 1;
 
-            var i = math.floor(x * invUnit) / invUnit;
+            var i = math.floor(x * invUnit) * unit;
 
             var xr = new Sample<float>(x, 1) * invUnit;
 
-            var d = interp(xr - Maths.Floor(xr * invUnit) / invUnit);
+            var d = interp(xr - Maths.Floor(xr * invUnit) * unit);
 
             return Maths.Lerp(gen.Get(i, frequency), gen.Get(i + unit, frequency), d);
         }
@@ -52,13 +51,13 @@ namespace Noise
             xy *= frequency;
             frequency = 1;
 
-            var i = math.floor(xy * invUnit) / invUnit;
+            var i = math.floor(xy * invUnit) * unit;
 
             var xr = new Sample<float>(xy.x, 1);
             var yr = new Sample<float>(xy.y, 1);
 
-            var dx = interp(xr - Maths.Floor(xr * invUnit) / invUnit);
-            var dy = interp(yr - Maths.Floor(yr * invUnit) / invUnit);
+            var dx = interp(xr - Maths.Floor(xr * invUnit) * unit);
+            var dy = interp(yr - Maths.Floor(yr * invUnit) * unit);
 
             var dxr = new Sample<float2>(dx.Value, new float2(dx.Gradient, 0)) * invUnit;
             var dyr = new Sample<float2>(dy.Value, new float2(0, dy.Gradient)) * invUnit;
@@ -73,15 +72,15 @@ namespace Noise
             xyz *= frequency;
             frequency = 1;
 
-            var i = math.floor(xyz * invUnit) / invUnit;
+            var i = math.floor(xyz * invUnit) * unit;
 
             var xr = new Sample<float>(xyz.x, 1);
             var yr = new Sample<float>(xyz.y, 1);
             var zr = new Sample<float>(xyz.z, 1);
 
-            var dx = interp(xr - Maths.Floor(xr * invUnit) / invUnit);
-            var dy = interp(yr - Maths.Floor(yr * invUnit) / invUnit);
-            var dz = interp(zr - Maths.Floor(zr * invUnit) / invUnit);
+            var dx = interp(xr - Maths.Floor(xr * invUnit) * unit);
+            var dy = interp(yr - Maths.Floor(yr * invUnit) * unit);
+            var dz = interp(zr - Maths.Floor(zr * invUnit) * unit);
 
             var dxr = new Sample<float3>(dx.Value, new float3(dx.Gradient, 0, 0)) * invUnit;
             var dyr = new Sample<float3>(dy.Value, new float3(0, dy.Gradient, 0)) * invUnit;
