@@ -21,11 +21,11 @@ namespace Noise
             : this(gen, interp, 0)
         { }
 
-        public Interpolate(Generator gen, ushort power)
+        public Interpolate(Generator gen, float power)
             : this(gen, TweenTypes.SmootherStep, power)
         { }
 
-        public Interpolate(Generator gen, TweenType interp, ushort power)
+        public Interpolate(Generator gen, TweenType interp, float power)
         {
             this.gen = gen;
             this.interp = interp;
