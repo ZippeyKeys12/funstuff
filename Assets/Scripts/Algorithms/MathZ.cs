@@ -3,6 +3,11 @@ using Unity.Mathematics;
 
 public static class MathZ
 {
+    public static float Every(this float x, float space)
+    {
+        return math.floor(x / space) * space;
+    }
+
     public static int Factorial(this int x)
     {
         var fact = 1;
