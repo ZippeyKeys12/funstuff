@@ -32,6 +32,9 @@ public class MapGeneratorEditor : Editor
 
         mapGen.resPower = EditorGUILayout.IntSlider("Resolution Power", mapGen.resPower, 5, 8);
 
+        mapGen.terrainOffset.x = EditorGUILayout.Slider("Offset X", mapGen.terrainOffset.x, 0, 2500);
+        mapGen.terrainOffset.y = EditorGUILayout.Slider("Offset Y", mapGen.terrainOffset.y, 0, 2500);
+
         mapGen.terrainHeight = EditorGUILayout.Slider("Terrain Height", mapGen.terrainHeight, 0, 500);
 
         mapGen.seaLevel = EditorGUILayout.Slider("Sea Level", mapGen.seaLevel, 0, 1);
@@ -46,10 +49,7 @@ public class MapGeneratorEditor : Editor
 
         mapGen.seed = EditorGUILayout.IntSlider("Seed", mapGen.seed, 0, 10000);
 
-        mapGen.offsetX = EditorGUILayout.Slider("Offset X", mapGen.offsetX, 0, 2500);
-        mapGen.offsetY = EditorGUILayout.Slider("Offset Y", mapGen.offsetY, 0, 2500);
-
-        mapGen.frequency = EditorGUILayout.Slider("Frequency", mapGen.frequency, .01f, 1);
+        mapGen.frequency = EditorGUILayout.Slider("Frequency", mapGen.frequency, 1, .01f);
         #endregion
 
 
@@ -57,12 +57,30 @@ public class MapGeneratorEditor : Editor
         EditorGUILayout.Separator();
         EditorGUILayout.LabelField("Filter Settings", EditorStyles.boldLabel);
 
-        mapGen.filterType = (FilterType)EditorGUILayout.EnumPopup("Type", mapGen.filterType);
+        var oldFilterCount = mapGen.filterCount;
+        mapGen.filterCount = EditorGUILayout.IntSlider("Filter Count", mapGen.filterCount, 0, 5);
 
-        if (mapGen.filterType == FilterType.Interpolate)
+        for (var i = 0; i < mapGen.filterCount; i++)
         {
-            var resolution = math.pow(2, mapGen.resPower);
-            mapGen.interpolationPower = EditorGUILayout.Slider("Unit", mapGen.interpolationPower, 1 / resolution, resolution - 1);
+            mapGen.FilterDefaults(i);
+
+            mapGen.filterType[i] = (FilterType)EditorGUILayout.EnumPopup("Type", mapGen.filterType[i]);
+
+            switch (mapGen.filterType[i])
+            {
+                case FilterType.Interpolate:
+                    var resolution = math.pow(2, mapGen.resPower);
+                    mapGen.filterUnit[i] = EditorGUILayout.Slider("Unit", mapGen.filterUnit[i], 1 / resolution, resolution - 1);
+                    break;
+
+                case FilterType.MidpointDisplacement:
+                    mapGen.secondaryNoiseType[i] = (NoiseType)EditorGUILayout.EnumPopup("Jitter Noise Type", mapGen.secondaryNoiseType[i]);
+                    mapGen.secondarySeed[i] = EditorGUILayout.IntSlider("Seed", mapGen.secondarySeed[i], 0, 10000);
+
+                    mapGen.windowSize[i] = EditorGUILayout.IntSlider("Window Size", mapGen.windowSize[i], 1, 10);
+                    mapGen.divisions[i] = EditorGUILayout.IntSlider("Divisions", mapGen.divisions[i], 0, mapGen.resPower);
+                    break;
+            }
         }
         #endregion
 

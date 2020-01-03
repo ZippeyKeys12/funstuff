@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using Unity.Mathematics;
 using Noise;
@@ -30,14 +30,23 @@ namespace Map.Generation
 
         public int seed;
 
-        public float offsetX, offsetY;
+        public float2 terrainOffset;
 
-        public float frequency = .5f;
+        public float frequency = 1;
 
         [Header("Filter Settings")]
-        public FilterType filterType;
+        public int filterCount;
 
-        public float interpolationPower;
+        public Dictionary<int, FilterType> filterType = new Dictionary<int, FilterType>();
+
+        public Dictionary<int, float> filterUnit = new Dictionary<int, float>();
+
+        public Dictionary<int, NoiseType> secondaryNoiseType = new Dictionary<int, NoiseType>();
+        public Dictionary<int, int> secondarySeed = new Dictionary<int, int>();
+        public Dictionary<int, float> secondaryFreq = new Dictionary<int, float>();
+
+        public Dictionary<int, int> windowSize = new Dictionary<int, int>();
+        public Dictionary<int, int> divisions = new Dictionary<int, int>();
 
         [Header("Fractal Settings")]
         public FractalType fractalType;
@@ -53,53 +62,62 @@ namespace Map.Generation
             Func<int, int> getSeed = x => (int)(seed + new Random(seed * x).NextDouble());
 
 
-            Func<int, Generator> noiseBuilder = null;
-            switch (noiseType)
+            Func<NoiseType, int, Generator> noiseBuilder = (type, seed) =>
             {
-                case NoiseType.White:
-                    noiseBuilder = x => new WhiteNoise(getSeed(x));
-                    break;
+                switch (type)
+                {
+                    case NoiseType.White:
+                        return new WhiteNoise(seed);
 
-                case NoiseType.Sin:
-                    noiseBuilder = x => new SinNoise(getSeed(x));
-                    break;
+                    case NoiseType.Sin:
+                        return new SinNoise(seed);
 
-                case NoiseType.Value:
-                    noiseBuilder = x => new Interpolate(new WhiteNoise(getSeed(x)), TweenTypes.SmootherStep);
-                    break;
+                    case NoiseType.Value:
+                        return new Interpolate(new WhiteNoise(seed), TweenTypes.SmootherStep);
 
-                case NoiseType.Perlin:
-                    noiseBuilder = x => new PerlinNoise(getSeed(x));
-                    break;
+                    case NoiseType.Perlin:
+                        return new PerlinNoise(seed);
+
+                    default:
+                        return null;
+                }
+            };
+
+            Func<Generator, Generator> filter = x => x;
+            for (var i = 0; i < filterCount; i++)
+            {
+                FilterDefaults(i);
+
+                switch (filterType[i])
+                {
+                    case FilterType.Norm:
+                        filter = x => new Norm(x);
+                        break;
+
+                    case FilterType.Billow:
+                        filter = x => new Billow(x);
+                        break;
+
+                    case FilterType.Ridged:
+                        filter = x => new Ridged(x);
+                        break;
+
+                    case FilterType.Interpolate:
+                        var unit = filterUnit[i];
+                        filter = x => new Interpolate(x, unit);
+                        break;
+
+                    case FilterType.MidpointDisplacement:
+                        var noise = noiseBuilder(secondaryNoiseType[i], secondarySeed[i]);
+                        var wSize = windowSize[i];
+                        var divs = divisions[i];
+                        filter = x => new MidpointDisplacement(x, noise, wSize, divs);
+                        break;
+                }
             }
 
 
-            Func<Generator, Generator> filter = null;
-            switch (filterType)
-            {
-                case FilterType.None:
-                    filter = x => x;
-                    break;
-
-                case FilterType.Norm:
-                    filter = x => new Norm(x);
-                    break;
-
-                case FilterType.Billow:
-                    filter = x => new Billow(x);
-                    break;
-
-                case FilterType.Ridged:
-                    filter = x => new Ridged(x);
-                    break;
-
-                case FilterType.Interpolate:
-                    filter = x => new Interpolate(x, interpolationPower);
-                    break;
-            }
-
-
-            var generators = Enumerable.Range(0, octaves).Select(x => filter(noiseBuilder(x))).ToArray();
+            var generators = Enumerable.Range(0, octaves).Select(x => filter(noiseBuilder(noiseType, getSeed(x)))).ToArray();
 
 
             Generator fractalGen = null;
@@ -136,7 +154,21 @@ namespace Map.Generation
 
             var finalGen = seaGen;
 
-            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), new float2(-offsetY, offsetX), finalGen, terrainHeight, resPower, mapSize, mapChunks, frequency);
+            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), terrainOffset, finalGen, terrainHeight, resPower, mapSize, mapChunks, frequency);
+        }
+
+        public void FilterDefaults(int index)
+        {
+            if (!filterType.ContainsKey(index))
+            {
+                filterType[index] = FilterType.None;
+                filterUnit[index] = 1;
+                secondaryNoiseType[index] = NoiseType.White;
+                secondarySeed[index] = 0;
+                secondaryFreq[index] = 1;
+                windowSize[index] = 1;
+                divisions[index] = 0;
+            }
         }
 
         public enum NoiseType
@@ -153,7 +185,8 @@ namespace Map.Generation
             Norm,
             Billow,
             Ridged,
-            Interpolate
+            Interpolate,
+            MidpointDisplacement
         }
 
         public enum FractalType
