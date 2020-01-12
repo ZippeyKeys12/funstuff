@@ -110,14 +110,39 @@ public static class Maths
         return new Sample<T>(math.sin(a.Value), (dynamic)a.Gradient * math.cos(a.Value));
     }
 
+    public static Sample<T> Asin<T>(Sample<T> a)
+    {
+        return new Sample<T>(math.asin(a.Value), (dynamic)a.Gradient / math.sqrt(1 - math.pow(a.Value, 2)));
+    }
+
     public static Sample<T> Cos<T>(Sample<T> a)
     {
         return new Sample<T>(math.cos(a.Value), -(dynamic)a.Gradient * math.sin(a.Value));
     }
 
+    public static Sample<T> Acos<T>(Sample<T> a)
+    {
+        return new Sample<T>(math.acos(a.Value), -(dynamic)a.Gradient / math.sqrt(1 - math.pow(a.Value, 2)));
+    }
+
     public static Sample<T> Tan<T>(Sample<T> a)
     {
         return new Sample<T>(math.tan(a.Value), (dynamic)a.Gradient * math.pow(1 / math.cos(a.Value), 2));
+    }
+
+    public static Sample<T> Atan<T>(Sample<T> a)
+    {
+        return new Sample<T>(math.atan(a.Value), (dynamic)a.Gradient / (1 + math.pow(a.Value, 2)));
+    }
+
+    public static Sample<T> Tanh<T>(Sample<T> a)
+    {
+        return new Sample<T>(math.tanh(a.Value), (dynamic)a.Gradient / math.cosh(a.Value));
+    }
+
+    public static Sample<T> Acot<T>(Sample<T> a)
+    {
+        return Atan(1 / a);
     }
 
     public static Sample<T> Log<T>(Sample<T> a)
