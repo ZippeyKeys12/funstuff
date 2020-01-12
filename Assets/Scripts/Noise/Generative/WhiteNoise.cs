@@ -24,7 +24,7 @@ namespace Noise
             x *= frequency;
             var i = (int)math.floor(x) & hashMask;
 
-            return new Sample<float>(hash[i] * (2f / hashMask) - 1);
+            return new Sample<float>(hash[i] * 1f / hashMask);
         }
 
         public override Sample<float2> Get(float2 xy, float frequency)
@@ -33,7 +33,7 @@ namespace Noise
 
             var i = new int2(math.floor(xy)) & hashMask;
 
-            return new Sample<float2>(hash[hash[i.x] + i.y] * (2f / hashMask) - 1);
+            return new Sample<float2>(hash[hash[i.x] + i.y] * 1f / hashMask);
         }
 
         public override Sample<float3> Get(float3 xyz, float frequency)
@@ -42,7 +42,7 @@ namespace Noise
 
             var i = new int3(math.floor(xyz)) & hashMask;
 
-            return (Sample<float3>)(hash[hash[hash[i.x] + i.y] + i.z] * (2f / hashMask) - 1);
+            return (Sample<float3>)(hash[hash[hash[i.x] + i.y] + i.z] * 1f / hashMask);
         }
     }
 }

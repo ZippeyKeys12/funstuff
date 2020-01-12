@@ -35,7 +35,7 @@ namespace Noise
             x -= math.floor(x);
             var u = interp(new Sample<float>(x, 1)).Value;
 
-            return new Sample<float>(math.lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u) * 2);
+            return new Sample<float>(math.lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u)) / 2 + .5f;
         }
 
         public override Sample<float2> Get(float2 xy, float frequency)
@@ -56,7 +56,7 @@ namespace Noise
                 B = (perm[X + 1] + Y) & hashMask;
 
             return new Sample<float2>(math.lerp(math.lerp(Grad(perm[A], x, y), Grad(perm[B], x - 1, y), u),
-                                math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v));
+                                math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v)) / 2 + .5f;
         }
 
         public override Sample<float3> Get(float3 xyz, float frequency)
@@ -80,7 +80,7 @@ namespace Noise
             return new Sample<float3>(math.lerp(math.lerp(math.lerp(Grad(perm[AA], x, y, z), Grad(perm[BA], x - 1, y, z), u),
                                           math.lerp(Grad(perm[AB], x, y - 1, z), Grad(perm[BB], x - 1, y - 1, z), u), u),
                                 math.lerp(math.lerp(Grad(perm[AA + 1], x, y, z - 1), Grad(perm[BA + 1], x - 1, y, z - 1), u),
-                                          math.lerp(Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w));
+                                          math.lerp(Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w)) / 2 + .5f;
         }
 
         static float Grad(int hash, float x)
