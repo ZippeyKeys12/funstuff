@@ -107,9 +107,7 @@ public sealed class Sample<T>
     }
 
     public Sample<T> Neg()
-    {
-        return new Sample<T>(Value, -(dynamic)Gradient);
-    }
+        => new Sample<T>(-Value, -(dynamic)Gradient);
     public static Sample<T> operator -(Sample<T> a) => a.Neg();
 
 
@@ -143,8 +141,8 @@ public sealed class Sample<T>
     public static Sample<T> operator *(Sample<T> a, Sample<T> b) => a.Mul(b);
 
 
-    public static Sample<T> operator /(Sample<T> a, float b) => a * 1 / b;
-    public static Sample<T> operator /(float b, Sample<T> a) => Maths.Pow(a, -1) * b;
+    public static Sample<T> operator /(Sample<T> a, float b) => a.Mul(1 / b);
+    public static Sample<T> operator /(float b, Sample<T> a) => Maths.Pow(a, -1).Mul(b);
 
     public Sample<T> Div(Sample<T> o)
         => new Sample<T>(Value * o.Value, (o.Value * (dynamic)Gradient - Value * (dynamic)o.Gradient) / math.pow(o.Value, 2));
