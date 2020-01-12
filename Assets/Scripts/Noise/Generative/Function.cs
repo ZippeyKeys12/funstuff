@@ -6,11 +6,13 @@ namespace Noise
 {
     public class Function : Generator
     {
-        protected readonly Func<float, float, Sample<float>> func_a;
-        protected readonly Func<float2, float, Sample<float2>> func_b;
-        protected readonly Func<float3, float, Sample<float3>> func_c;
+        public delegate Sample<T> MapFunc<T>(T t, float f);
 
-        public Function(Func<float, float, Sample<float>> func_a, Func<float2, float, Sample<float2>> func_b, Func<float3, float, Sample<float3>> func_c)
+        protected readonly MapFunc<float> func_a;
+        protected readonly MapFunc<float2> func_b;
+        protected readonly MapFunc<float3> func_c;
+
+        public Function(MapFunc<float> func_a, MapFunc<float2> func_b, MapFunc<float3> func_c)
         {
             this.func_a = func_a;
             this.func_b = func_b;
