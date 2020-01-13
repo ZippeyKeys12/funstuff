@@ -1,17 +1,18 @@
-﻿using Unity.Mathematics;
+using Unity.Mathematics;
 
 namespace Noise
 {
-    public class FBM : Generator
+    public class SlopeErosion : Generator
     {
-        protected readonly float lacunarity;
-        protected readonly float[] spectralWeights;
-        protected readonly Generator[] operands;
+        protected float lacunarity;
+        protected float[] spectralWeights;
+        protected Generator[] operands;
 
-        public FBM(float lacunarity = 2, float persistance = .5f, params Generator[] operands)
-            : this(lacunarity, persistance, .9f, operands) { }
+        public SlopeErosion(float lacunarity = 2, float persistance = .5f, params Generator[] operands)
+            : this(lacunarity, persistance, .9f, operands)
+        { }
 
-        public FBM(float lacunarity = 2, float persistance = .5f, float spectralExponent = .9f, params Generator[] operands)
+        public SlopeErosion(float lacunarity = 2, float persistance = .5f, float spectralExponent = .9f, params Generator[] operands)
         {
             this.lacunarity = lacunarity;
 
@@ -28,12 +29,16 @@ namespace Noise
         {
             var freq = frequency;
             var noiseHeight = Sample<float>.Zero;
+            var gradient = 0f;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(x, freq) * spectralWeights[i];
-                maxNoiseHeight += spectralWeights[i];
+                var val = operands[i].Get(x, freq);
+
+                gradient += val.Gradient;
+                noiseHeight += val * spectralWeights[i] / (1 + math.lengthsq(gradient));
+                maxNoiseHeight += spectralWeights[i] / (1 + math.lengthsq(gradient));
 
                 freq *= lacunarity;
             }
@@ -45,12 +50,16 @@ namespace Noise
         {
             var freq = frequency;
             var noiseHeight = Sample<float2>.Zero;
+            var gradient = float2.zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(xy, freq) * spectralWeights[i];
-                maxNoiseHeight += spectralWeights[i];
+                var val = operands[i].Get(xy, freq);
+
+                gradient += val.Gradient;
+                noiseHeight += val * spectralWeights[i] / (1 + math.lengthsq(gradient));
+                maxNoiseHeight += spectralWeights[i] / (1 + math.lengthsq(gradient));
 
                 freq *= lacunarity;
             }
@@ -62,12 +71,16 @@ namespace Noise
         {
             var freq = frequency;
             var noiseHeight = Sample<float3>.Zero;
+            var gradient = float3.zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(xyz, freq) * spectralWeights[i];
-                maxNoiseHeight += spectralWeights[i];
+                var val = operands[i].Get(xyz, freq);
+
+                gradient += val.Gradient;
+                noiseHeight += val * spectralWeights[i] / (1 + math.lengthsq(gradient));
+                maxNoiseHeight += spectralWeights[i] / (1 + math.lengthsq(gradient));
 
                 freq *= lacunarity;
             }
