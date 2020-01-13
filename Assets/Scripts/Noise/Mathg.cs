@@ -22,6 +22,11 @@ namespace Noise
             );
         }
 
+        public static Generator Translate(this Generator gen, float3 translation)
+        {
+            return new Translation(gen, translation);
+        }
+
         public static Generator Filter(this Generator gen, params FilterType[] types)
         {
             foreach (var type in types)
