@@ -27,6 +27,16 @@ namespace Noise
             return new Translation(gen, translation);
         }
 
+        public static Generator Warp(this Generator gen, int levels)
+        {
+            return new Warp(gen, levels);
+        }
+
+        public static Generator Warp(this Generator gen, float strength, int levels)
+        {
+            return new Warp(gen, strength, levels);
+        }
+
         public static Generator Filter(this Generator gen, params FilterType[] types)
         {
             foreach (var type in types)

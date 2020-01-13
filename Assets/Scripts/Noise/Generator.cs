@@ -10,7 +10,7 @@ namespace Noise
         public abstract Sample<float> Get(float x, float frequency);
         public Sample<float> Get(Sample<float> x, float frequency)
         {
-            var ret = Get(x, frequency);
+            var ret = Get(x.Value, frequency);
             return new Sample<float>(ret.Value, ret.Gradient * x.Gradient);
         }
 

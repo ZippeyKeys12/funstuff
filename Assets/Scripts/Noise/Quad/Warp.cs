@@ -12,6 +12,26 @@ namespace Noise
         protected Generator b;
         protected Generator c;
 
+        public Warp(Generator gen, int levels)
+            : this(gen, 4, levels)
+        { }
+
+        public Warp(Generator gen, float strength, int levels)
+            : this(gen, gen, strength, levels)
+        { }
+
+        public Warp(Generator gen, Generator shift, int levels)
+            : this(gen, shift, 4, levels)
+        { }
+
+        public Warp(Generator gen, Generator shift, float strength, int levels)
+            : this(gen, shift.Translate(5.2f), shift.Translate(1.3f), shift.Translate(9.2f), strength, levels)
+        { }
+
+        public Warp(Generator gen, Generator a, Generator b, Generator c, int levels)
+            : this(gen, a, b, c, 4, levels)
+        { }
+
         public Warp(Generator gen, Generator a, Generator b, Generator c, float strength, int levels)
         {
             this.gen = gen;
@@ -24,6 +44,9 @@ namespace Noise
 
         public override Sample<float> Get(float x, float frequency)
         {
+            x *= frequency;
+            frequency = 1;
+
             var p = Sample<float>.Zero;
 
             for (var i = 0; i < levels; i++)
@@ -36,6 +59,9 @@ namespace Noise
 
         public override Sample<float2> Get(float2 xy, float frequency)
         {
+            xy *= frequency;
+            frequency = 1;
+
             var p = Sample<float>.Zero;
             var q = Sample<float>.Zero;
 
