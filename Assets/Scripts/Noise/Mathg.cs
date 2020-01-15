@@ -18,7 +18,7 @@ namespace Noise
             return new Function(
                 (x, f) => Maths.Clamp(gen.Get(x, f), min.Get(x, f), max.Get(x, f)),
                 (xy, f) => Maths.Clamp(gen.Get(xy, f), min.Get(xy, f), max.Get(xy, f)),
-                 (xyz, f) => Maths.Clamp(gen.Get(xyz, f), min.Get(xyz, f), max.Get(xyz, f))
+                (xyz, f) => Maths.Clamp(gen.Get(xyz, f), min.Get(xyz, f), max.Get(xyz, f))
             );
         }
 

@@ -3,6 +3,21 @@ using Unity.Mathematics;
 
 public static class Maths
 {
+    public static Sample<T> Sign<T>(Sample<T> a)
+    {
+        if (a < 0)
+        {
+            return new Sample<T>(-1, Sample<T>.ZeroGradient());
+        }
+        else if (a > 0)
+        {
+            return new Sample<T>(1, Sample<T>.ZeroGradient());
+        }
+
+        return new Sample<T>(0, Sample<T>.ZeroGradient());
+
+    }
+
     public static Sample<T> Lerp<T>(Sample<T> a, Sample<T> b, Sample<T> t)
     {
         return a + (b - a) * Clamp01(t);
