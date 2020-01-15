@@ -1,4 +1,5 @@
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Noise
 {
@@ -30,7 +31,6 @@ namespace Noise
             var freq = frequency;
             var noiseHeight = Sample<float>.Zero;
             var gradient = 0f;
-            var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
@@ -38,12 +38,11 @@ namespace Noise
 
                 gradient += val.Gradient;
                 noiseHeight += val * spectralWeights[i] / (1 + math.lengthsq(gradient));
-                maxNoiseHeight += spectralWeights[i] / (1 + math.lengthsq(gradient));
 
                 freq *= lacunarity;
             }
 
-            return noiseHeight / maxNoiseHeight;
+            return noiseHeight;
         }
 
         public override Sample<float2> Get(float2 xy, float frequency)
@@ -51,7 +50,6 @@ namespace Noise
             var freq = frequency;
             var noiseHeight = Sample<float2>.Zero;
             var gradient = float2.zero;
-            var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
@@ -59,12 +57,11 @@ namespace Noise
 
                 gradient += val.Gradient;
                 noiseHeight += val * spectralWeights[i] / (1 + math.lengthsq(gradient));
-                maxNoiseHeight += spectralWeights[i] / (1 + math.lengthsq(gradient));
 
                 freq *= lacunarity;
             }
 
-            return noiseHeight / maxNoiseHeight;
+            return noiseHeight;
         }
 
         public override Sample<float3> Get(float3 xyz, float frequency)
@@ -72,7 +69,6 @@ namespace Noise
             var freq = frequency;
             var noiseHeight = Sample<float3>.Zero;
             var gradient = float3.zero;
-            var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
@@ -80,12 +76,11 @@ namespace Noise
 
                 gradient += val.Gradient;
                 noiseHeight += val * spectralWeights[i] / (1 + math.lengthsq(gradient));
-                maxNoiseHeight += spectralWeights[i] / (1 + math.lengthsq(gradient));
 
                 freq *= lacunarity;
             }
 
-            return noiseHeight / maxNoiseHeight;
+            return noiseHeight;
         }
     }
 }

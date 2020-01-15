@@ -59,8 +59,11 @@ namespace Noise
                                 math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v)) / 2 + .5f;
         }
 
+        // This is broken
         public override Sample<float3> Get(float3 xyz, float frequency)
         {
+            xyz *= frequency;
+
             var X = (int)math.floor(xyz.x) & hashMask;
             var Y = (int)math.floor(xyz.y) & hashMask;
             var Z = (int)math.floor(xyz.z) & hashMask;
