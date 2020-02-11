@@ -1,17 +1,17 @@
 ﻿//namespace Noise
 //{
 //    // TODO: Actually do
-//    public class HeteroMultiFractal : Generator
+//    public class HeteroMultifractal : Generator
 //    {
 //        private readonly float lacunarity, offset;
 //        private readonly float[] spectralWeights;
 //        private readonly Generator[] operands;
 
-//        public HeteroMultiFractal(float lacunarity = 2, float persistance = .5f, params Generator[] operands)
+//        public HeteroMultifractal(float lacunarity = 2, float persistance = .5f, params Generator[] operands)
 //            : this(lacunarity, persistance, 1f, .9f, operands)
 //        { }
 
-//        public HeteroMultiFractal(float lacunarity = 2, float persistance = .5f, float offset = 1f, float spectralExponent = .9f, params Generator[] operands)
+//        public HeteroMultifractal(float lacunarity = 2, float persistance = .5f, float offset = 1f, float spectralExponent = .9f, params Generator[] operands)
 //        {
 //            this.lacunarity = lacunarity;
 
@@ -25,7 +25,7 @@
 //            this.operands = operands;
 //        }
 
-//        public override float Get(float x, float frequency)
+//        public override float Get(float x)
 //        {
 //            var freq = frequency;
 //            var noiseHeight = 1f;
@@ -42,7 +42,7 @@
 //            return noiseHeight / maxNoiseHeight;
 //        }
 
-//        public override float Get(float x, float y, float frequency)
+//        public override float Get(float x, float y)
 //        {
 //            var freq = frequency;
 //            var noiseHeight = 1f;
@@ -59,7 +59,7 @@
 //            return noiseHeight / maxNoiseHeight;
 //        }
 
-//        public override float Get(float x, float y, float z, float frequency)
+//        public override float Get(float x, float y, float z)
 //        {
 //            var freq = frequency;
 //            var noiseHeight = 1f;

@@ -12,19 +12,19 @@ namespace Noise
             this.operands = operands;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            return Maths.Min(operands.Select(i => i.Get(x, frequency)).ToArray());
+            return Maths.Min(operands.Select(i => i.Get(x)).ToArray());
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            return Maths.Min(operands.Select(i => i.Get(xy, frequency)).ToArray());
+            return Maths.Min(operands.Select(i => i.Get(xy)).ToArray());
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            return Maths.Min(operands.Select(i => i.Get(xyz, frequency)).ToArray());
+            return Maths.Min(operands.Select(i => i.Get(xyz)).ToArray());
         }
     }
 }

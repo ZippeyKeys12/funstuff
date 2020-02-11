@@ -24,15 +24,15 @@ namespace Noise
             this.operands = operands;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            var freq = frequency;
+            var freq = 1f;
             var noiseHeight = Sample<float>.Zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(x, freq) * spectralWeights[i];
+                noiseHeight += operands[i].Get(x * freq) * spectralWeights[i];
                 maxNoiseHeight += spectralWeights[i];
 
                 freq *= lacunarity;
@@ -41,15 +41,15 @@ namespace Noise
             return noiseHeight / maxNoiseHeight;
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            var freq = frequency;
+            var freq = 1f;
             var noiseHeight = Sample<float2>.Zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(xy, freq) * spectralWeights[i];
+                noiseHeight += operands[i].Get(xy * freq) * spectralWeights[i];
                 maxNoiseHeight += spectralWeights[i];
 
                 freq *= lacunarity;
@@ -58,15 +58,15 @@ namespace Noise
             return noiseHeight / maxNoiseHeight;
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            var freq = frequency;
+            var freq = 1f;
             var noiseHeight = Sample<float3>.Zero;
             var maxNoiseHeight = 0f;
 
             for (var i = 0; i < operands.Length; i++)
             {
-                noiseHeight += operands[i].Get(xyz, freq) * spectralWeights[i];
+                noiseHeight += operands[i].Get(xyz * freq) * spectralWeights[i];
                 maxNoiseHeight += spectralWeights[i];
 
                 freq *= lacunarity;

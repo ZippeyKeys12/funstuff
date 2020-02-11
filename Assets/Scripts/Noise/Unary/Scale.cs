@@ -2,10 +2,10 @@ using Unity.Mathematics;
 
 namespace Noise
 {
-    public class Scale : Generator
+    public sealed class Scale : Generator
     {
-        float scalingFactor;
-        Generator gen;
+        private readonly float scalingFactor;
+        private readonly Generator gen;
 
         public Scale(Generator gen, float scalingFactor)
         {
@@ -13,19 +13,19 @@ namespace Noise
             this.scalingFactor = scalingFactor;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            return gen.Get(x / scalingFactor, frequency);
+            return gen.Get(x / scalingFactor);
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            return gen.Get(xy / scalingFactor, frequency);
+            return gen.Get(xy / scalingFactor);
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            return gen.Get(xyz / scalingFactor, frequency);
+            return gen.Get(xyz / scalingFactor);
         }
     }
 }

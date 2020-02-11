@@ -17,19 +17,19 @@ namespace Noise
             this.transform3d = math.inverse(transform3d);
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            return gen.Get(math.mul(transform1d, new float2(x, 1)).x, frequency);
+            return gen.Get(math.mul(transform1d, new float2(x, 1)).x);
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            return gen.Get(math.mul(transform2d, new float3(xy, 1)).xy, frequency);
+            return gen.Get(math.mul(transform2d, new float3(xy, 1)).xy);
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            return gen.Get(math.mul(transform3d, new float4(xyz, 1)).xyz, frequency);
+            return gen.Get(math.mul(transform3d, new float4(xyz, 1)).xyz);
         }
     }
 }

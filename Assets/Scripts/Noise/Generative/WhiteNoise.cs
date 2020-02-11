@@ -19,27 +19,22 @@ namespace Noise
             hash = temp.Concat(temp).ToArray();
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            x *= frequency;
             var i = (int)math.floor(x) & hashMask;
 
             return new Sample<float>(hash[i] * 1f / hashMask);
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            xy *= frequency;
-
             var i = new int2(math.floor(xy)) & hashMask;
 
             return new Sample<float2>(hash[hash[i.x] + i.y] * 1f / hashMask);
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            xyz *= frequency;
-
             var i = new int3(math.floor(xyz)) & hashMask;
 
             return (Sample<float3>)(hash[hash[hash[i.x] + i.y] + i.z] * 1f / hashMask);

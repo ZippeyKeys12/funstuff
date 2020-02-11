@@ -6,7 +6,7 @@ namespace Noise
 {
     public class Function : Generator
     {
-        public delegate Sample<T> MapFunc<T>(T t, float f);
+        public delegate Sample<T> MapFunc<T>(T t);
 
         protected readonly MapFunc<float> func_a;
         protected readonly MapFunc<float2> func_b;
@@ -19,19 +19,19 @@ namespace Noise
             this.func_c = func_c;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            return func_a(x, frequency);
+            return func_a(x);
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            return func_b(xy, frequency);
+            return func_b(xy);
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            return func_c(xyz, frequency);
+            return func_c(xyz);
         }
     }
 }

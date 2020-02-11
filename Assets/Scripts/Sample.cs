@@ -9,7 +9,7 @@ public interface GeneratorSample<T, R> : IJobParallelFor
     T Dimension { get; set; }
     float Frequency { get; set; }
 
-    R Get(T x, float frequency);
+    R Get(T x);
 }
 public sealed class Sample<T>
 {

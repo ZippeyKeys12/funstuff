@@ -7,24 +7,18 @@ namespace Noise
         public SawtoothNoise()
         { }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            x *= frequency;
-
             return new Sample<float>(x - math.floor(x), 1);
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            xy *= frequency;
-
             return new Sample<float2>(math.dot(xy - math.floor(xy), 1), 1);
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            xyz *= frequency;
-
             return new Sample<float3>(math.dot(xyz - math.floor(xyz), 1), 1);
         }
     }

@@ -27,10 +27,8 @@ namespace Noise
             this.interp = interp;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            x *= frequency;
-
             var X = (int)math.floor(x) & hashMask;
             x -= math.floor(x);
             var u = interp(new Sample<float>(x, 1)).Value;
@@ -38,10 +36,8 @@ namespace Noise
             return new Sample<float>(math.lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u)) / 2 + .5f;
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            xy *= frequency;
-
             var X = (int)math.floor(xy.x) & hashMask;
             var Y = (int)math.floor(xy.y) & hashMask;
 
@@ -59,11 +55,9 @@ namespace Noise
                                 math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v)) / 2 + .5f;
         }
 
-        // This is broken
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        // TODO: This is broken
+        public override Sample<float3> Get(float3 xyz)
         {
-            xyz *= frequency;
-
             var X = (int)math.floor(xyz.x) & hashMask;
             var Y = (int)math.floor(xyz.y) & hashMask;
             var Z = (int)math.floor(xyz.z) & hashMask;

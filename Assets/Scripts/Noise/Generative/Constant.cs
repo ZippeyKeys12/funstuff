@@ -12,15 +12,15 @@ namespace Noise
             this.a = a;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
             => (Sample<float>)a;
 
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
             => (Sample<float2>)a;
 
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
             => (Sample<float3>)a;
 
     }

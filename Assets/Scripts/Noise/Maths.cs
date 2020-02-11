@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 
 public static class Maths
 {
@@ -20,12 +19,12 @@ public static class Maths
 
     public static Sample<T> Lerp<T>(Sample<T> a, Sample<T> b, Sample<T> t)
     {
-        return a + (b - a) * Clamp01(t);
+        return a + ((b - a) * Clamp01(t));
     }
 
     public static Sample<T> Lerp<T>(Sample<T> a, Sample<T> b, float t)
     {
-        return a + (b - a) * math.clamp(t, 0, 1);
+        return a + ((b - a) * math.clamp(t, 0, 1));
     }
 
     public static Sample<T> Unlerp<T>(Sample<T> a, Sample<T> b, Sample<T> v)
@@ -97,7 +96,7 @@ public static class Maths
     public static Sample<T> Pow<T>(Sample<T> a, Sample<T> b)
     {
         return new Sample<T>(math.pow(a.Value, b.Value),
-            math.pow(a.Value, b.Value - 1) * (b.Value * (dynamic)a.Gradient + a.Value * math.log10(a.Value) * (dynamic)b.Gradient));
+            math.pow(a.Value, b.Value - 1) * ((b.Value * (dynamic)a.Gradient) + (a.Value * math.log10(a.Value) * (dynamic)b.Gradient)));
     }
 
     public static Sample<T> Pow<T>(float a, Sample<T> b)
@@ -170,17 +169,18 @@ public static class Maths
         return new Sample<T>(math.log10(a.Value), (dynamic)a.Gradient / (math.log(10) * a.Value));
     }
 
-    public static Sample<T> Log<T>(Sample<T> a, Sample<T> b)
+    public static Sample<T> Log<T>(Sample<T> b, Sample<T> x)
     {
-        return new Sample<T>(Mathf.Log(a.Value, b.Value),
-            ((dynamic)a.Gradient * math.log(b.Value) / a.Value - (dynamic)b.Gradient * math.log(a.Value) / b.Value)
-            / math.pow(math.log(b.Value), 2));
+        return new Sample<T>(math.log(x.Value) / math.log(b.Value),
+            (((dynamic)x.Gradient * math.log(b.Value) / x.Value)
+            - ((dynamic)b.Gradient * math.log(x.Value) / b.Value))
+                / math.pow(math.log(b.Value), 2));
     }
 
-    public static Sample<T> Log<T>(Sample<T> a, float b)
+    public static Sample<T> Log<T>(float b, Sample<T> x)
     {
-        return new Sample<T>(Mathf.Log(a.Value, b),
-            ((dynamic)a.Gradient * math.log(b) / a.Value) / math.pow(math.log(b), 2));
+        return new Sample<T>(math.log(x.Value) / math.log(b),
+            (dynamic)x.Gradient / (x.Value * math.log(b)));
     }
 
     public static Sample<T> Abs<T>(Sample<T> a)

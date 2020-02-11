@@ -25,40 +25,34 @@ namespace Noise
             this.func_c = func_c;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            x *= frequency;
-
             var samples = new List<Sample<float>>();
             for (var i = -steps; i < steps; i++)
             {
-                samples.Add(gen.Get(x + i * unit, 1));
+                samples.Add(gen.Get(x + (i * unit)));
             }
 
             return func_a(samples.ToArray());
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            xy *= frequency;
-
             var samples = new List<Sample<float2>>();
             var ij = new float2(-steps);
             for (; ij.x < steps; ij.x++)
             {
                 for (; ij.y < steps; ij.y++)
                 {
-                    samples.Add(gen.Get(xy + ij * unit, 1));
+                    samples.Add(gen.Get(xy + (ij * unit)));
                 }
             }
 
             return func_b(samples.ToArray());
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            xyz *= frequency;
-
             var samples = new List<Sample<float3>>();
             var ijk = new float3(-steps);
             for (; ijk.x < steps; ijk.x++)
@@ -67,7 +61,7 @@ namespace Noise
                 {
                     for (; ijk.z < steps; ijk.z++)
                     {
-                        samples.Add(gen.Get(xyz + ijk * unit, 1));
+                        samples.Add(gen.Get(xyz + (ijk * unit)));
                     }
                 }
             }

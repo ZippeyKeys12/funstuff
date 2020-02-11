@@ -33,7 +33,7 @@ namespace Noise
                     {
                         for (var xn = xc - R; xn <= xc + R; xn++)
                         {
-                            var e = gen.Get(new int2(xn, yn), freq).Value;
+                            var e = gen.Get(new float2(xn, yn) * freq).Value;
 
                             if (e > max)
                             {
@@ -43,7 +43,7 @@ namespace Noise
                     }
 
 
-                    var c = gen.Get(new int2(xc, yc), freq).Value;
+                    var c = gen.Get(new float2(xc, yc) * freq).Value;
 
                     if (c == max)
                     {

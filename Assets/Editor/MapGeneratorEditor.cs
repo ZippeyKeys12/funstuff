@@ -4,7 +4,7 @@ using UnityEngine;
 
 using Map.Generation;
 using NoiseType = Map.Generation.MapGenerator.NoiseType;
-using FilterType = Map.Generation.MapGenerator.FilterType;
+using FilterType = Map.Generation.MapGenerator.FilterGenType;
 using FractalType = Map.Generation.MapGenerator.FractalType;
 
 [CustomEditor(typeof(MapGenerator))]
@@ -49,41 +49,10 @@ public class MapGeneratorEditor : Editor
 
         mapGen.seed = EditorGUILayout.IntSlider("Seed", mapGen.seed, 0, 10000);
 
-        mapGen.frequency = EditorGUILayout.Slider("Frequency", mapGen.frequency, 1, .01f);
+        mapGen.frequency = EditorGUILayout.Slider("Frequency", mapGen.frequency, 2, .01f);
+
+        mapGen.divisions = EditorGUILayout.IntSlider("Divisions", mapGen.divisions, 0, 10);
         #endregion
-
-
-        #region Filter Settings
-        EditorGUILayout.Separator();
-        EditorGUILayout.LabelField("Filter Settings", EditorStyles.boldLabel);
-
-        var oldFilterCount = mapGen.filterCount;
-        mapGen.filterCount = EditorGUILayout.IntSlider("Filter Count", mapGen.filterCount, 0, 5);
-
-        for (var i = 0; i < mapGen.filterCount; i++)
-        {
-            mapGen.FilterDefaults(i);
-
-            mapGen.filterType[i] = (FilterType)EditorGUILayout.EnumPopup("Type", mapGen.filterType[i]);
-
-            switch (mapGen.filterType[i])
-            {
-                case FilterType.Interpolate:
-                    var resolution = math.pow(2, mapGen.resPower);
-                    mapGen.filterUnit[i] = EditorGUILayout.Slider("Unit", mapGen.filterUnit[i], 1 / resolution, resolution - 1);
-                    break;
-
-                case FilterType.MidpointDisplacement:
-                    mapGen.secondaryNoiseType[i] = (NoiseType)EditorGUILayout.EnumPopup("Jitter Noise Type", mapGen.secondaryNoiseType[i]);
-                    mapGen.secondarySeed[i] = EditorGUILayout.IntSlider("Seed", mapGen.secondarySeed[i], 0, 10000);
-
-                    mapGen.windowSize[i] = EditorGUILayout.IntSlider("Window Size", mapGen.windowSize[i], 1, 10);
-                    mapGen.divisions[i] = EditorGUILayout.IntSlider("Divisions", mapGen.divisions[i], 0, mapGen.resPower);
-                    break;
-            }
-        }
-        #endregion
-
 
         #region Fractal Settings
         EditorGUILayout.Separator();
@@ -91,7 +60,7 @@ public class MapGeneratorEditor : Editor
 
         mapGen.fractalType = (FractalType)EditorGUILayout.EnumPopup("Type", mapGen.fractalType);
 
-        if (mapGen.fractalType == FractalType.FBM || mapGen.fractalType == FractalType.Multifractal)
+        if (mapGen.fractalType == FractalType.FBM || mapGen.fractalType == FractalType.Multifractal || mapGen.fractalType == FractalType.SlopeErosion)
         {
             mapGen.octaves = EditorGUILayout.IntSlider("Octaves", mapGen.octaves, 1, 10);
 
@@ -104,9 +73,9 @@ public class MapGeneratorEditor : Editor
         if (!mapGen.autoUpdate)
         {
             EditorGUILayout.Separator();
-            if (GUILayout.Button("Generate Map"))
+            if (GUILayout.Button("Update Map"))
             {
-                mapGen.GenerateMap();
+                mapGen.Update();
             }
         }
         #endregion
@@ -115,7 +84,7 @@ public class MapGeneratorEditor : Editor
         {
             if (mapGen.autoUpdate)
             {
-                mapGen.GenerateMap();
+                mapGen.Update();
             }
         }
     }

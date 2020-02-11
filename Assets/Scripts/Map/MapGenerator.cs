@@ -34,19 +34,7 @@ namespace Map.Generation
 
         public float frequency = 1;
 
-        [Header("Filter Settings")]
-        public int filterCount;
-
-        public Dictionary<int, FilterType> filterType = new Dictionary<int, FilterType>();
-
-        public Dictionary<int, float> filterUnit = new Dictionary<int, float>();
-
-        public Dictionary<int, NoiseType> secondaryNoiseType = new Dictionary<int, NoiseType>();
-        public Dictionary<int, int> secondarySeed = new Dictionary<int, int>();
-        public Dictionary<int, float> secondaryFreq = new Dictionary<int, float>();
-
-        public Dictionary<int, int> windowSize = new Dictionary<int, int>();
-        public Dictionary<int, int> divisions = new Dictionary<int, int>();
+        public int divisions = 0;
 
         [Header("Fractal Settings")]
         public FractalType fractalType;
@@ -57,91 +45,37 @@ namespace Map.Generation
 
         public float lacunarity = 2;
 
-        public void GenerateMap()
+        public void Update()
         {
-            Func<int, int> getSeed = x => (int)(seed + new Random(seed * x).NextDouble());
-
-
-            Func<NoiseType, int, Generator> noiseBuilder = (type, seed) =>
-            {
-                switch (type)
-                {
-                    case NoiseType.White:
-                        return new WhiteNoise(seed);
-
-                    case NoiseType.Sin:
-                        return new SinNoise(seed);
-
-                    case NoiseType.Value:
-                        return new Interpolate(new WhiteNoise(seed), TweenTypes.SmootherStep);
-
-                    case NoiseType.Perlin:
-                        return new PerlinNoise(seed);
-
-                    default:
-                        return null;
-                }
-            };
-
-            Func<Generator, Generator> filter = x => x;
-            for (var i = 0; i < filterCount; i++)
-            {
-                FilterDefaults(i);
-
-                switch (filterType[i])
-                {
-                    case FilterType.Norm:
-                        filter = x => new Norm(x);
-                        break;
-
-                    case FilterType.Billow:
-                        filter = x => new Billow(x);
-                        break;
-
-                    case FilterType.Ridged:
-                        filter = x => new Ridged(x);
-                        break;
-
-                    case FilterType.Interpolate:
-                        var unit = filterUnit[i];
-                        filter = x => new Interpolate(x, unit);
-                        break;
-
-                    case FilterType.MidpointDisplacement:
-                        var noise = noiseBuilder(secondaryNoiseType[i], secondarySeed[i]);
-                        var wSize = windowSize[i];
-                        var divs = divisions[i];
-                        filter = x => new MidpointDisplacement(x, noise, wSize, divs);
-                        break;
-                }
-            }
-
-
-            var generators = Enumerable.Range(0, octaves).Select(x => filter(noiseBuilder(noiseType, getSeed(x)))).ToArray();
+            var filtersGen = Enumerable
+                .Range(0, octaves)
+                .Select(x => noiseBuilder(noiseType, getSeed(x)))
+                .ToArray();
 
 
             Generator fractalGen = null;
             switch (fractalType)
             {
                 case FractalType.None:
-                    fractalGen = generators[0];
+                    fractalGen = filtersGen[0];
                     break;
 
                 case FractalType.FBM:
-                    fractalGen = new FBM(lacunarity, persistance, generators);
+                    fractalGen = new FBM(lacunarity, persistance, filtersGen);
                     break;
 
                 case FractalType.Multifractal:
-                    fractalGen = new Multifractal(lacunarity, persistance, generators);
+                    fractalGen = new Multifractal(lacunarity, persistance, filtersGen);
                     break;
 
-                case FractalType.Norm:
-                    fractalGen = new Norm(generators[0]);
+                case FractalType.SlopeErosion:
+                    fractalGen = new SlopeErosion(lacunarity, persistance, filtersGen);
                     break;
             }
 
+            fractalGen = fractalGen.Warp(4, 1);
 
-            Generator seaGen = null;
+            Generator seaGen;
             if (seaLevel > 0)
             {
                 seaGen = new Max(fractalGen, new Constant(seaLevel));
@@ -152,34 +86,71 @@ namespace Map.Generation
             }
 
 
-            var finalGen = seaGen;
+            Generator finalGen = seaGen;
 
-            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), terrainOffset, finalGen, terrainHeight, resPower, mapSize, mapChunks, frequency);
+            GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), float2.zero, finalGen, terrainHeight, resPower, mapSize, mapChunks, frequency);
         }
 
-        public void FilterDefaults(int index)
+        private int getSeed(int x)
+            => (int)(seed + new Random(seed * x).NextDouble());
+
+        private Generator noiseBuilder(NoiseType type, int seed)
         {
-            if (!filterType.ContainsKey(index))
+            switch (type)
             {
-                filterType[index] = FilterType.None;
-                filterUnit[index] = 1;
-                secondaryNoiseType[index] = NoiseType.White;
-                secondarySeed[index] = 0;
-                secondaryFreq[index] = 1;
-                windowSize[index] = 1;
-                divisions[index] = 0;
+                case NoiseType.White:
+                    return new WhiteNoise(seed);
+
+                case NoiseType.Sin:
+                    return new SinNoise();
+
+                case NoiseType.Square:
+                    return new SquareNoise();
+
+                case NoiseType.Triangle:
+                    return new TriangleNoise();
+
+                case NoiseType.Sawtooth:
+                    return new SawtoothNoise();
+
+                case NoiseType.Value:
+                    return new Interpolate(new WhiteNoise(seed), TweenTypes.SmootherStep);
+
+                case NoiseType.Perlin:
+                    return new PerlinNoise(seed);
+
+                default:
+                    return null;
             }
+
+            // return new Warp(gen,
+            //     new Interpolate(new WhiteNoise(seed + 10), TweenTypes.SmootherStep),
+            //     new Interpolate(new WhiteNoise(seed + 2), TweenTypes.SmootherStep),
+            //     new Interpolate(new WhiteNoise(seed + 39), TweenTypes.SmootherStep), , 1);
+
+            // return new Interpolate(new MidpointDisplacement(gen, new WhiteNoise(seed + 1), math.pow(2, divisions), divisions));
+
+            // return Mathg.Lerp(
+            //     new PerlinNoise(seed + 53).Filter(FilterType.Billow),
+            //     new PerlinNoise(seed + 71).Filter(FilterType.Ridged),
+            //     new PerlinNoise(seed).Scale(2)
+            // );
+
+            // return new PerlinNoise(seed).Scale(2);
         }
 
         public enum NoiseType
         {
             White,
             Sin,
+            Square,
+            Triangle,
+            Sawtooth,
             Value,
             Perlin
         }
 
-        public enum FilterType
+        public enum FilterGenType
         {
             None,
             Norm,
@@ -194,7 +165,7 @@ namespace Map.Generation
             None,
             FBM,
             Multifractal,
-            Norm
+            SlopeErosion
         }
     }
 }

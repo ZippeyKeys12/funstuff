@@ -16,9 +16,9 @@ namespace Noise
         public static Generator Clamp(this Generator gen, Generator min, Generator max)
         {
             return new Function(
-                (x, f) => Maths.Clamp(gen.Get(x, f), min.Get(x, f), max.Get(x, f)),
-                (xy, f) => Maths.Clamp(gen.Get(xy, f), min.Get(xy, f), max.Get(xy, f)),
-                (xyz, f) => Maths.Clamp(gen.Get(xyz, f), min.Get(xyz, f), max.Get(xyz, f))
+                x => Maths.Clamp(gen.Get(x), min.Get(x), max.Get(x)),
+                xy => Maths.Clamp(gen.Get(xy), min.Get(xy), max.Get(xy)),
+                xyz => Maths.Clamp(gen.Get(xyz), min.Get(xyz), max.Get(xyz))
             );
         }
 
@@ -41,52 +41,53 @@ namespace Noise
         {
             foreach (var type in types)
             {
+                var tempGen = gen;
                 switch (type)
                 {
                     case FilterType.Invert:
                         gen = new Function(
-                            (x, f) => 1 - gen.Get(x, f),
-                            (xy, f) => 1 - gen.Get(xy, f),
-                            (xyz, f) => 1 - gen.Get(xyz, f));
+                            x => 1 - tempGen.Get(x),
+                            xy => 1 - tempGen.Get(xy),
+                            xyz => 1 - tempGen.Get(xyz));
                         break;
 
                     case FilterType.Billow:
                         gen = new Function(
-                            (x, f) => Maths.Abs(2 * gen.Get(x, f) - 1),
-                            (xy, f) => Maths.Abs(2 * gen.Get(xy, f) - 1),
-                            (xyz, f) => Maths.Abs(2 * gen.Get(xyz, f) - 1));
+                            x => Maths.Abs((2 * tempGen.Get(x)) - 1),
+                            xy => Maths.Abs((2 * tempGen.Get(xy)) - 1),
+                            xyz => Maths.Abs((2 * tempGen.Get(xyz)) - 1));
                         break;
 
                     case FilterType.Ridged:
-                        gen = gen.Filter(FilterType.Billow).Filter(FilterType.Invert);
+                        gen = gen.Filter(FilterType.Billow, FilterType.Invert);
                         break;
 
                     case FilterType.Sin:
                         gen = new Function(
-                            (x, f) => Maths.Sin(2 * math.PI * gen.Get(x, f)) / 2 + .5f,
-                            (xy, f) => Maths.Sin(2 * math.PI * gen.Get(xy, f)) / 2 + .5f,
-                            (xyz, f) => Maths.Sin(2 * math.PI * gen.Get(xyz, f)) / 2 + .5f);
+                            x => (Maths.Sin(2 * math.PI * tempGen.Get(x)) / 2) + .5f,
+                            xy => (Maths.Sin(2 * math.PI * tempGen.Get(xy)) / 2) + .5f,
+                            xyz => (Maths.Sin(2 * math.PI * tempGen.Get(xyz)) / 2) + .5f);
                         break;
 
                     case FilterType.Asin:
                         gen = new Function(
-                            (x, f) => Maths.Asin(2 * gen.Get(x, f) - 1) / math.PI + .5f,
-                            (xy, f) => Maths.Asin(2 * gen.Get(xy, f) - 1) / math.PI + .5f,
-                            (xyz, f) => Maths.Asin(2 * gen.Get(xyz, f) - 1) / math.PI + .5f);
+                            x => (Maths.Asin((2 * tempGen.Get(x)) - 1) / math.PI) + .5f,
+                            xy => (Maths.Asin((2 * tempGen.Get(xy)) - 1) / math.PI) + .5f,
+                            xyz => (Maths.Asin((2 * tempGen.Get(xyz)) - 1) / math.PI) + .5f);
                         break;
 
                     case FilterType.Atan:
                         gen = new Function(
-                            (x, f) => 2 * Maths.Atan(2 * gen.Get(x, f) - 1) / math.PI + .5f,
-                            (xy, f) => 2 * Maths.Atan(2 * gen.Get(xy, f) - 1) / math.PI + .5f,
-                            (xyz, f) => 2 * Maths.Atan(2 * gen.Get(xyz, f) - 1) / math.PI + .5f);
+                            x => (2 * Maths.Atan((2 * tempGen.Get(x)) - 1) / math.PI) + .5f,
+                            xy => (2 * Maths.Atan((2 * tempGen.Get(xy)) - 1) / math.PI) + .5f,
+                            xyz => (2 * Maths.Atan((2 * tempGen.Get(xyz)) - 1) / math.PI) + .5f);
                         break;
 
                     case FilterType.Tanh:
                         gen = new Function(
-                            (x, f) => 2 * Maths.Tanh(2 * gen.Get(x, f) - 1) / 2 + .5f,
-                            (xy, f) => 2 * Maths.Tanh(2 * gen.Get(xy, f) - 1) / 2 + .5f,
-                            (xyz, f) => 2 * Maths.Tanh(2 * gen.Get(xyz, f) - 1) / 2 + .5f);
+                            x => 2 * Maths.Tanh(2 * tempGen.Get(x) - 1) / 2 + .5f,
+                            xy => 2 * Maths.Tanh(2 * tempGen.Get(xy) - 1) / 2 + .5f,
+                            xyz => 2 * Maths.Tanh(2 * tempGen.Get(xyz) - 1) / 2 + .5f);
                         break;
 
                     default:
@@ -114,9 +115,9 @@ namespace Noise
         public static Generator Lerp(Generator a, Generator b, Generator t)
         {
             return new Function(
-                (x, f) => Maths.Lerp(a.Get(x, f), b.Get(x, f), t.Get(x, f)),
-                (xy, f) => Maths.Lerp(a.Get(xy, f), b.Get(xy, f), t.Get(xy, f)),
-                (xyz, f) => Maths.Lerp(a.Get(xyz, f), b.Get(xyz, f), t.Get(xyz, f))
+                x => Maths.Lerp(a.Get(x), b.Get(x), t.Get(x)),
+                xy => Maths.Lerp(a.Get(xy), b.Get(xy), t.Get(xy)),
+                xyz => Maths.Lerp(a.Get(xyz), b.Get(xyz), t.Get(xyz))
             );
         }
     }

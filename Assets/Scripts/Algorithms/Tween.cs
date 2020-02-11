@@ -25,7 +25,7 @@ public static class Interp
                 for (var n = 0; n <= N; ++n)
                 {
                     var inc = MathZ.nCr(-N - 1, n) *
-                              MathZ.nCr(2 * N + 1, N - n) *
+                              MathZ.nCr((2 * N) + 1, N - n) *
                               math.pow(x.Value, N + n + 1);
 
                     result += inc;
@@ -66,7 +66,7 @@ public static class Interp
 
         public static TweenType NRoot(float n)
         {
-            if (Mathf.Approximately(n, 2))
+            if (math.abs(n - 2) <= float.Epsilon)
             {
                 return Circular;
             }
@@ -76,17 +76,17 @@ public static class Interp
 
         public static TweenType LogN(float n)
         {
-            if (Mathf.Approximately(n, 10))
+            if (math.abs(n - 10) <= float.Epsilon)
             {
-                return x => -Maths.Log10(1 - .9f * x);
+                return x => -Maths.Log10(1 - (.9f * x));
             }
 
-            if (Mathf.Approximately(n, math.exp(1)))
+            if (math.abs(n - math.exp(1)) <= float.Epsilon)
             {
                 return Logarithmic;
             }
 
-            return x => -Maths.Log(1 - .9f * x, n);
+            return x => -Maths.Log(n, 1 - (.9f * x));
         }
     }
 
@@ -99,7 +99,7 @@ public static class Interp
 
         public static BlendType Polynomial(float n)
         {
-            return (a, b) => t => (1 - Maths.Pow(t, n)) * a(t) + Maths.Pow(t, n) * b(t);
+            return (a, b) => t => 1 - (Maths.Pow(t, n) * a(t)) + (Maths.Pow(t, n) * b(t));
         }
 
         public static TweenType EaseBetween(params TweenType[] tweens)

@@ -35,7 +35,7 @@ public static class MathZ
 
     public static float TransferSign(float val, float sign)
     {
-        return Sign(sign) * math.abs(sign);
+        return Sign(sign) * math.abs(val);
     }
 
     public static int NthTriangleNum(int N)
@@ -47,7 +47,9 @@ public static class MathZ
     {
         var result = 1;
         for (var i = 0; i < R; ++i)
+        {
             result *= (N - i) / (i + 1);
+        }
         return result;
     }
 }

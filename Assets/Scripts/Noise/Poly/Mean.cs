@@ -11,37 +11,37 @@ namespace Noise
             this.operands = operands;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
             var sum = Sample<float>.Zero;
 
             foreach (var op in operands)
             {
-                sum += op.Get(x, frequency);
+                sum += op.Get(x);
             }
 
             return sum / operands.Length;
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
             var sum = Sample<float2>.Zero;
 
             foreach (var op in operands)
             {
-                sum += op.Get(xy, frequency);
+                sum += op.Get(xy);
             }
 
             return sum / operands.Length;
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
             var sum = Sample<float3>.Zero;
 
             foreach (var op in operands)
             {
-                sum += op.Get(xyz, frequency);
+                sum += op.Get(xyz);
             }
 
             return sum / operands.Length;

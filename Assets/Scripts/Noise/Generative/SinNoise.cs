@@ -16,17 +16,13 @@ namespace Noise
         public SinNoise()
         { }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            x *= frequency;
-
             return new Sample<float>(math.sin(x + offset1d), math.cos(x + offset1d)) / 2 + .5f;
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            xy *= frequency;
-
             var xay = xy.x + xy.y;
             var xmy = xy.x - xy.y;
 
@@ -34,10 +30,8 @@ namespace Noise
                 (math.cos(xay) + new float2(math.cos(xmy), -math.cos(xmy))) / 2) / 2 + .5f;
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
-            xyz *= frequency;
-
             var xyzw = new float4(xyz, 1);
 
             var xayaz = xyzw.x + xyzw.y + xyzw.z;

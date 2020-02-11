@@ -23,7 +23,7 @@ namespace Map
             {
                 for (var y = 0; y < h; y++)
                 {
-                    colorMap[y * w + x] = Color.Lerp(Color.black, Color.white, math.unlerp(-1, 1, map[x, y]));
+                    colorMap[(y * w) + x] = Color.Lerp(Color.black, Color.white, map[x, y]);
                 }
             }
 
@@ -50,7 +50,7 @@ namespace Map
                     var manhattan = math.abs(centered);
                     var resolution = (int)math.pow(2, resPower /* - math.max(manhattan.x, manhattan.y) */) + 1;
 
-                    DrawSubTerrain(centered + chunkDim, centered * size + pos, centered * size + offset, gen, terrainHeight, resolution, size, frequency);
+                    DrawSubTerrain(centered + chunkDim, (centered * size) + pos, (centered * size) + offset, gen, terrainHeight, resolution, size, frequency);
                 }
             }
 
@@ -65,6 +65,13 @@ namespace Map
                         (x < 2 * chunkDim) ? terrains[x + 1, y].GetComponent<Terrain>() : null,
                         (y > 0) ? terrains[x, y - 1].GetComponent<Terrain>() : null
                     );
+
+                    // print($"In: {(terrain.name)}\n"
+                    // + $"Left: {((x > 0) ? terrains[x - 1, y].name : "None")}, "
+                    // + $"Top: {((y < 2 * chunkDim) ? terrains[x, y + 1].name : "None")}, "
+                    // + $"Right: {((x < 2 * chunkDim) ? terrains[x + 1, y].name : "None")}, "
+                    // + $"Bottom: {((y > 0) ? terrains[x, y - 1].name : "None")}"
+                    // );
                 }
             }
         }
@@ -78,13 +85,13 @@ namespace Map
             {
                 for (var y = 0; y < resolution; y++)
                 {
-                    var val = gen.Get(size * math.unlerp(0, resolution - 1, new float2(x, y)) - offset, frequency);
+                    var val = gen.Get(((size * math.unlerp(0, resolution - 1, new float2(x, y))) - offset) * frequency);
                     map[x, y] = val.Value;
 
-                    if (val.Value > max)
-                        max = val.Value;
-                    if (val.Value < min)
-                        min = val.Value;
+                    if (math.abs(val.Value) > max)
+                        max = math.abs(val.Value);
+                    if (math.abs(val.Value) < min)
+                        min = math.abs(val.Value);
                 }
             }
 
@@ -99,9 +106,6 @@ namespace Map
                 }
             }
 
-            print(min);
-            print(max);
-
             return map;
         }
 
@@ -110,13 +114,18 @@ namespace Map
             var map = GenerateHeightMap(resolution, gen, offset, frequency, size);
 
             var elevation = new float[resolution, resolution];
+            var xyx = new float[resolution * resolution];
             for (var i = 0; i < resolution; i++)
             {
                 for (var j = 0; j < resolution; j++)
                 {
-                    elevation[j, i] = math.unlerp(-1, 1, map[i, j]);
+                    elevation[j, i] = map[i, j];
+                    xyx[i + (resolution * j)] = elevation[i, j];
                 }
             }
+
+            print(xyx.Min());
+            print(xyx.Max());
 
             var terrainData = GenerateTerrain(elevation, terrainHeight, resolution, size);
 
