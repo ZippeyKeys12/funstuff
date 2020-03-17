@@ -20,7 +20,7 @@ namespace AI
     {
         protected override void OnUpdate()
         {
-            var allEntities = GameManager.GetAllEntities();
+            var allEntities = EntityManager.GetAllEntities();
             var agents = allEntities.Where(e => EntityManager.HasComponent<AgentBase>(e))
                                     .Select(e => (e, a: EntityManager.GetComponentObject<AgentBase>(e)))
                                     .Where(t => t.a.ShouldThink)

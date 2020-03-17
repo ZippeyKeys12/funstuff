@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    EntityManager manager;
     HumanoidPlayer player;
 
     void Awake()
@@ -24,17 +23,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        manager = World.Active.EntityManager;
         player = FindObjectOfType<HumanoidPlayer>();
-    }
-
-    public static Entity CreateEntity(params ComponentType[] types)
-    {
-        return Instance.manager.CreateEntity(types);
-    }
-
-    public static NativeArray<Entity> GetAllEntities(params ComponentType[] types)
-    {
-        return Instance.manager.GetAllEntities();
     }
 }

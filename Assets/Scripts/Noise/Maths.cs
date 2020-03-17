@@ -24,7 +24,7 @@ public static class Maths
 
     public static Sample<T> Lerp<T>(Sample<T> a, Sample<T> b, float t)
     {
-        return a + ((b - a) * math.clamp(t, 0, 1));
+        return a + (b - a) * math.clamp(t, 0, 1);
     }
 
     public static Sample<T> Unlerp<T>(Sample<T> a, Sample<T> b, Sample<T> v)
@@ -96,7 +96,7 @@ public static class Maths
     public static Sample<T> Pow<T>(Sample<T> a, Sample<T> b)
     {
         return new Sample<T>(math.pow(a.Value, b.Value),
-            math.pow(a.Value, b.Value - 1) * ((b.Value * (dynamic)a.Gradient) + (a.Value * math.log10(a.Value) * (dynamic)b.Gradient)));
+            math.pow(a.Value, b.Value - 1) * (b.Value * (dynamic)a.Gradient + a.Value * math.log10(a.Value) * (dynamic)b.Gradient));
     }
 
     public static Sample<T> Pow<T>(float a, Sample<T> b)
@@ -106,7 +106,7 @@ public static class Maths
 
     public static Sample<T> Pow<T>(Sample<T> a, float b)
     {
-        return new Sample<T>(math.pow(a.Value, b), math.pow(a.Value, b - 1) * (b * (dynamic)a.Gradient));
+        return new Sample<T>(math.pow(a.Value, b), math.pow(a.Value, b - 1) * b * (dynamic)a.Gradient);
     }
 
     public static Sample<T> Exp<T>(Sample<T> a)

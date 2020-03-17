@@ -11,7 +11,7 @@ public class AgentTest : MonoBehaviour
 {
     public void Start()
     {
-        var entityManager = World.Active.EntityManager;
+        var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         for (var i = 0; i < 50; i++)
         {
@@ -99,7 +99,7 @@ public class AgentTest : MonoBehaviour
 
         public (IAction, float) Reason(Entity entity)
         {
-            var manager = World.Active.EntityManager;
+            var manager = World.DefaultGameObjectInjectionWorld.EntityManager;
             if (manager.HasComponent<TestSensorTag>(entity))
             {
                 var comp = manager.GetComponentData<TestSensorTag>(entity);
