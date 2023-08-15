@@ -1,23 +1,26 @@
 using UnityEngine;
 
-public class SettingsManager : MonoBehaviour
+namespace Settings
 {
-    public static SettingsManager Instance { get; private set; }
-
-    void Awake()
+    public class SettingsManager : MonoBehaviour
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+        public static SettingsManager Instance { get; private set; }
 
-    void Start()
-    {
-        RenderSettings.fog = false;
+        void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        void Start()
+        {
+            RenderSettings.fog = false;
+        }
     }
 }

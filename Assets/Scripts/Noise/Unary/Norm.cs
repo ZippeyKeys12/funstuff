@@ -1,8 +1,8 @@
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Unary
 {
-    public class Norm : Map
+    public class Norm : Unary.Map
     {
         public Norm(Generator gen)
             : base(gen)

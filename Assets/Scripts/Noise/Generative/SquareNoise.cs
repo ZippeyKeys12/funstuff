@@ -1,6 +1,6 @@
-namespace Noise
+namespace Noise.Generative
 {
-    public class SquareNoise : Map
+    public class SquareNoise : Unary.Map
     {
         public SquareNoise()
             : this(new SinNoise())

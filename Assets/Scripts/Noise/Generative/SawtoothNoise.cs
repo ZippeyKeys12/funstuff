@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Generative
 {
     public class SawtoothNoise : Generator
     {

@@ -42,38 +42,39 @@ namespace Map
             }
             terrains = new GameObject[2 * chunkDim + 1, 2 * chunkDim + 1];
 
-            for (var x = -chunkDim; x <= chunkDim; x++)
-            {
-                for (var y = -chunkDim; y <= chunkDim; y++)
-                {
-                    var centered = new int2(x, y);
-                    var manhattan = math.abs(centered);
-                    var resolution = (int)math.pow(2, resPower /* - math.max(manhattan.x, manhattan.y) */) + 1;
+            // for (var x = -chunkDim; x <= chunkDim; x++)
+            // {
+            //     for (var y = -chunkDim; y <= chunkDim; y++)
+            //     {
+            //         var centered = new int2(x, y);
+            //         var manhattan = math.abs(centered);
+            //         var resolution = (int)math.pow(2, resPower /* - math.max(manhattan.x, manhattan.y) */) + 1;
 
-                    DrawSubTerrain(centered + chunkDim, (centered * size) + pos, (centered * size) + offset, gen, terrainHeight, resolution, size, frequency);
-                }
-            }
+            //         DrawSubTerrain(centered + chunkDim, (centered * size) + pos, (centered * size) + offset, gen, terrainHeight, resolution, size, frequency);
+            //     }
+            // }
+            DrawSubTerrain(new int2(0, 0), pos, offset, gen, terrainHeight, (int)math.pow(2, resPower), size, frequency);
 
-            for (var x = 0; x <= 2 * chunkDim; x++)
-            {
-                for (var y = 0; y <= 2 * chunkDim; y++)
-                {
-                    var terrain = terrains[x, y].GetComponent<Terrain>();
-                    terrain.SetNeighbors(
-                        (x > 0) ? terrains[x - 1, y].GetComponent<Terrain>() : null,
-                        (y < 2 * chunkDim) ? terrains[x, y + 1].GetComponent<Terrain>() : null,
-                        (x < 2 * chunkDim) ? terrains[x + 1, y].GetComponent<Terrain>() : null,
-                        (y > 0) ? terrains[x, y - 1].GetComponent<Terrain>() : null
-                    );
+            // for (var x = 0; x <= 2 * chunkDim; x++)
+            // {
+            //     for (var y = 0; y <= 2 * chunkDim; y++)
+            //     {
+            //         var terrain = terrains[x, y].GetComponent<Terrain>();
+            //         terrain.SetNeighbors(
+            //             (x > 0) ? terrains[x - 1, y].GetComponent<Terrain>() : null,
+            //             (y < 2 * chunkDim) ? terrains[x, y + 1].GetComponent<Terrain>() : null,
+            //             (x < 2 * chunkDim) ? terrains[x + 1, y].GetComponent<Terrain>() : null,
+            //             (y > 0) ? terrains[x, y - 1].GetComponent<Terrain>() : null
+            //         );
 
-                    // print($"In: {(terrain.name)}\n"
-                    // + $"Left: {((x > 0) ? terrains[x - 1, y].name : "None")}, "
-                    // + $"Top: {((y < 2 * chunkDim) ? terrains[x, y + 1].name : "None")}, "
-                    // + $"Right: {((x < 2 * chunkDim) ? terrains[x + 1, y].name : "None")}, "
-                    // + $"Bottom: {((y > 0) ? terrains[x, y - 1].name : "None")}"
-                    // );
-                }
-            }
+            //         // print($"In: {(terrain.name)}\n"
+            //         // + $"Left: {((x > 0) ? terrains[x - 1, y].name : "None")}, "
+            //         // + $"Top: {((y < 2 * chunkDim) ? terrains[x, y + 1].name : "None")}, "
+            //         // + $"Right: {((x < 2 * chunkDim) ? terrains[x + 1, y].name : "None")}, "
+            //         // + $"Bottom: {((y > 0) ? terrains[x, y - 1].name : "None")}"
+            //         // );
+            //     }
+            // }
         }
 
         protected float[,] GenerateHeightMap(int resolution, Generator gen, float2 offset, float frequency, int size)

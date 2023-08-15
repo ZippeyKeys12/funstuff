@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Poly
 {
     public class Mean : Generator
     {

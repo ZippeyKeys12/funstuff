@@ -3,18 +3,18 @@ using System.Linq;
 using UnityEngine;
 using Unity.Mathematics;
 using Random = System.Random;
-using TweenType = Interp.TweenType;
-using TweenTypes = Interp.TweenTypes;
+using TweenType = Algorithms.Interp.TweenType;
+using TweenTypes = Algorithms.Interp.TweenTypes;
 
 namespace Noise
 {
     // Implementation based on Ken Perlin's (https://mrl.nyu.edu/~perlin/noise/)
     [Serializable]
-    public class PerlinNoise : Generator
+    public sealed class PerlinNoise : Generator
     {
-        protected const int hashMask = 255;
-        protected readonly int[] perm;
-        protected readonly TweenType interp;
+        private const int HashMask = 255;
+        private readonly int[] perm;
+        private readonly TweenType interp;
 
         public PerlinNoise(int seed)
             : this(seed, TweenTypes.SmootherStep) { }
@@ -22,24 +22,24 @@ namespace Noise
         public PerlinNoise(int seed, TweenType interp)
         {
             var rnd = new Random(seed);
-            var temp = Enumerable.Range(0, hashMask + 1).OrderBy(x => rnd.Next());
+            var temp = Enumerable.Range(0, HashMask + 1).OrderBy(x => rnd.Next());
             perm = temp.Concat(temp).ToArray();
             this.interp = interp;
         }
 
         public override Sample<float> Get(float x)
         {
-            var X = (int)math.floor(x) & hashMask;
+            var ix = (int)math.floor(x) & HashMask;
             x -= math.floor(x);
             var u = interp(new Sample<float>(x, 1)).Value;
 
-            return new Sample<float>(math.lerp(Grad(perm[X], x), Grad(perm[X + 1], x - 1), u)) / 2 + .5f;
+            return new Sample<float>(math.lerp(Grad(perm[ix], x), Grad(perm[ix + 1], x - 1), u)) / 2 + .5f;
         }
 
         public override Sample<float2> Get(float2 xy)
         {
-            var X = (int)math.floor(xy.x) & hashMask;
-            var Y = (int)math.floor(xy.y) & hashMask;
+            var ix = (int)math.floor(xy.x) & HashMask;
+            var iy = (int)math.floor(xy.y) & HashMask;
 
             xy -= math.floor(xy);
 
@@ -48,19 +48,19 @@ namespace Noise
             float u = interp(new Sample<float>(x, 1)).Value,
                   v = interp(new Sample<float>(y, 1)).Value;
 
-            int A = (perm[X] + Y) & hashMask,
-                B = (perm[X + 1] + Y) & hashMask;
+            int a = (perm[ix] + iy) & HashMask,
+                b = (perm[ix + 1] + iy) & HashMask;
 
-            return new Sample<float2>(math.lerp(math.lerp(Grad(perm[A], x, y), Grad(perm[B], x - 1, y), u),
-                                math.lerp(Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1), u), v)) / 2 + .5f;
+            return new Sample<float2>(math.lerp(math.lerp(Grad(perm[a], x, y), Grad(perm[b], x - 1, y), u),
+                                math.lerp(Grad(perm[a + 1], x, y - 1), Grad(perm[b + 1], x - 1, y - 1), u), v)) / 2 + .5f;
         }
 
         // TODO: This is broken
         public override Sample<float3> Get(float3 xyz)
         {
-            var X = (int)math.floor(xyz.x) & hashMask;
-            var Y = (int)math.floor(xyz.y) & hashMask;
-            var Z = (int)math.floor(xyz.z) & hashMask;
+            var ix = (int)math.floor(xyz.x) & HashMask;
+            var iy = (int)math.floor(xyz.y) & HashMask;
+            var iz = (int)math.floor(xyz.z) & HashMask;
 
             xyz -= math.floor(xyz);
 
@@ -71,13 +71,13 @@ namespace Noise
                   v = interp(new Sample<float>(y, 1)).Value,
                   w = interp(new Sample<float>(z, 1)).Value;
 
-            int A = (perm[X] + Y) & hashMask, AA = (perm[A] + Z) & hashMask, AB = (perm[A + 1] + Z) & hashMask,
-                B = (perm[X + 1] + Y) & hashMask, BA = (perm[B] + Z) & hashMask, BB = (perm[B + 1] + Z) & hashMask;
+            int a = (perm[ix] + iy) & HashMask, aa = (perm[a] + iz) & HashMask, ab = (perm[a + 1] + iz) & HashMask,
+                b = (perm[ix + 1] + iy) & HashMask, ba = (perm[b] + iz) & HashMask, bb = (perm[b + 1] + iz) & HashMask;
 
-            return new Sample<float3>(math.lerp(math.lerp(math.lerp(Grad(perm[AA], x, y, z), Grad(perm[BA], x - 1, y, z), u),
-                                          math.lerp(Grad(perm[AB], x, y - 1, z), Grad(perm[BB], x - 1, y - 1, z), u), u),
-                                math.lerp(math.lerp(Grad(perm[AA + 1], x, y, z - 1), Grad(perm[BA + 1], x - 1, y, z - 1), u),
-                                          math.lerp(Grad(perm[AB + 1], x, y - 1, z - 1), Grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w)) / 2 + .5f;
+            return new Sample<float3>(math.lerp(math.lerp(math.lerp(Grad(perm[aa], x, y, z), Grad(perm[ba], x - 1, y, z), u),
+                                          math.lerp(Grad(perm[ab], x, y - 1, z), Grad(perm[bb], x - 1, y - 1, z), u), u),
+                                math.lerp(math.lerp(Grad(perm[aa + 1], x, y, z - 1), Grad(perm[ba + 1], x - 1, y, z - 1), u),
+                                          math.lerp(Grad(perm[ab + 1], x, y - 1, z - 1), Grad(perm[bb + 1], x - 1, y - 1, z - 1), u), v), w)) / 2 + .5f;
         }
 
         static float Grad(int hash, float x)

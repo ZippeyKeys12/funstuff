@@ -1,8 +1,7 @@
 using System;
 using Unity.Mathematics;
-using UnityEngine;
 
-namespace Noise
+namespace Noise.Unary
 {
     public class MidpointDisplacement : Generator
     {

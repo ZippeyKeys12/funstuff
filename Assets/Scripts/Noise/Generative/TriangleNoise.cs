@@ -1,7 +1,6 @@
 using Unity.Mathematics;
-using UnityEngine;
 
-namespace Noise
+namespace Noise.Generative
 {
     public class TriangleNoise : Generator
     {

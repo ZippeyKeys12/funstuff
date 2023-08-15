@@ -1,6 +1,6 @@
 ﻿using Unity.Entities;
 
-namespace AI
+namespace AI.Agent
 {
     public interface IReasoner : INamed
     {

@@ -1,9 +1,9 @@
 using System;
 using Unity.Mathematics;
-using TweenType = Interp.TweenType;
-using TweenTypes = Interp.TweenTypes;
+using TweenType = Algorithms.Interp.TweenType;
+using TweenTypes = Algorithms.Interp.TweenTypes;
 
-namespace Noise
+namespace Noise.Unary
 {
     [Serializable]
     public class Interpolate : Generator

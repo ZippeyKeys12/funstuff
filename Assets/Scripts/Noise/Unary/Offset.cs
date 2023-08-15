@@ -1,13 +1,13 @@
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Unary
 {
     public class Offset : Generator
     {
-        float offset1d;
-        float2 offset2d;
-        float3 offset3d;
-        Generator gen;
+        private readonly float offset1d;
+        private readonly float2 offset2d;
+        private readonly float3 offset3d;
+        private readonly Generator gen;
 
         public Offset(Generator gen, float offset1d, float2 offset2d, float3 offset3d)
         {

@@ -1,16 +1,7 @@
 ﻿using System;
-using UnityEngine;
-using Unity.Jobs;
+using Noise;
 using Unity.Mathematics;
 
-public interface GeneratorSample<T, R> : IJobParallelFor
-    where T : unmanaged
-{
-    T Dimension { get; set; }
-    float Frequency { get; set; }
-
-    R Get(T x);
-}
 public sealed class Sample<T>
 {
     public static Sample<T> Zero

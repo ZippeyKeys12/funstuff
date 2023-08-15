@@ -1,6 +1,4 @@
-using Unity.Mathematics;
-
-namespace Noise
+namespace Noise.Unary
 {
     public class Bias : Map
     {

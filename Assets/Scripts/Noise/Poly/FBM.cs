@@ -1,6 +1,6 @@
 ﻿using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Poly
 {
     public class FBM : Generator
     {
@@ -16,7 +16,7 @@ namespace Noise
             this.lacunarity = lacunarity;
 
             spectralWeights = new float[operands.Length];
-            for (int i = 0; i < operands.Length; i++)
+            for (var i = 0; i < operands.Length; i++)
             {
                 spectralWeights[i] = math.pow(persistance, i * spectralExponent);
             }

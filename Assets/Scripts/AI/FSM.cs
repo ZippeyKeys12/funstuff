@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Structure;
+using AI.Agent;
+using Structures;
 using Unity.Entities;
 
 namespace AI.Reasoners

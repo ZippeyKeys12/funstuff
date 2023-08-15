@@ -2,32 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Structure
+namespace Structures
 {
-    public class FSM<I, T, K>
-        where T : Enum, IEquatable<T>
+    public class FSM<TInput, TState, TStateValue>
+        where TState : Enum, IEquatable<TState>
     {
-        protected readonly IDictionary<T, K> states = new Dictionary<T, K>();
-        protected readonly IDictionary<T, Func<I, T>> transitions = new Dictionary<T, Func<I, T>>();
+        protected readonly IDictionary<TState, TStateValue> states = new Dictionary<TState, TStateValue>();
+        protected readonly IDictionary<TState, Func<TInput, TState>> transitions = new Dictionary<TState, Func<TInput, TState>>();
 
-        protected K state;
+        protected TStateValue state;
 
-        public FSM((T a, K b) defState)
+        public FSM((TState a, TStateValue b) defState)
         {
             this.states.Add(defState.a, defState.b);
         }
 
-        public void AddState(T from, K to)
+        public void AddState(TState from, TStateValue to)
         {
             states.Add(from, to);
         }
 
-        public void AddTransition(T from, Func<I, T> condition)
+        public void AddTransition(TState from, Func<TInput, TState> condition)
         {
             transitions.Add(from, condition);
         }
 
-        public K Evaluate(I input)
+        public TStateValue Evaluate(TInput input)
         {
             return state = states[transitions[states.FirstOrDefault(x => x.Value.Equals(state)).Key](input)];
         }

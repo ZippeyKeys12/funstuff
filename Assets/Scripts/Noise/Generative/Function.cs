@@ -1,8 +1,6 @@
-﻿using System;
-using UnityEngine;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Generative
 {
     public class Function : Generator
     {

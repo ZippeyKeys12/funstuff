@@ -6,6 +6,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using UnityEngine;
 using AI;
+using AI.Agent;
 
 public class AgentTest : MonoBehaviour
 {
@@ -52,43 +53,26 @@ public class AgentTest : MonoBehaviour
     }
 
     [UpdateInGroup(typeof(SensorSystemGroup))]
-    public class TestSensorSystem : JobComponentSystem
+    public class TestSensorSystem : SystemBase
     {
-        // [BurstCompile] Doesn't work with EntityBuffer
-        struct TestSensorJob : IJobForEachWithEntity<TestSensorComponent>
-        {
-            public EntityCommandBuffer.Concurrent entityCommandBuffer;
-
-            public void Execute(Entity entity, int index, [ReadOnly] ref TestSensorComponent testSensorComponent)
-            {
-                entityCommandBuffer.AddComponent(index, entity, new TestSensorTag() { text = testSensorComponent.text });
-            }
-        }
-
         private EntityCommandBufferSystem entityCommandBufferSystem;
-        // private EntityQuery queryGroup;
-
-        // protected override void OnCreate()
-        // {
-        //     queryGroup = GetEntityQuery(ComponentType.ReadOnly<TestSensorComponent>());
-        // }
-
-        protected override void OnStartRunning()
+        
+        protected override void OnCreate()
         {
+            base.OnCreate();
+            
             entityCommandBufferSystem = World.GetOrCreateSystem<EntityCommandBufferSystem>();
-            base.OnStartRunning();
         }
 
-        protected override JobHandle OnUpdate(JobHandle inputDeps)
+        protected override void OnUpdate()
         {
-            var jobHandle = new TestSensorJob()
+            var ecb = entityCommandBufferSystem.CreateCommandBuffer().ToConcurrent();
+            Entities.ForEach((Entity entity, int entityInQueryIndex, ref TestSensorComponent testSensorComponent) =>
             {
-                entityCommandBuffer = entityCommandBufferSystem.CreateCommandBuffer().ToConcurrent()
-            }.Schedule(this, inputDeps);
+                ecb.AddComponent(entityInQueryIndex, entity,new TestSensorTag() {text = testSensorComponent.text});
+            }).ScheduleParallel();
 
-            entityCommandBufferSystem.AddJobHandleForProducer(jobHandle);
-
-            return jobHandle;
+            entityCommandBufferSystem.AddJobHandleForProducer(this.Dependency);
         }
     }
 

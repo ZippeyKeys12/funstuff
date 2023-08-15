@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using Unity.Mathematics;
 using Noise;
+using Noise.Generative;
+using Noise.Poly;
+using Noise.Unary;
+using Unity.Mathematics;
+using UnityEngine;
 using Random = System.Random;
-using TweenTypes = Interp.TweenTypes;
+using TweenTypes = Algorithms.Interp.TweenTypes;
 
 namespace Map.Generation
 {
@@ -52,7 +55,6 @@ namespace Map.Generation
                 .Select(x => noiseBuilder(noiseType, getSeed(x)))
                 .ToArray();
 
-
             Generator fractalGen = null;
             switch (fractalType)
             {
@@ -73,7 +75,7 @@ namespace Map.Generation
                     break;
             }
 
-            fractalGen = fractalGen.Warp(4, 1);
+            // fractalGen = fractalGen.Warp(4, 1);
 
             Generator seaGen;
             if (seaLevel > 0)
@@ -85,14 +87,12 @@ namespace Map.Generation
                 seaGen = fractalGen;
             }
 
-
             Generator finalGen = seaGen;
 
             GetComponent<MapRenderer>().DrawTerrain(new float2(transform.position.x, transform.position.z), float2.zero, finalGen, terrainHeight, resPower, mapSize, mapChunks, frequency);
         }
 
-        private int getSeed(int x)
-            => (int)(seed + new Random(seed * x).NextDouble());
+        private int getSeed(int x) => (int)(seed + new Random(seed * x).NextDouble());
 
         private Generator noiseBuilder(NoiseType type, int seed)
         {

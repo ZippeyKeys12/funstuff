@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Unary
 {
     public sealed class Translation : Generator
     {

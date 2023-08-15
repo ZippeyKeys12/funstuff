@@ -1,6 +1,6 @@
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Quad
 {
     public class Warp : Generator
     {
@@ -42,39 +42,33 @@ namespace Noise
             this.levels = levels;
         }
 
-        public override Sample<float> Get(float x, float frequency)
+        public override Sample<float> Get(float x)
         {
-            x *= frequency;
-            frequency = 1;
-
             var p = Sample<float>.Zero;
 
             for (var i = 0; i < levels; i++)
             {
-                p = a.Get(x + strength * p, frequency);
+                p = a.Get(x + strength * p);
             }
 
-            return gen.Get(x + strength * p, frequency);
+            return gen.Get(x + strength * p);
         }
 
-        public override Sample<float2> Get(float2 xy, float frequency)
+        public override Sample<float2> Get(float2 xy)
         {
-            xy *= frequency;
-            frequency = 1;
-
             var p = Sample<float>.Zero;
             var q = Sample<float>.Zero;
 
             for (var i = 0; i < levels; i++)
             {
-                p = a.Get(xy.x + strength * p, frequency);
-                q = b.Get(xy.y + strength * q, frequency);
+                p = a.Get(xy.x + strength * p);
+                q = b.Get(xy.y + strength * q);
             }
 
-            return gen.Get(xy.x + strength * p, xy.y + strength * q, frequency);
+            return gen.Get(xy.x + strength * p, xy.y + strength * q);
         }
 
-        public override Sample<float3> Get(float3 xyz, float frequency)
+        public override Sample<float3> Get(float3 xyz)
         {
             var p = Sample<float>.Zero;
             var q = Sample<float>.Zero;
@@ -82,12 +76,12 @@ namespace Noise
 
             for (var i = 0; i < levels; i++)
             {
-                p = a.Get(xyz.x + strength * p, frequency);
-                q = b.Get(xyz.y + strength * q, frequency);
-                r = b.Get(xyz.z + strength * r, frequency);
+                p = a.Get(xyz.x + strength * p);
+                q = b.Get(xyz.y + strength * q);
+                r = b.Get(xyz.z + strength * r);
             }
 
-            return gen.Get(xyz.x + strength * p, xyz.y + strength * q, xyz.z + strength * r, frequency);
+            return gen.Get(xyz.x + strength * p, xyz.y + strength * q, xyz.z + strength * r);
         }
     }
 }

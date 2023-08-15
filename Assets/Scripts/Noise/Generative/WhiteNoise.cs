@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
-using UnityEngine;
 using Unity.Mathematics;
 using Random = System.Random;
 
-namespace Noise
+namespace Noise.Generative
 {
     [Serializable]
     public class WhiteNoise : Generator

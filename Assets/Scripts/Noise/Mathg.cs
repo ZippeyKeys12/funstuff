@@ -1,4 +1,7 @@
 using System;
+using Noise.Generative;
+using Noise.Quad;
+using Noise.Unary;
 using Unity.Mathematics;
 
 namespace Noise

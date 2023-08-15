@@ -1,7 +1,7 @@
 using System.Linq;
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Poly
 {
     public class Min : Generator
     {

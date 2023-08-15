@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Unity.Entities;
+using UnityEngine;
 
-namespace AI
+namespace AI.Agent
 {
     public class AgentBase : Behaviour
     {

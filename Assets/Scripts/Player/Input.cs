@@ -1,7 +1,7 @@
 using Unity.Burst;
 using Unity.Entities;
 
-namespace Player.Control
+namespace Player
 {
     [BurstCompile]
     public struct InputComponent : IComponentData

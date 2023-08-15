@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEngine;
-using Random = System.Random;
 
-namespace Noise
+namespace Noise.Generative
 {
     [System.Serializable]
     public class InvDistNoise : Generator

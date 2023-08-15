@@ -1,7 +1,6 @@
 using Unity.Mathematics;
-using UnityEngine;
 
-namespace Noise
+namespace Noise.Poly
 {
     public class SlopeErosion : Generator
     {

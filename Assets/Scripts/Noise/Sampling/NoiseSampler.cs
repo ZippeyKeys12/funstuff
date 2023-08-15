@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Sampling
 {
     public class NoiseSampler : Sampler
     {

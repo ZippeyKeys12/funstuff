@@ -1,8 +1,6 @@
-using System;
 using Unity.Mathematics;
-using Random = System.Random;
 
-namespace Noise
+namespace Noise.Generative
 {
     public class SinNoise : Generator
     {

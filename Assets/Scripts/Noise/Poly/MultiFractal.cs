@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 
-namespace Noise
+namespace Noise.Poly
 {
     public class Multifractal : Generator
     {
